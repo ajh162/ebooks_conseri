@@ -1,0 +1,3 @@
+# Este proyecto no necesita librerias externas: todo el back-end usa modulos
+# que ya vienen con Python (urllib, json, hmac, hashlib).
+# El archivo se deja vacio a proposito para que Vercel detecte el runtime.

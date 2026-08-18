@@ -1,0 +1,33 @@
+{
+  "ebook_antes_de_emprender": {
+    "nombre": "Antes de Emprender: Finanzas e Impuestos que Nadie te Explica",
+    "tipo": "ebook",
+    "precio": 249,
+    "descripcion": "Ebook completo en PDF, 7 capitulos y checklist final.",
+    "archivos": [
+      {
+        "nombre": "Antes de Emprender (PDF)",
+        "ruta": "ebooks/antes-de-emprender.pdf"
+      }
+    ],
+    "enlace": null
+  },
+
+  "kit_completo": {
+    "nombre": "Kit Antes de Emprender",
+    "tipo": "kit",
+    "precio": 899,
+    "descripcion": "Ebook completo y las 5 plantillas de calculo en Excel.",
+    "archivos": [
+      {
+        "nombre": "Antes de Emprender (PDF)",
+        "ruta": "ebooks/antes-de-emprender.pdf"
+      },
+      {
+        "nombre": "Plantillas del Kit (Excel)",
+        "ruta": "plantillas/kit-antes-de-emprender-plantillas.xlsx"
+      }
+    ],
+    "enlace": null
+  }
+}

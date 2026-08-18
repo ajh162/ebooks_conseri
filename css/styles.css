@@ -1,0 +1,1110 @@
+/* ============================================================================
+   CONSERI · styles.css
+   ----------------------------------------------------------------------------
+   Todos los colores viven en :root. Cambias ahí y cambia el sitio entero,
+   incluida la página de descarga del back-end.
+   ============================================================================ */
+
+/* ---- Tipografía de marca ----------------------------------------------------
+   La lámina pide TT FORS para encabezados. No es una fuente libre, así que el
+   sitio usa Poppins mientras tanto. Cuando CONSERI entregue el archivo:
+     1. Pon TTFors-Bold.woff2 y TTFors-Regular.woff2 en assets/fuentes/
+     2. Descomenta este bloque
+     3. En --display pon: 'TT Fors', 'Poppins', sans-serif
+--------------------------------------------------------------------------------
+@font-face{
+  font-family: 'TT Fors';
+  src: url('../assets/fuentes/TTFors-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face{
+  font-family: 'TT Fors';
+  src: url('../assets/fuentes/TTFors-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+--------------------------------------------------------------------------- */
+
+:root{
+  /* ---- Paleta oficial (tomada de la lámina de marca) ---- */
+  --navy:    #112234;   /* azul institucional oscuro */
+  --azul:    #3173A7;   /* azul medio */
+  --naranja: #F4882A;   /* acento y acciones */
+
+  /* ---- Derivados, para no inventar colores fuera de la marca ---- */
+  --navy-suave:  #1B3550;
+  --navy-humo:   #24405E;
+  --azul-claro:  #6BA3CF;
+  --azul-humo:   #D6E4F0;
+  --naranja-claro: #FFA85C;
+  --blanco: #FFFFFF;
+  --hueso:  #F4F7FA;
+  --gris:   #5E7080;
+
+  /* ---- Tipografías ---- */
+  --display: 'Poppins', system-ui, sans-serif;   /* títulos */
+  --cuerpo:  'Public Sans', system-ui, sans-serif;
+
+  /* ---- Medidas ---- */
+  --ancho: 1200px;
+  --radio: 16px;
+  --sombra: 0 22px 60px -28px rgba(17, 34, 52, .45);
+  --curva: cubic-bezier(.22, 1, .36, 1);
+}
+
+/* ============================ BASE ============================ */
+*{ box-sizing: border-box; }
+
+html{ scroll-behavior: smooth; }
+
+body{
+  margin: 0;
+  background: var(--hueso);
+  color: var(--navy);
+  font-family: var(--cuerpo);
+  font-size: 17px;
+  line-height: 1.68;
+  overflow-x: clip;
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+h1, h2, h3{
+  font-family: var(--display);
+  font-weight: 700;
+  line-height: 1.14;
+  letter-spacing: -.02em;
+  margin: 0;
+}
+
+p{ margin: 0 0 1rem; }
+a{ color: var(--azul); }
+img{ max-width: 100%; height: auto; }
+
+:focus-visible{
+  outline: 3px solid var(--naranja);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* Evita que el texto de la portada desborde su columna en pantallas angostas */
+.portada__texto{ min-width: 0; }
+.indice__cuerpo{ min-width: 0; }
+
+/* ============================ BARRA DE PROGRESO ============================ */
+.progreso{
+  position: fixed;
+  top: 0; left: 0;
+  height: 3px;
+  width: 0;
+  background: var(--naranja);
+  z-index: 100;
+  transition: width .1s linear;
+}
+
+/* ============================ BOTONES ============================ */
+.boton{
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50px;
+  padding: 0 1.8rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--naranja);
+  color: #2A1200;
+  font-family: var(--display);
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform .25s var(--curva), box-shadow .25s var(--curva);
+  box-shadow: 0 12px 26px -14px rgba(244, 136, 42, .95);
+}
+/* Brillo que barre el botón al pasar el cursor */
+.boton::after{
+  content: "";
+  position: absolute;
+  top: 0; left: -60%;
+  width: 45%;
+  height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255,255,255,.55), transparent);
+  transform: skewX(-18deg);
+  transition: left .6s var(--curva);
+}
+.boton:hover{
+  transform: translateY(-3px);
+  box-shadow: 0 20px 34px -16px rgba(244, 136, 42, 1);
+}
+.boton:hover::after{ left: 120%; }
+.boton:active{ transform: translateY(-1px); }
+.boton[disabled]{ opacity: .65; cursor: progress; transform: none; }
+
+.boton--chico{ min-height: 42px; padding: 0 1.2rem; font-size: .9rem; }
+.boton--grande{ min-height: 58px; padding: 0 2.3rem; font-size: 1.05rem; }
+.boton--bloque{ width: 100%; margin-top: auto; }
+
+.enlace-suave{
+  position: relative;
+  color: var(--blanco);
+  font-family: var(--display);
+  font-weight: 500;
+  text-decoration: none;
+  padding-bottom: 4px;
+}
+.enlace-suave::after{
+  content: "";
+  position: absolute;
+  left: 0; bottom: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--naranja);
+  transform: scaleX(.35);
+  transform-origin: left;
+  transition: transform .35s var(--curva);
+}
+.enlace-suave:hover::after{ transform: scaleX(1); }
+
+/* ============================ ENCABEZADO ============================ */
+.barra{
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: .9rem clamp(1rem, 4vw, 2.5rem);
+  background: transparent;
+  transition: background .35s ease, padding .35s ease, box-shadow .35s ease;
+}
+/* js/script.js pone .barra--fija al bajar */
+.barra--fija{
+  background: rgba(17, 34, 52, .92);
+  backdrop-filter: blur(16px);
+  padding-top: .55rem;
+  padding-bottom: .55rem;
+  box-shadow: 0 10px 30px -20px rgba(0, 0, 0, .9);
+}
+
+.barra__marca{ margin-right: auto; display: flex; }
+.barra__logo{
+  height: 38px;
+  width: auto;
+  transition: height .35s ease;
+}
+.barra--fija .barra__logo{ height: 32px; }
+
+.barra__nav{ display: flex; gap: 1.7rem; }
+.barra__nav a{
+  position: relative;
+  color: rgba(255, 255, 255, .82);
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: .93rem;
+  text-decoration: none;
+  padding: .4rem 0;
+}
+.barra__nav a::after{
+  content: "";
+  position: absolute;
+  left: 0; bottom: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--naranja);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform .3s var(--curva);
+}
+.barra__nav a:hover{ color: var(--blanco); }
+.barra__nav a:hover::after{ transform: scaleX(1); transform-origin: left; }
+
+/* ============================ PORTADA ============================ */
+.portada{
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  background: var(--navy);
+  overflow: hidden;
+  padding: 7rem clamp(1.2rem, 5vw, 2rem) 5rem;
+}
+/* Halos de color, muy suaves, detrás del contenido */
+.portada::before{
+  content: "";
+  position: absolute;
+  width: 62vw; height: 62vw;
+  top: -22vw; right: -14vw;
+  background: radial-gradient(circle, rgba(49, 115, 167, .45), transparent 62%);
+  filter: blur(10px);
+  animation: flotar 16s ease-in-out infinite alternate;
+}
+.portada::after{
+  content: "";
+  position: absolute;
+  width: 48vw; height: 48vw;
+  bottom: -22vw; left: -14vw;
+  background: radial-gradient(circle, rgba(244, 136, 42, .26), transparent 62%);
+  filter: blur(10px);
+  animation: flotar 20s ease-in-out infinite alternate-reverse;
+}
+@keyframes flotar{
+  from{ transform: translate3d(0, 0, 0) scale(1); }
+  to  { transform: translate3d(-3%, 4%, 0) scale(1.12); }
+}
+
+.portada__lienzo{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.portada__contenido{
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: var(--ancho);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.08fr .92fr;
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: center;
+}
+
+.etiqueta{
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+  font-family: var(--display);
+  font-size: .74rem;
+  font-weight: 600;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--naranja);
+  margin: 0 0 1.2rem;
+}
+.etiqueta--clara{ color: var(--naranja); }
+.etiqueta__punto{
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--naranja);
+  box-shadow: 0 0 0 0 rgba(244, 136, 42, .7);
+  animation: pulso 2.4s infinite;
+}
+@keyframes pulso{
+  0%  { box-shadow: 0 0 0 0 rgba(244, 136, 42, .6); }
+  70% { box-shadow: 0 0 0 12px rgba(244, 136, 42, 0); }
+  100%{ box-shadow: 0 0 0 0 rgba(244, 136, 42, 0); }
+}
+
+.titular{
+  font-size: clamp(2.2rem, 5vw, 3.7rem);
+  font-weight: 700;
+  color: var(--blanco);
+  margin-bottom: 1.5rem;
+}
+.titular__acento{
+  display: block;
+  background: linear-gradient(100deg, var(--naranja) 0%, var(--naranja-claro) 45%, var(--azul-claro) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.entrada{
+  font-size: 1.08rem;
+  color: rgba(255, 255, 255, .74);
+  max-width: 48ch;
+  margin-bottom: 2.2rem;
+}
+
+.portada__acciones{
+  display: flex;
+  align-items: center;
+  gap: 1.8rem;
+  flex-wrap: wrap;
+  margin-bottom: 2.4rem;
+}
+
+.portada__sellos{
+  display: flex;
+  flex-wrap: wrap;
+  gap: .6rem 1.6rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: .82rem;
+  color: rgba(255, 255, 255, .6);
+}
+.portada__sellos li{ display: flex; align-items: center; gap: .5rem; }
+.portada__sellos li::before{
+  content: "";
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--naranja);
+}
+
+/* ---- Flecha de bajar ---- */
+.portada__bajar{
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 26px; height: 42px;
+  border: 2px solid rgba(255, 255, 255, .3);
+  border-radius: 999px;
+  z-index: 3;
+}
+.portada__bajar span{
+  position: absolute;
+  top: 8px; left: 50%;
+  width: 4px; height: 8px;
+  margin-left: -2px;
+  border-radius: 2px;
+  background: var(--naranja);
+  animation: bajar 1.8s infinite;
+}
+@keyframes bajar{
+  0%  { transform: translateY(0);    opacity: 0; }
+  35% { opacity: 1; }
+  100%{ transform: translateY(16px); opacity: 0; }
+}
+
+/* ============================ LIBRO EN 3D ============================
+   Seis caras armadas con transform-style: preserve-3d. Las variables
+   --giro-x y --giro-y las mueve js/script.js según el cursor.
+============================================================================ */
+.escena{
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1600px;
+  min-height: 480px;
+}
+
+.libro{
+  --giro-x: -8deg;
+  --giro-y: -26deg;
+  position: relative;
+  width: 300px;
+  height: 420px;
+  transform-style: preserve-3d;
+  transform: rotateX(var(--giro-x)) rotateY(var(--giro-y));
+  transition: transform .5s var(--curva);
+  animation: levitar 6s ease-in-out infinite;
+}
+@keyframes levitar{
+  0%, 100%{ margin-top: 0; }
+  50%     { margin-top: -18px; }
+}
+
+.libro__cara{
+  position: absolute;
+  backface-visibility: hidden;
+}
+
+/* Portada */
+.libro__cara--frente{
+  width: 300px; height: 420px;
+  transform: translateZ(19px);
+  background: linear-gradient(150deg, #16304A 0%, var(--navy) 55%, #0C1A28 100%);
+  border-radius: 3px 8px 8px 3px;
+  box-shadow: inset 3px 0 0 rgba(255,255,255,.08), 0 0 40px -10px rgba(0,0,0,.6);
+  overflow: hidden;
+}
+/* Contraportada */
+.libro__cara--atras{
+  width: 300px; height: 420px;
+  transform: translateZ(-19px) rotateY(180deg);
+  background: linear-gradient(150deg, var(--navy), #0A1622);
+  border-radius: 3px 8px 8px 3px;
+}
+/* Lomo */
+.libro__cara--lomo{
+  width: 38px; height: 420px;
+  left: -19px;
+  transform: rotateY(-90deg);
+  background: linear-gradient(180deg, var(--azul) 0%, var(--navy) 60%);
+  border-radius: 3px 0 0 3px;
+}
+/* Canto: las hojas */
+.libro__cara--canto{
+  width: 38px; height: 420px;
+  right: -19px;
+  transform: rotateY(90deg);
+  background:
+    repeating-linear-gradient(90deg, #FFFFFF 0 2px, #DCE4EC 2px 4px);
+  border-radius: 0 3px 3px 0;
+}
+.libro__cara--arriba{
+  width: 300px; height: 38px;
+  top: -19px;
+  transform: rotateX(90deg) translateZ(19px);
+  background: repeating-linear-gradient(90deg, #F7F9FB 0 2px, #D9E2EA 2px 4px);
+}
+.libro__cara--abajo{
+  width: 300px; height: 38px;
+  bottom: -19px;
+  transform: rotateX(-90deg) translateZ(19px);
+  background: repeating-linear-gradient(90deg, #EEF3F7 0 2px, #CFDAE4 2px 4px);
+}
+
+/* ---- Contenido de la cubierta ---- */
+.cubierta{
+  height: 100%;
+  padding: 2rem 1.6rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: relative;
+}
+.cubierta::before{
+  content: "";
+  position: absolute;
+  inset: 14px;
+  border: 1px solid rgba(255, 255, 255, .14);
+  border-radius: 4px;
+  pointer-events: none;
+}
+/* Reflejo diagonal que recorre la portada */
+.cubierta::after{
+  content: "";
+  position: absolute;
+  top: -60%; left: -40%;
+  width: 60%; height: 220%;
+  background: linear-gradient(100deg, transparent, rgba(255,255,255,.14), transparent);
+  transform: rotate(12deg);
+  animation: reflejo 7s ease-in-out infinite;
+}
+@keyframes reflejo{
+  0%, 65% { left: -60%; }
+  100%    { left: 130%; }
+}
+.cubierta__marca{ width: 46px; opacity: .95; margin-bottom: .9rem; }
+.cubierta__sello{
+  font-family: var(--display);
+  font-size: .62rem;
+  letter-spacing: .34em;
+  color: var(--naranja);
+  margin: 0 0 auto;
+}
+.cubierta__titulo{
+  font-size: 1.9rem;
+  color: var(--blanco);
+  margin-bottom: .9rem;
+}
+.cubierta__linea{
+  width: 54px; height: 3px;
+  background: var(--naranja);
+  margin-bottom: .9rem;
+}
+.cubierta__bajada{
+  font-size: .84rem;
+  color: rgba(255, 255, 255, .72);
+  margin-bottom: 1.2rem;
+}
+.cubierta__autor{
+  font-family: var(--display);
+  font-size: .68rem;
+  letter-spacing: .04em;
+  color: rgba(255, 255, 255, .5);
+  margin: 0;
+}
+
+/* Sombra del libro en el piso */
+.escena__sombra{
+  position: absolute;
+  bottom: 26px;
+  width: 260px; height: 26px;
+  background: radial-gradient(ellipse, rgba(0, 0, 0, .5), transparent 68%);
+  filter: blur(6px);
+  animation: sombra 6s ease-in-out infinite;
+}
+@keyframes sombra{
+  0%, 100%{ transform: scale(1);   opacity: .5; }
+  50%     { transform: scale(.86); opacity: .32; }
+}
+
+/* ============================ CINTA DE SERVICIOS ============================ */
+.cinta{
+  background: var(--naranja);
+  color: #2A1200;
+  overflow: hidden;
+  padding: .85rem 0;
+  border-top: 1px solid rgba(0,0,0,.06);
+}
+.cinta__pista{
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  width: max-content;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: .92rem;
+  letter-spacing: .04em;
+  animation: correr 34s linear infinite;
+}
+.cinta__punto{ font-size: .6rem; opacity: .55; }
+@keyframes correr{
+  from{ transform: translateX(0); }
+  to  { transform: translateX(-50%); }
+}
+
+/* ============================ SECCIONES ============================ */
+.seccion{ padding: clamp(4rem, 9vw, 7rem) clamp(1.2rem, 5vw, 2rem); }
+.seccion > *{ max-width: var(--ancho); margin-left: auto; margin-right: auto; }
+
+.seccion--clara{ background: var(--hueso); }
+.seccion--navy{
+  background: var(--navy);
+  color: rgba(255, 255, 255, .78);
+  background-image:
+    linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+.seccion--navy .seccion__titulo{ color: var(--blanco); }
+.seccion--navy .seccion__intro{ color: rgba(255, 255, 255, .68); }
+
+.seccion__cabecera{ max-width: 60ch; margin-bottom: 3.2rem; }
+.seccion__titulo{
+  font-size: clamp(1.8rem, 3.8vw, 2.7rem);
+  color: var(--navy);
+  margin-bottom: 1rem;
+}
+.seccion__intro{ color: var(--gris); font-size: 1.04rem; margin: 0; }
+
+/* ============================ DESGLOSE DE CARLOS ============================ */
+.desglose{
+  background: var(--blanco);
+  border-radius: var(--radio);
+  padding: clamp(1.4rem, 4vw, 2.4rem);
+  box-shadow: var(--sombra);
+  margin-bottom: 3rem;
+}
+.desglose__fila{
+  display: grid;
+  grid-template-columns: 1fr 2.2fr auto;
+  align-items: center;
+  gap: 1.2rem;
+  padding: .85rem 0;
+  border-bottom: 1px solid var(--azul-humo);
+}
+.desglose__fila:last-child{ border-bottom: 0; }
+.desglose__fila--total .desglose__nombre,
+.desglose__fila--queda .desglose__nombre{
+  font-family: var(--display);
+  font-weight: 600;
+  color: var(--navy);
+}
+.desglose__nombre{ margin: 0; font-size: .95rem; color: var(--gris); }
+
+.desglose__barra{
+  height: 12px;
+  background: var(--azul-humo);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.desglose__barra span{
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: 999px;
+  background: var(--azul);
+  transition: width 1.1s var(--curva);
+}
+.desglose__barra--resta span{ background: var(--gris); opacity: .55; }
+.desglose__barra--queda span{ background: var(--naranja); }
+
+.desglose__monto{
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 1.15rem;
+  color: var(--navy);
+  min-width: 6.5ch;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.desglose__monto--resta{ color: var(--gris); font-weight: 500; font-size: 1rem; }
+.desglose__monto--queda{ color: var(--naranja); font-size: 1.5rem; }
+
+/* ---- Conceptos ---- */
+.conceptos{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.6rem;
+}
+.concepto{
+  border-top: 3px solid var(--naranja);
+  padding-top: 1.1rem;
+}
+.concepto__titulo{ font-size: 1.15rem; color: var(--navy); margin-bottom: .5rem; }
+.concepto p{ margin: 0; color: var(--gris); font-size: .96rem; }
+
+/* ============================ PIEZAS DEL KIT ============================ */
+.piezas{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.4rem;
+  perspective: 1000px;
+}
+.pieza{
+  background: rgba(255, 255, 255, .05);
+  border: 1px solid rgba(255, 255, 255, .12);
+  border-radius: var(--radio);
+  padding: 1.8rem 1.6rem;
+  transform-style: preserve-3d;
+  transition: background .3s ease, border-color .3s ease, transform .18s ease-out;
+}
+.pieza:hover{
+  background: rgba(255, 255, 255, .08);
+  border-color: rgba(244, 136, 42, .5);
+}
+.pieza__icono{
+  display: grid;
+  place-items: center;
+  width: 50px; height: 50px;
+  border-radius: 13px;
+  background: rgba(244, 136, 42, .16);
+  color: var(--naranja);
+  margin-bottom: 1.2rem;
+  transform: translateZ(28px);
+}
+.pieza__icono svg{ width: 26px; height: 26px; }
+.pieza__titulo{
+  font-size: 1.2rem;
+  color: var(--blanco);
+  margin-bottom: .6rem;
+  transform: translateZ(18px);
+}
+.pieza__texto{
+  margin: 0;
+  font-size: .94rem;
+  color: rgba(255, 255, 255, .66);
+  transform: translateZ(10px);
+}
+
+/* ============================ ÍNDICE DEL EBOOK ============================ */
+.indice{ position: relative; padding-left: 2.6rem; }
+.indice__riel{
+  position: absolute;
+  left: 12px; top: 8px; bottom: 8px;
+  width: 2px;
+  background: var(--azul-humo);
+}
+.indice__riel span{
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 0;
+  background: var(--naranja);
+}
+.indice__lista{ list-style: none; margin: 0; padding: 0; }
+
+.indice__fila{
+  position: relative;
+  display: grid;
+  grid-template-columns: 66px 1fr;
+  gap: 1.2rem;
+  padding: 1.5rem 1.2rem;
+  border-radius: 12px;
+  transition: background .3s ease, transform .3s var(--curva);
+}
+.indice__fila::before{
+  content: "";
+  position: absolute;
+  left: -2.6rem;
+  top: 2.1rem;
+  width: 12px; height: 12px;
+  margin-left: 7px;
+  border-radius: 50%;
+  background: var(--hueso);
+  border: 2px solid var(--azul-humo);
+  transition: border-color .3s ease, background .3s ease;
+}
+.indice__fila:hover{ background: var(--blanco); transform: translateX(6px); }
+.indice__fila:hover::before{ border-color: var(--naranja); background: var(--naranja); }
+
+.indice__num{
+  font-family: var(--display);
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: var(--azul-humo);
+  line-height: 1;
+  transition: color .3s ease;
+}
+.indice__fila:hover .indice__num{ color: var(--naranja); }
+.indice__titulo{ font-size: 1.14rem; color: var(--navy); margin-bottom: .35rem; }
+.indice__texto{ margin: 0; color: var(--gris); font-size: .96rem; }
+
+/* ---- Checklist ---- */
+.checklist{
+  margin-top: 3rem;
+  background: var(--navy);
+  color: rgba(255, 255, 255, .75);
+  border-radius: var(--radio);
+  padding: clamp(1.6rem, 4vw, 2.6rem);
+}
+.checklist__titulo{ font-size: 1.35rem; color: var(--blanco); margin-bottom: .6rem; }
+.checklist__intro{ color: rgba(255, 255, 255, .65); }
+.checklist__lista{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: .55rem 1.6rem;
+  list-style: none;
+  margin: 1.2rem 0 0;
+  padding: 0;
+  font-size: .94rem;
+}
+.checklist__lista li{ display: flex; align-items: center; gap: .6rem; }
+.checklist__lista li::before{
+  content: "";
+  flex: none;
+  width: 15px; height: 15px;
+  border: 2px solid var(--naranja);
+  border-radius: 4px;
+}
+
+/* ============================ RUTA DE 7 DÍAS ============================ */
+.ruta{
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(230px, 1fr);
+  gap: 1.1rem;
+  overflow-x: auto;
+  padding-bottom: 1rem;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+.ruta::-webkit-scrollbar{ height: 6px; }
+.ruta::-webkit-scrollbar-thumb{ background: rgba(255,255,255,.2); border-radius: 999px; }
+
+.dia{
+  scroll-snap-align: start;
+  background: rgba(255, 255, 255, .05);
+  border: 1px solid rgba(255, 255, 255, .12);
+  border-top: 3px solid var(--naranja);
+  border-radius: 12px;
+  padding: 1.4rem;
+  transition: background .3s ease, transform .3s var(--curva);
+}
+.dia:hover{ background: rgba(255, 255, 255, .09); transform: translateY(-6px); }
+.dia__num{
+  font-family: var(--display);
+  font-size: .74rem;
+  font-weight: 600;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--naranja);
+  margin: 0 0 .7rem;
+}
+.dia__titulo{ font-size: 1.05rem; color: var(--blanco); margin-bottom: .5rem; }
+.dia__texto{ margin: 0; font-size: .9rem; color: rgba(255, 255, 255, .64); }
+
+/* ============================ CATÁLOGO ============================ */
+.catalogo{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(285px, 1fr));
+  gap: 1.6rem;
+  align-items: stretch;
+  perspective: 1200px;
+}
+.producto{
+  display: flex;
+  flex-direction: column;
+  background: var(--blanco);
+  border: 1px solid var(--azul-humo);
+  border-radius: var(--radio);
+  padding: 2rem 1.8rem;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: box-shadow .3s ease, border-color .3s ease, transform .18s ease-out;
+}
+.producto:hover{ box-shadow: var(--sombra); border-color: var(--azul-claro); }
+.producto--destacado{
+  border: 2px solid var(--azul);
+  box-shadow: var(--sombra);
+}
+.producto__insignia{
+  position: absolute;
+  top: -14px; left: 1.8rem;
+  background: var(--azul);
+  color: var(--blanco);
+  font-family: var(--display);
+  font-size: .68rem;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  padding: .35rem .9rem;
+  border-radius: 999px;
+  margin: 0;
+}
+.producto__tipo{
+  font-family: var(--display);
+  font-size: .7rem;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--azul);
+  margin: 0 0 .6rem;
+}
+.producto__nombre{ font-size: 1.42rem; color: var(--navy); margin-bottom: .6rem; }
+.producto__descripcion{ color: var(--gris); font-size: .95rem; }
+.producto__lista{ list-style: none; margin: 0 0 1.6rem; padding: 0; font-size: .93rem; }
+.producto__lista li{
+  display: flex;
+  align-items: flex-start;
+  gap: .6rem;
+  padding: .4rem 0;
+  border-bottom: 1px dotted var(--azul-humo);
+  color: var(--gris);
+}
+.producto__lista li::before{
+  content: "";
+  flex: none;
+  width: 7px; height: 7px;
+  margin-top: .55rem;
+  border-radius: 50%;
+  background: var(--naranja);
+}
+.producto__precio{
+  font-family: var(--display);
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin: 0 0 1.3rem;
+  line-height: 1;
+}
+.producto__moneda{ font-size: 1.2rem; vertical-align: super; color: var(--gris); }
+/* Cuando el precio no es una cifra (asesoría: "Precio a consultar") */
+.producto__precio--consultar{
+  font-size: 1.35rem;
+  color: var(--azul);
+  line-height: 1.3;
+}
+.producto__divisa{
+  font-size: .7rem;
+  letter-spacing: .1em;
+  color: var(--gris);
+  margin-left: .4rem;
+  font-weight: 500;
+}
+
+.aviso-compra{
+  max-width: 48ch;
+  margin: 1.8rem auto 0;
+  padding: .95rem 1.2rem;
+  border-radius: 12px;
+  background: #FFF1E3;
+  border: 1px solid var(--naranja);
+  color: #8A3C00;
+  font-size: .93rem;
+  text-align: center;
+}
+.nota-pago{ text-align: center; color: var(--gris); font-size: .92rem; margin: 2rem 0 0; }
+
+/* ============================ BLOQUE CONSERI ============================ */
+.firma{
+  display: grid;
+  grid-template-columns: 1.35fr .8fr;
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: center;
+}
+.firma__texto p{ color: rgba(255, 255, 255, .7); }
+.firma__autor{ color: rgba(255, 255, 255, .9); }
+.firma__servicios{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: .4rem 1.4rem;
+  list-style: none;
+  margin: 2rem 0 0;
+  padding: 1.4rem 0 0;
+  border-top: 2px solid var(--naranja);
+  font-family: var(--display);
+  font-size: .9rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, .8);
+}
+.firma__servicios li{ padding: .35rem 0; }
+
+/* ---- Sello giratorio ---- */
+.sello{
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  max-width: 320px;
+  margin: 0 auto;
+}
+.sello__anillo{
+  width: 100%;
+  height: 100%;
+  animation: girar 26s linear infinite;
+}
+@keyframes girar{ to{ transform: rotate(360deg); } }
+.sello__texto{
+  font-family: var(--display);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: .18em;
+  fill: rgba(255, 255, 255, .5);
+}
+.sello__marca{
+  position: absolute;
+  width: 42%;
+  filter: drop-shadow(0 12px 26px rgba(0, 0, 0, .45));
+}
+
+/* ============================ DUDAS ============================ */
+.dudas{ display: grid; gap: .8rem; }
+.duda{
+  background: var(--blanco);
+  border: 1px solid var(--azul-humo);
+  border-radius: 12px;
+  padding: 1.1rem 1.4rem;
+  transition: border-color .3s ease, box-shadow .3s ease;
+}
+.duda[open]{ border-color: var(--azul-claro); box-shadow: var(--sombra); }
+.duda summary{
+  cursor: pointer;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 1.02rem;
+  color: var(--navy);
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  min-height: 32px;
+}
+.duda summary::-webkit-details-marker{ display: none; }
+.duda summary::after{
+  content: "";
+  flex: none;
+  width: 12px; height: 12px;
+  border-right: 2px solid var(--naranja);
+  border-bottom: 2px solid var(--naranja);
+  transform: rotate(45deg) translate(-2px, -2px);
+  transition: transform .3s var(--curva);
+}
+.duda[open] summary::after{ transform: rotate(-135deg) translate(-3px, -3px); }
+.duda p{ margin: .9rem 0 0; color: var(--gris); font-size: .96rem; }
+
+/* ============================ CIERRE ============================ */
+.cierre{
+  position: relative;
+  text-align: center;
+  padding: clamp(4.5rem, 10vw, 8rem) 1.4rem;
+  background: linear-gradient(160deg, var(--azul) 0%, var(--navy) 62%);
+  color: var(--blanco);
+  overflow: hidden;
+}
+.cierre::before{
+  content: "";
+  position: absolute;
+  width: 70vw; height: 70vw;
+  bottom: -45vw; left: 50%;
+  transform: translateX(-50%);
+  background: radial-gradient(circle, rgba(244, 136, 42, .3), transparent 62%);
+}
+.cierre > *{ position: relative; }
+.cierre__marca{ width: 62px; margin-bottom: 1.6rem; opacity: .92; }
+.cierre__titulo{
+  font-size: clamp(1.8rem, 4.2vw, 2.9rem);
+  color: var(--blanco);
+  margin-bottom: 1.2rem;
+}
+.cierre__texto{
+  font-family: var(--display);
+  font-weight: 500;
+  color: rgba(255, 255, 255, .78);
+  letter-spacing: .02em;
+  margin-bottom: 2.2rem;
+}
+
+/* ============================ PIE ============================ */
+.pie{
+  background: var(--navy);
+  color: rgba(255, 255, 255, .55);
+  padding: clamp(2.5rem, 6vw, 4rem) clamp(1.2rem, 5vw, 2rem) 2.5rem;
+  font-size: .9rem;
+  border-top: 1px solid rgba(255, 255, 255, .08);
+}
+.pie > *{ max-width: var(--ancho); margin-left: auto; margin-right: auto; }
+.pie__arriba{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.8rem;
+  padding-bottom: 1.8rem;
+  margin-bottom: 1.8rem;
+  border-bottom: 1px solid rgba(255, 255, 255, .1);
+}
+.pie__logo{ height: 40px; width: auto; }
+.pie__nav{ display: flex; flex-wrap: wrap; gap: 1.5rem; }
+.pie__nav a{
+  color: rgba(255, 255, 255, .72);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 2px;
+}
+.pie__nav a:hover{ border-color: var(--naranja); color: var(--blanco); }
+.pie__legal{ max-width: 74ch; font-size: .82rem; line-height: 1.65; }
+.pie__creditos{ margin: 1.4rem 0 0; font-size: .8rem; }
+
+/* ============================ ANIMACIONES DE ENTRADA ============================
+   js/script.js agrega .visible cuando el elemento entra en pantalla. */
+.animar{
+  opacity: 0;
+  transition: opacity .8s var(--curva), transform .8s var(--curva);
+}
+.animar[data-animar="subir"]{ transform: translateY(28px); }
+.animar[data-animar="lado"]{ transform: translateX(-26px); }
+.animar.visible{ opacity: 1; transform: none; }
+
+/* ============================ MÓVIL ============================ */
+@media (max-width: 980px){
+  .portada__contenido{ grid-template-columns: 1fr; }
+  .escena{ min-height: 400px; order: -1; }
+  .libro{ width: 230px; height: 322px; }
+  .libro__cara--frente, .libro__cara--atras{ width: 230px; height: 322px; }
+  .libro__cara--lomo, .libro__cara--canto{ height: 322px; }
+  .libro__cara--arriba, .libro__cara--abajo{ width: 230px; }
+  .cubierta{ padding: 1.5rem 1.2rem; }
+  .cubierta__titulo{ font-size: 1.5rem; }
+  .firma{ grid-template-columns: 1fr; }
+  .barra__nav{ display: none; }
+}
+
+@media (max-width: 620px){
+  body{ font-size: 16px; }
+  .portada{ padding-top: 6rem; }
+  .titular{ font-size: clamp(1.9rem, 8vw, 2.4rem); }
+  .desglose__fila{ grid-template-columns: 1fr auto; }
+  .desglose__barra{ grid-column: 1 / -1; order: 3; }
+  .desglose__nombre{ font-size: .88rem; }
+  .indice{ padding-left: 1.9rem; }
+  .indice__fila{ grid-template-columns: 48px 1fr; padding: 1.2rem .6rem; }
+  .indice__fila::before{ left: -1.9rem; }
+  .producto{ padding: 1.6rem 1.3rem; }
+  .portada__bajar{ display: none; }
+}
+
+/* ============================ ACCESIBILIDAD ============================ */
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{
+    animation: none !important;
+    transition: none !important;
+  }
+  html{ scroll-behavior: auto; }
+  .animar{ opacity: 1; transform: none; }
+  /* Las barras del desglose las llena js/script.js con su valor real. */
+}

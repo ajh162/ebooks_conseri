@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  CONSERI · Kit Antes de Emprender
+  Landing de una sola pagina para vender productos digitales.
+
+  IDENTIDAD APLICADA
+  ---------------------------------------------------------------------------
+  Colores tomados de la lamina de marca:
+     navy    #112234
+     azul    #3173A7
+     naranja #F4882A
+  Tipografias: Poppins (titulos y subtitulos) + Public Sans (parrafos).
+  La marca pide TT Fors para encabezados; no es una fuente libre, asi que el
+  CSS ya trae el @font-face listo para cuando CONSERI entregue el archivo.
+
+  ESTRUCTURA DEL SITIO
+  ---------------------------------------------------------------------------
+  index.html        -> esta pagina
+  legal.html        -> aviso de privacidad y terminos
+  css/styles.css    -> colores de marca (variables al inicio) y todo el estilo
+  js/fondo.js       -> canvas animado de la portada
+  js/script.js      -> movimiento, efectos 3D y botones de compra
+  api/*.py          -> back-end en Vercel
+  api/catalogo.json -> catalogo de productos (aqui se agregan los nuevos)
+  ============================================================================
+-->
+<html lang="es-MX">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Antes de Emprender · Finanzas e impuestos que nadie te explica | CONSERI</title>
+
+<meta name="description" content="Kit práctico de CONSERI para emprender con números claros: ebook, plantillas, minicurso y asesoría personalizada. Calcula tu punto de equilibrio, tu precio mínimo y tus obligaciones fiscales antes de invertir.">
+<meta name="author" content="CONSERI · Consultoría Contable de Servicios Integrales">
+<meta name="theme-color" content="#112234">
+
+<!-- Cómo se ve el enlace al compartirlo. Cambia el dominio por el real. -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_MX">
+<meta property="og:site_name" content="CONSERI">
+<meta property="og:title" content="Antes de Emprender · Finanzas e impuestos que nadie te explica">
+<meta property="og:description" content="No emprendas a ciegas: calcula, ordena y decide. Ebook, plantillas, minicurso y asesoría de CONSERI.">
+<meta property="og:url" content="https://www.conseri.mx/">
+<meta property="og:image" content="https://www.conseri.mx/assets/og-conseri.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/styles.css">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/favicon.png">
+</head>
+
+<body>
+
+<!-- Barra naranja de progreso de lectura, pegada al borde superior -->
+<div class="progreso" id="progreso" aria-hidden="true"></div>
+
+<!-- ============================ ENCABEZADO ============================ -->
+<header class="barra" id="barra">
+  <a class="barra__marca" href="#inicio" aria-label="CONSERI, ir al inicio">
+    <img src="assets/logo-horizontal-blanco.png" alt="CONSERI · Consultoría Contable de Servicios Integrales" class="barra__logo">
+  </a>
+
+  <nav class="barra__nav" aria-label="Secciones">
+    <a href="#kit">El kit</a>
+    <a href="#contenido">Contenido</a>
+    <a href="#ruta">Ruta de 7 días</a>
+    <a href="#precios">Precios</a>
+  </nav>
+
+  <a href="#precios" class="boton boton--chico">Ver precios</a>
+</header>
+
+<main>
+
+<!-- ============================ 1. PORTADA ============================
+     Navy a sangre, con el canvas animado detrás y el libro en 3D a la
+     derecha. El libro se inclina siguiendo el cursor (js/script.js).
+================================================================================ -->
+<section class="portada" id="inicio">
+  <canvas class="portada__lienzo" id="fondo" aria-hidden="true"></canvas>
+
+  <div class="portada__contenido">
+
+    <div class="portada__texto">
+      <p class="etiqueta etiqueta--clara animar" data-animar="subir">
+        <span class="etiqueta__punto"></span> Kit Antes de Emprender
+      </p>
+
+      <h1 class="titular animar" data-animar="subir" data-retraso="80">
+        Una buena idea abre la puerta.
+        <span class="titular__acento">Los números dicen si puedes cruzarla.</span>
+      </h1>
+
+      <p class="entrada animar" data-animar="subir" data-retraso="160">
+        Antes de invertir tu dinero, darte de alta en el SAT o ponerle precio a lo que
+        vendes, hay seis o siete cuentas que conviene tener resueltas. Este kit te las
+        deja claras en una semana, sin lenguaje de contador.
+      </p>
+
+      <div class="portada__acciones animar" data-animar="subir" data-retraso="240">
+        <a href="#precios" class="boton boton--grande">Quiero el kit</a>
+        <a href="#contenido" class="enlace-suave">Ver qué incluye</a>
+      </div>
+
+      <ul class="portada__sellos animar" data-animar="subir" data-retraso="320">
+        <li>Descarga inmediata</li>
+        <li>Pago seguro con Mercado Pago</li>
+        <li>Contenido de contadores en activo</li>
+      </ul>
+    </div>
+
+    <!-- ===== LIBRO EN 3D =====
+         Todo es CSS: las caras se arman con transform-style: preserve-3d.
+         No hay imagen de portada; la portada se dibuja con HTML, así que
+         cambiar el título del ebook es cambiar texto. -->
+    <div class="escena" id="escena">
+      <div class="libro" id="libro">
+        <div class="libro__cara libro__cara--frente">
+          <div class="cubierta">
+            <img src="assets/monograma-blanco.png" alt="" class="cubierta__marca">
+            <p class="cubierta__sello">CONSERI</p>
+            <h2 class="cubierta__titulo">Antes de<br>Emprender</h2>
+            <div class="cubierta__linea"></div>
+            <p class="cubierta__bajada">Finanzas e impuestos<br>que nadie te explica</p>
+            <p class="cubierta__autor">Mtro. Luis Enrique Jacobo Luna</p>
+          </div>
+        </div>
+        <div class="libro__cara libro__cara--lomo"></div>
+        <div class="libro__cara libro__cara--atras"></div>
+        <div class="libro__cara libro__cara--canto"></div>
+        <div class="libro__cara libro__cara--arriba"></div>
+        <div class="libro__cara libro__cara--abajo"></div>
+      </div>
+      <div class="escena__sombra" aria-hidden="true"></div>
+    </div>
+
+  </div>
+
+  <a class="portada__bajar" href="#cifras" aria-label="Bajar a la siguiente sección">
+    <span></span>
+  </a>
+</section>
+
+<!-- ============================ 2. BANDA DE SERVICIOS ============================
+     Cinta naranja que se desplaza sola. Es puro CSS: el contenido va duplicado
+     para que el ciclo se vea continuo.
+================================================================================ -->
+<div class="cinta" aria-hidden="true">
+  <div class="cinta__pista">
+    <span>Contabilidad mensual</span><span class="cinta__punto">◆</span>
+    <span>Impuestos y cumplimiento</span><span class="cinta__punto">◆</span>
+    <span>Regularización fiscal</span><span class="cinta__punto">◆</span>
+    <span>Nómina</span><span class="cinta__punto">◆</span>
+    <span>Finanzas de negocio</span><span class="cinta__punto">◆</span>
+    <span>Planes personales de retiro</span><span class="cinta__punto">◆</span>
+    <span>Contabilidad mensual</span><span class="cinta__punto">◆</span>
+    <span>Impuestos y cumplimiento</span><span class="cinta__punto">◆</span>
+    <span>Regularización fiscal</span><span class="cinta__punto">◆</span>
+    <span>Nómina</span><span class="cinta__punto">◆</span>
+    <span>Finanzas de negocio</span><span class="cinta__punto">◆</span>
+    <span>Planes personales de retiro</span><span class="cinta__punto">◆</span>
+  </div>
+</div>
+
+<!-- ============================ 3. VENDER NO ES GANAR ============================
+     Sustituye a la calculadora. En vez de pedirle datos al visitante, le
+     mostramos el caso de Carlos: la venta de $50,000 se desarma sola cuando la
+     sección entra en pantalla. Barras y cifras las anima js/script.js.
+================================================================================ -->
+<section class="seccion seccion--clara" id="cifras">
+  <div class="seccion__cabecera">
+    <p class="etiqueta animar" data-animar="subir">Lo que casi nadie te dice</p>
+    <h2 class="seccion__titulo animar" data-animar="subir" data-retraso="60">
+      Vender no es lo mismo que ganar
+    </h2>
+    <p class="seccion__intro animar" data-animar="subir" data-retraso="120">
+      Carlos abre su despacho y factura cincuenta mil pesos en su primer mes.
+      Suena a mes excelente. Míralo otra vez cuando se le restan las cosas que no
+      había contado.
+    </p>
+  </div>
+
+  <div class="desglose animar" data-animar="subir" id="desglose">
+    <div class="desglose__fila desglose__fila--total">
+      <p class="desglose__nombre">Facturó en el mes</p>
+      <div class="desglose__barra"><span data-ancho="100"></span></div>
+      <p class="desglose__monto" data-hasta="50000">$0</p>
+    </div>
+
+    <div class="desglose__fila">
+      <p class="desglose__nombre">Software, internet y herramientas</p>
+      <div class="desglose__barra desglose__barra--resta"><span data-ancho="8"></span></div>
+      <p class="desglose__monto desglose__monto--resta" data-hasta="4000" data-signo="−">$0</p>
+    </div>
+
+    <div class="desglose__fila">
+      <p class="desglose__nombre">Publicidad, capacitación y apoyo externo</p>
+      <div class="desglose__barra desglose__barra--resta"><span data-ancho="18"></span></div>
+      <p class="desglose__monto desglose__monto--resta" data-hasta="9000" data-signo="−">$0</p>
+    </div>
+
+    <div class="desglose__fila">
+      <p class="desglose__nombre">Costo de atender a cada cliente</p>
+      <div class="desglose__barra desglose__barra--resta"><span data-ancho="30"></span></div>
+      <p class="desglose__monto desglose__monto--resta" data-hasta="15000" data-signo="−">$0</p>
+    </div>
+
+    <div class="desglose__fila">
+      <p class="desglose__nombre">Impuestos que debió separar</p>
+      <div class="desglose__barra desglose__barra--resta"><span data-ancho="28"></span></div>
+      <p class="desglose__monto desglose__monto--resta" data-hasta="14000" data-signo="−">$0</p>
+    </div>
+
+    <div class="desglose__fila desglose__fila--queda">
+      <p class="desglose__nombre">Le quedó</p>
+      <div class="desglose__barra desglose__barra--queda"><span data-ancho="16"></span></div>
+      <p class="desglose__monto desglose__monto--queda" data-hasta="8000">$0</p>
+    </div>
+  </div>
+
+  <div class="conceptos">
+    <article class="concepto animar" data-animar="subir">
+      <h3 class="concepto__titulo">Ingreso</h3>
+      <p>Lo que cobras. Es la cifra que se presume y la que menos dice.</p>
+    </article>
+    <article class="concepto animar" data-animar="subir" data-retraso="80">
+      <h3 class="concepto__titulo">Utilidad</h3>
+      <p>Lo que queda después de costos, gastos y obligaciones. Aquí muchos descubren que trabajaron gratis.</p>
+    </article>
+    <article class="concepto animar" data-animar="subir" data-retraso="160">
+      <h3 class="concepto__titulo">Flujo de efectivo</h3>
+      <p>El dinero que de verdad entró y salió. Puede ser negativo aunque tengas clientes contentos.</p>
+    </article>
+  </div>
+</section>
+
+<!-- ============================ 4. EL KIT ============================ -->
+<section class="seccion seccion--navy" id="kit">
+  <div class="seccion__cabecera">
+    <p class="etiqueta etiqueta--clara animar" data-animar="subir">Qué recibes</p>
+    <h2 class="seccion__titulo animar" data-animar="subir" data-retraso="60">
+      Cuatro piezas que trabajan juntas
+    </h2>
+    <p class="seccion__intro animar" data-animar="subir" data-retraso="120">
+      El ebook explica, las plantillas calculan, el minicurso te lleva de la mano y la
+      asesoría resuelve tu caso. No es material para leer y guardar: es material para llenar.
+    </p>
+  </div>
+
+  <!-- data-inclina activa el efecto 3D al pasar el cursor (js/script.js) -->
+  <div class="piezas">
+    <article class="pieza animar" data-animar="subir" data-inclina>
+      <span class="pieza__icono" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+          <path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H19v18H5.5A1.5 1.5 0 0 1 4 19.5z"/>
+          <path d="M8 8h7M8 12h7M8 16h4"/>
+        </svg>
+      </span>
+      <h3 class="pieza__titulo">Ebook</h3>
+      <p class="pieza__texto">
+        Siete capítulos en lenguaje claro: punto de equilibrio, inversión inicial,
+        colchón de supervivencia, precio, régimen fiscal y control mensual.
+      </p>
+    </article>
+
+    <article class="pieza animar" data-animar="subir" data-retraso="80" data-inclina>
+      <span class="pieza__icono" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+          <rect x="3" y="3" width="18" height="18" rx="2"/>
+          <path d="M3 9h18M9 9v12M3 15h18"/>
+        </svg>
+      </span>
+      <h3 class="pieza__titulo">Plantillas</h3>
+      <p class="pieza__texto">
+        Cinco hojas de cálculo listas: diagnóstico, inversión inicial, punto de
+        equilibrio, precio mínimo y control mensual. Solo escribes tus números.
+      </p>
+    </article>
+
+    <article class="pieza animar" data-animar="subir" data-retraso="160" data-inclina>
+      <span class="pieza__icono" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+          <rect x="2.5" y="4" width="19" height="13" rx="2"/>
+          <path d="M10 8.5l4.5 2.5L10 13.5z" fill="currentColor" stroke="none"/>
+          <path d="M8 21h8"/>
+        </svg>
+      </span>
+      <h3 class="pieza__titulo">Minicurso grabado</h3>
+      <p class="pieza__texto">
+        Seis lecciones cortas que muestran cómo llenar cada plantilla, paso a paso,
+        con un caso real de un negocio de servicios.
+      </p>
+    </article>
+
+    <article class="pieza animar" data-animar="subir" data-retraso="240" data-inclina>
+      <span class="pieza__icono" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+          <path d="M20 15a2 2 0 0 1-2 2H8l-4 3V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"/>
+          <path d="M9 10h7M9 13h4"/>
+        </svg>
+      </span>
+      <h3 class="pieza__titulo">Asesoría personalizada</h3>
+      <p class="pieza__texto">
+        Sesión de 45 a 60 minutos con un contador de CONSERI para revisar tu idea, tus
+        números, tu régimen probable y tus riesgos.
+      </p>
+    </article>
+  </div>
+</section>
+
+<!-- ============================ 5. CONTENIDO DEL EBOOK ============================
+     Índice con una línea vertical naranja que se va llenando conforme bajas.
+     El relleno lo controla js/script.js.
+================================================================================ -->
+<section class="seccion seccion--clara" id="contenido">
+  <div class="seccion__cabecera">
+    <p class="etiqueta animar" data-animar="subir">Dentro del ebook</p>
+    <h2 class="seccion__titulo animar" data-animar="subir" data-retraso="60">
+      Siete capítulos, en el orden real de las decisiones
+    </h2>
+    <p class="seccion__intro animar" data-animar="subir" data-retraso="120">
+      Primero entiendes el riesgo, luego calculas, luego pones precio, luego te das de
+      alta y al final controlas. Cada capítulo cierra con un ejercicio.
+    </p>
+  </div>
+
+  <div class="indice" id="indice">
+    <div class="indice__riel" aria-hidden="true"><span id="indice-relleno"></span></div>
+
+    <ol class="indice__lista">
+      <li class="indice__fila animar" data-animar="lado">
+        <span class="indice__num">01</span>
+        <div class="indice__cuerpo">
+          <h3 class="indice__titulo">Emprender sin números es manejar con los ojos vendados</h3>
+          <p class="indice__texto">Ventas, utilidad y flujo. Los tres bolsillos del emprendedor: operación, impuestos y dueño.</p>
+        </div>
+      </li>
+      <li class="indice__fila animar" data-animar="lado">
+        <span class="indice__num">02</span>
+        <div class="indice__cuerpo">
+          <h3 class="indice__titulo">De la idea al cálculo</h3>
+          <p class="indice__texto">Inversión inicial, gastos fijos, costos variables y cuántos meses puedes resistir antes de depender del negocio.</p>
+        </div>
+      </li>
+      <li class="indice__fila animar" data-animar="lado">
+        <span class="indice__num">03</span>
+        <div class="indice__cuerpo">
+          <h3 class="indice__titulo">Cómo definir cuánto cobrar</h3>
+          <p class="indice__texto">Precio mínimo, recomendado y premium. Costo, tiempo, impuestos y valor, sin copiarle el precio a la competencia.</p>
+        </div>
+      </li>
+      <li class="indice__fila animar" data-animar="lado">
+        <span class="indice__num">04</span>
+        <div class="indice__cuerpo">
+          <h3 class="indice__titulo">Alta fiscal y régimen</h3>
+          <p class="indice__texto">Primero la actividad, después el régimen. Qué preparar antes de sentarte con un contador.</p>
+        </div>
+      </li>
+      <li class="indice__fila animar" data-animar="lado">
+        <span class="indice__num">05</span>
+        <div class="indice__cuerpo">
+          <h3 class="indice__titulo">Control mensual</h3>
+          <p class="indice__texto">Cinco indicadores y una rutina de 60 minutos al mes para no descubrir cómo te fue hasta la declaración anual.</p>
+        </div>
+      </li>
+      <li class="indice__fila animar" data-animar="lado">
+        <span class="indice__num">06</span>
+        <div class="indice__cuerpo">
+          <h3 class="indice__titulo">El kit de implementación</h3>
+          <p class="indice__texto">Cómo usar juntos el ebook, las plantillas, el minicurso y la asesoría sin abrumarte.</p>
+        </div>
+      </li>
+      <li class="indice__fila animar" data-animar="lado">
+        <span class="indice__num">07</span>
+        <div class="indice__cuerpo">
+          <h3 class="indice__titulo">Plan de acción de 7 días</h3>
+          <p class="indice__texto">Una tarea por día para llegar a tu asesoría con todo ordenado.</p>
+        </div>
+      </li>
+    </ol>
+  </div>
+
+  <div class="checklist animar" data-animar="subir">
+    <h3 class="checklist__titulo">Y al cierre, la revisión que evita sustos</h3>
+    <p class="checklist__intro">Diez bloques de verificación antes de invertir dinero importante:</p>
+    <ul class="checklist__lista">
+      <li>Claridad del negocio</li>
+      <li>Inversión inicial</li>
+      <li>Gastos y costos</li>
+      <li>Punto de equilibrio</li>
+      <li>Precio</li>
+      <li>Finanzas personales y del negocio</li>
+      <li>Fiscal y cumplimiento</li>
+      <li>Control mensual</li>
+      <li>Documentos y soporte</li>
+      <li>Preparación para tu asesoría</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================ 6. RUTA DE 7 DÍAS ============================
+     Fichas que se recorren de lado. En celular se deslizan con el dedo.
+================================================================================ -->
+<section class="seccion seccion--navy" id="ruta">
+  <div class="seccion__cabecera">
+    <p class="etiqueta etiqueta--clara animar" data-animar="subir">Cómo se aplica</p>
+    <h2 class="seccion__titulo animar" data-animar="subir" data-retraso="60">
+      Una semana de claridad
+    </h2>
+    <p class="seccion__intro animar" data-animar="subir" data-retraso="120">
+      Una tarea por día. Al séptimo llegas a tu asesoría con la información ordenada,
+      y esa sesión rinde el triple.
+    </p>
+  </div>
+
+  <div class="ruta">
+    <article class="dia animar" data-animar="subir"><p class="dia__num">Día 1</p><h3 class="dia__titulo">Aterriza la idea</h3><p class="dia__texto">Tu actividad, tu cliente y tu oferta en una frase clara.</p></article>
+    <article class="dia animar" data-animar="subir" data-retraso="60"><p class="dia__num">Día 2</p><h3 class="dia__titulo">Inversión inicial</h3><p class="dia__texto">Qué es indispensable y qué puede esperar sin frenarte.</p></article>
+    <article class="dia animar" data-animar="subir" data-retraso="120"><p class="dia__num">Día 3</p><h3 class="dia__titulo">Gastos y colchón</h3><p class="dia__texto">Cuánto cuesta el mes y cuántos meses puedes resistir.</p></article>
+    <article class="dia animar" data-animar="subir" data-retraso="180"><p class="dia__num">Día 4</p><h3 class="dia__titulo">Tu precio</h3><p class="dia__texto">Mínimo, recomendado y premium, con impuestos incluidos.</p></article>
+    <article class="dia animar" data-animar="subir" data-retraso="240"><p class="dia__num">Día 5</p><h3 class="dia__titulo">Checklist fiscal</h3><p class="dia__texto">Tus dudas por escrito antes de hablar con el contador.</p></article>
+    <article class="dia animar" data-animar="subir" data-retraso="300"><p class="dia__num">Día 6</p><h3 class="dia__titulo">Tablero mensual</h3><p class="dia__texto">Un sistema simple para revisar el negocio cada mes.</p></article>
+    <article class="dia animar" data-animar="subir" data-retraso="360"><p class="dia__num">Día 7</p><h3 class="dia__titulo">Tu asesoría</h3><p class="dia__texto">Llegas con números, no con dudas sueltas.</p></article>
+  </div>
+</section>
+
+<!-- ============================ 7. PRECIOS ============================
+     Los data-producto deben coincidir EXACTAMENTE con las claves de
+     api/catalogo.json. Para sumar un curso o un video: se agrega ahí y se
+     copia una de estas tarjetas.
+================================================================================ -->
+<section class="seccion seccion--clara" id="precios">
+  <div class="seccion__cabecera">
+    <p class="etiqueta animar" data-animar="subir">Precios</p>
+    <h2 class="seccion__titulo animar" data-animar="subir" data-retraso="60">
+      Empieza por donde te haga sentido
+    </h2>
+    <p class="seccion__intro animar" data-animar="subir" data-retraso="120">
+      Pago seguro con Mercado Pago: tarjeta, transferencia, efectivo o saldo.
+      Recibes tu material por correo en cuanto se acredita el pago.
+    </p>
+  </div>
+
+  <div class="catalogo">
+
+    <article class="producto animar" data-animar="subir" data-inclina>
+      <p class="producto__tipo">Ebook · PDF</p>
+      <h3 class="producto__nombre">Antes de Emprender</h3>
+      <p class="producto__descripcion">
+        El libro completo, para entender el panorama y hacer tus primeros cálculos.
+      </p>
+      <ul class="producto__lista">
+        <li>7 capítulos y checklist final</li>
+        <li>Ejercicio al cierre de cada capítulo</li>
+        <li>Descarga inmediata</li>
+      </ul>
+      <p class="producto__precio"><span class="producto__moneda">$</span>249<span class="producto__divisa">MXN</span></p>
+      <button class="boton boton--bloque" data-producto="ebook_antes_de_emprender">Comprar el ebook</button>
+    </article>
+
+    <article class="producto producto--destacado animar" data-animar="subir" data-retraso="80" data-inclina>
+      <p class="producto__insignia">Más completo</p>
+      <p class="producto__tipo">Ebook + plantillas + minicurso</p>
+      <h3 class="producto__nombre">Kit Antes de Emprender</h3>
+      <p class="producto__descripcion">
+        Todo el material para pasar de la idea a números reales en una semana.
+      </p>
+      <ul class="producto__lista">
+        <li>Ebook completo en PDF</li>
+        <li>5 plantillas de cálculo en Excel</li>
+        <li>Minicurso grabado de 6 lecciones</li>
+      </ul>
+      <p class="producto__precio"><span class="producto__moneda">$</span>899<span class="producto__divisa">MXN</span></p>
+      <button class="boton boton--bloque" data-producto="kit_completo">Comprar el kit</button>
+    </article>
+
+    <article class="producto animar" data-animar="subir" data-retraso="160" data-inclina>
+      <p class="producto__tipo">Sesión en línea</p>
+      <h3 class="producto__nombre">Asesoría personalizada</h3>
+      <p class="producto__descripcion">
+        Una sesión directa con Luis Enrique Jacobo, con tus números ya en la mano.
+      </p>
+      <ul class="producto__lista">
+        <li>45 a 60 minutos por videollamada</li>
+        <li>Revisión de idea, números y régimen probable</li>
+      </ul>
+      <p class="producto__precio producto__precio--consultar">Precio a consultar</p>
+      <!-- Esta tarjeta NO pasa por Mercado Pago: manda directo al calendario de
+           Microsoft Bookings de CONSERI. Por eso es un enlace y no un botón con
+           data-producto. Si algún día se cobra en línea, se agrega la entrada al
+           catálogo y este enlace se cambia por un botón de compra, como los de
+           arriba. -->
+      <a class="boton boton--bloque"
+         href="https://bookings.cloud.microsoft/book/DiagnsticoConseri@conseri.mx/?ismsaljsauthenabled"
+         target="_blank" rel="noopener">Agendar mi diagnóstico</a>
+    </article>
+
+  </div>
+
+  <!-- Mensaje de error de compra. js/script.js lo muestra si algo falla. -->
+  <p class="aviso-compra" id="aviso-compra" role="status" hidden></p>
+
+  <p class="nota-pago">
+    ¿Necesitas factura o prefieres pagar por transferencia?
+    <a href="mailto:contacto@conseri.mx">Escríbenos</a> y lo resolvemos.
+  </p>
+</section>
+
+<!-- ============================ 8. QUIÉN LO HACE ============================
+     El sello giratorio está hecho con SVG: texto siguiendo un círculo.
+================================================================================ -->
+<section class="seccion seccion--navy" id="conseri">
+  <div class="firma">
+    <div class="firma__texto">
+      <p class="etiqueta etiqueta--clara animar" data-animar="subir">Quién está detrás</p>
+      <h2 class="seccion__titulo animar" data-animar="subir" data-retraso="60">
+        Consultoría Contable de Servicios Integrales
+      </h2>
+      <p class="animar" data-animar="subir" data-retraso="120">
+        En CONSERI vemos todos los días el mismo patrón: negocios que arrancan con
+        entusiasmo, sin saber cuánto necesitan vender, qué régimen les corresponde ni
+        cuánto deben separar para impuestos.
+      </p>
+      <p class="animar" data-animar="subir" data-retraso="160">
+        Este kit nació de esas conversaciones. Es lo que nos gustaría que cada persona
+        supiera antes de sentarse con nosotros por primera vez.
+      </p>
+      <p class="firma__autor animar" data-animar="subir" data-retraso="200">
+        Contenido a cargo del <strong>Mtro. Luis Enrique Jacobo Luna</strong>,
+        Director de Finanzas de CONSERI.
+      </p>
+
+      <ul class="firma__servicios animar" data-animar="subir" data-retraso="240">
+        <li>Contabilidad mensual</li>
+        <li>Impuestos y cumplimiento</li>
+        <li>Regularización fiscal</li>
+        <li>Nómina</li>
+        <li>Finanzas de negocio</li>
+        <li>Planes personales de retiro</li>
+      </ul>
+    </div>
+
+    <div class="sello animar" data-animar="subir" data-retraso="120" aria-hidden="true">
+      <svg class="sello__anillo" viewBox="0 0 260 260">
+        <defs>
+          <path id="circulo" d="M130,130 m-104,0 a104,104 0 1,1 208,0 a104,104 0 1,1 -208,0"/>
+        </defs>
+        <text class="sello__texto">
+          <textPath href="#circulo" startOffset="0%">
+            CONSERI · CONSULTORÍA CONTABLE DE SERVICIOS INTEGRALES · CONSERI · CONSULTORÍA CONTABLE ·
+          </textPath>
+        </text>
+      </svg>
+      <img src="assets/monograma-blanco.png" alt="" class="sello__marca">
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 9. DUDAS ============================ -->
+<section class="seccion seccion--clara" id="dudas">
+  <div class="seccion__cabecera">
+    <p class="etiqueta animar" data-animar="subir">Dudas frecuentes</p>
+    <h2 class="seccion__titulo animar" data-animar="subir" data-retraso="60">Antes de comprar</h2>
+  </div>
+
+  <div class="dudas">
+    <details class="duda animar" data-animar="subir">
+      <summary>¿Cómo recibo el material?</summary>
+      <p>En cuanto se acredita el pago te llega un correo con tu enlace de descarga, y
+      al terminar el pago te mandamos a una página de descarga inmediata. Si no ves el
+      correo, revisa spam o promociones.</p>
+    </details>
+
+    <details class="duda animar" data-animar="subir" data-retraso="60">
+      <summary>¿Esto sustituye a un contador?</summary>
+      <p>No, y no pretende hacerlo. El material es educativo y general: sirve para
+      entender tus números y llegar preparado a una asesoría. Las obligaciones fiscales
+      cambian según tu actividad, tus ingresos y tu régimen.</p>
+    </details>
+
+    <details class="duda animar" data-animar="subir" data-retraso="120">
+      <summary>Todavía no vendo nada. ¿Me sirve?</summary>
+      <p>Es justo el mejor momento. El kit está pensado para decidir antes de invertir:
+      cuánto necesitas para arrancar, cuánto puedes resistir y si tu precio deja margen.</p>
+    </details>
+
+    <details class="duda animar" data-animar="subir" data-retraso="180">
+      <summary>Ya estoy vendiendo, pero sin orden. ¿Sirve igual?</summary>
+      <p>Sí. Los capítulos de precio, control mensual y régimen fiscal están hechos para
+      ordenar un negocio que ya está caminando.</p>
+    </details>
+
+    <details class="duda animar" data-animar="subir" data-retraso="240">
+      <summary>¿Necesito Excel?</summary>
+      <p>Las plantillas funcionan en Excel y también en Google Sheets, sin costo.</p>
+    </details>
+
+    <details class="duda animar" data-animar="subir" data-retraso="300">
+      <summary>¿Puedo pedir factura?</summary>
+      <p>Sí. Escríbenos a contacto@conseri.mx con tus datos fiscales y el número de pago
+      que aparece en tu comprobante.</p>
+    </details>
+  </div>
+</section>
+
+<!-- ============================ 10. CIERRE ============================ -->
+<section class="cierre">
+  <img src="assets/monograma-blanco.png" alt="" class="cierre__marca animar" data-animar="subir">
+  <h2 class="cierre__titulo animar" data-animar="subir" data-retraso="60">
+    Tu negocio no necesita empezar perfecto.<br>Necesita empezar con claridad.
+  </h2>
+  <p class="cierre__texto animar" data-animar="subir" data-retraso="120">
+    No emprendas a ciegas: calcula, ordena y decide.
+  </p>
+  <a href="#precios" class="boton boton--grande animar" data-animar="subir" data-retraso="180">
+    Empezar con el kit
+  </a>
+</section>
+
+</main>
+
+<!-- ============================ PIE ============================ -->
+<footer class="pie">
+  <div class="pie__arriba">
+    <img src="assets/logo-horizontal-blanco.png" alt="CONSERI" class="pie__logo">
+    <nav class="pie__nav" aria-label="Enlaces">
+      <a href="legal.html">Aviso de privacidad</a>
+      <a href="legal.html#terminos">Términos de compra</a>
+      <a href="mailto:contacto@conseri.mx">contacto@conseri.mx</a>
+      <a href="https://www.conseri.mx" target="_blank" rel="noopener">conseri.mx</a>
+    </nav>
+  </div>
+
+  <p class="pie__legal">
+    Material educativo e informativo. No constituye asesoría fiscal, contable,
+    financiera ni legal, ni sustituye el análisis personalizado de un especialista.
+    Las obligaciones fiscales varían según país, régimen, actividad e ingresos.
+    Obra en trámite de registro de derechos de autor.
+  </p>
+
+  <p class="pie__creditos">© <span id="anio">2026</span> CONSERI. Todos los derechos reservados.</p>
+</footer>
+
+<script src="js/fondo.js" defer></script>
+<script src="js/script.js" defer></script>
+</body>
+</html>

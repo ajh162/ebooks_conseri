@@ -1,0 +1,30 @@
+ARCHIVOS DE MARCA · CONSERI
+============================================================
+
+Generados a partir de las imagenes que entrego el cliente:
+
+  logo-horizontal-blanco.png   Lockup horizontal, blanco, FONDO TRANSPARENTE.
+                               Se usa en la barra superior y en el pie.
+  logo-horizontal-navy.png     El mismo, en navy, para fondos claros.
+  monograma-blanco.png         Solo el monograma JC, blanco, transparente.
+  monograma-navy.png           El monograma en navy (lo usa la pagina de
+                               descarga del back-end).
+  favicon.png                  512x512, circulo navy con el monograma.
+  og-conseri.png               1200x630, imagen al compartir el enlace.
+
+  marca-apilada-navy.jpg       Originales del cliente, por si se necesitan
+  marca-circulo-azul.jpg       para redes o piezas graficas.
+  marca-circulo-naranja.jpg
+
+Los PNG transparentes se sacaron de los JPEG originales separando el logo
+blanco del fondo solido. Si el cliente entrega los vectores (SVG o AI),
+conviene sustituirlos: se veran nitidos en cualquier tamano.
+
+PENDIENTE
+------------------------------------------------------------
+Fuente TT FORS para encabezados. Es de pago. Cuando la entreguen:
+  1. Pon los .woff2 en assets/fuentes/
+  2. Descomenta el bloque @font-face al inicio de css/styles.css
+  3. En la variable --display pon: 'TT Fors', 'Poppins', sans-serif
+Mientras tanto el sitio usa Poppins, que es la fuente de subtitulos de la
+propia lamina de marca.

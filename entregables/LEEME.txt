@@ -1,0 +1,19 @@
+ARCHIVOS QUE SE VENDEN
+============================================================
+
+Esta carpeta NO se sube a Vercel: es solo para que tengas juntos
+los archivos con el nombre y la carpeta EXACTOS que espera
+api/catalogo.json.
+
+Van a Supabase -> Storage -> bucket "productos" (privado):
+
+  ebooks/antes-de-emprender.pdf
+  plantillas/kit-antes-de-emprender-plantillas.xlsx
+
+Si cambias un nombre aqui, cambialo tambien en api/catalogo.json.
+Si no coinciden, el comprador paga y no recibe el archivo.
+
+PENDIENTE
+------------------------------------------------------------
+Minicurso grabado. Cuando esten los videos hay dos caminos
+(ver GUIA-PUESTA-EN-MARCHA.md, seccion 9).
