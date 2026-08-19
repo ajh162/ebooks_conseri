@@ -265,6 +265,101 @@ def pagina_de_espera(mensaje):
     return envoltura("Confirmando tu pago", contenido, tono="espera")
 
 
+def fila_archivo(nombre, url):
+    """Un renglon de la lista de descargas, con su icono."""
+    return (
+        '<li><a href="{}" download>'
+        '<span class="archivos__icono">'
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" '
+        'stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'
+        '<path d="M12 3v12"/><path d="M7 11l5 5 5-5"/>'
+        '<path d="M4 20h16"/></svg></span>'
+        '<span class="archivos__nombre">{}</span>'
+        '<span class="archivos__accion">Descargar</span>'
+        '</a></li>'
+    ).format(url, nombre)
+
+
+def pagina_de_entrega(producto, filas, acceso=""):
+    """Pantalla de 'aqui esta tu material'.
+
+    Vive aqui, en una sola funcion, para que la herramienta de
+    previsualizacion (previsualizar-gracias.py) muestre EXACTAMENTE lo mismo
+    que ve el comprador. Si estuviera duplicada, tarde o temprano una copia se
+    quedaria vieja y estariamos revisando un diseno que ya no existe.
+    """
+    # Hay productos sin archivos (una asesoria, por ejemplo): en esos casos no
+    # se pone el encabezado "Tus archivos" ni una lista vacia.
+    if filas:
+        bloque_archivos = (
+            '<h2 class="tarjeta__titulo">Tus archivos</h2>'
+            '<ul class="archivos">{}</ul>'.format(filas)
+        )
+    else:
+        bloque_archivos = '<h2 class="tarjeta__titulo">Tu acceso</h2>'
+
+    contenido = """
+<section class="remate">
+  <canvas class="remate__lienzo" id="fondo" aria-hidden="true"></canvas>
+  <div class="remate__dentro">
+    <div class="remate__marca">
+      <img src="{sitio}/assets/monograma-blanco.png" alt="">
+    </div>
+    <p class="etiqueta etiqueta--clara">
+      <svg class="palomita" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M4 12.5l5 5L20 6.5"/>
+      </svg>
+      Pago confirmado
+    </p>
+    <h1 class="remate__titulo">Listo, aquí está tu material</h1>
+    <p class="remate__bajada">
+      Compraste <strong>{nombre}</strong>. También te lo mandamos por correo.
+    </p>
+  </div>
+</section>
+
+<div class="entrega">
+  <div class="tarjeta animar" data-animar="subir">
+    {bloque_archivos}
+    {acceso}
+
+    <p class="aviso-vigencia">
+      {vigencia}
+      Cualquier problema: <a href="mailto:{contacto}">{contacto}</a>.
+    </p>
+  </div>
+
+  <p class="siguiente">
+    <a href="{sitio}#precios" class="enlace-suave">Ver el resto del material de CONSERI</a>
+  </p>
+</div>
+""".format(
+        nombre=producto["nombre"],
+        bloque_archivos=bloque_archivos,
+        vigencia=(
+            "Estos enlaces funcionan durante {} horas. Si se vencen, vuelve a abrir "
+            "esta página desde tu correo y se generan de nuevo.".format(HORAS_DE_VIGENCIA)
+            if filas else ""
+        ),
+        acceso=acceso,
+        contacto=CORREO_CONTACTO,
+        sitio=SITIO_URL,
+    )
+
+    return envoltura("Tu material", contenido)
+
+
+def bloque_de_acceso(producto):
+    """Boton de acceso en linea (minicurso, sesion agendada, etc.)."""
+    if not producto.get("enlace"):
+        return ""
+    etiqueta = ("Agendar mi sesión" if producto.get("tipo") == "asesoria"
+                else "Abrir mi acceso en línea")
+    return ('<p style="margin:1.6rem 0 0;text-align:center">'
+            '<a href="{}" class="boton" target="_blank" '
+            'rel="noopener">{}</a></p>').format(producto["enlace"], etiqueta)
+
+
 class handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
@@ -308,18 +403,9 @@ class handler(BaseHTTPRequestHandler):
         for archivo in producto.get("archivos", []):
             url = enlace_temporal(archivo["ruta"])
             if url:
-                filas.append(
-                    '<li><a href="{}" download>{} <span>Descargar</span></a></li>'
-                    .format(url, archivo["nombre"])
-                )
+                filas.append(fila_archivo(archivo["nombre"], url))
 
-        acceso = ""
-        if producto.get("enlace"):
-            etiqueta = ("Agendar mi sesión" if producto.get("tipo") == "asesoria"
-                        else "Abrir mi acceso en línea")
-            acceso = ('<p style="margin-top:2rem">'
-                      '<a href="{}" class="boton">{}</a></p>').format(
-                          producto["enlace"], etiqueta)
+        acceso = bloque_de_acceso(producto)
 
         if not filas and not acceso:
             return responder_html(self, 200, pagina_de_espera(
@@ -327,53 +413,9 @@ class handler(BaseHTTPRequestHandler):
                 "ahora mismo."
             ))
 
-        contenido = """
-<section class="remate">
-  <canvas class="remate__lienzo" id="fondo" aria-hidden="true"></canvas>
-  <div class="remate__dentro">
-    <div class="remate__marca">
-      <img src="{sitio}/assets/monograma-blanco.png" alt="">
-    </div>
-    <p class="etiqueta etiqueta--clara">
-      <svg class="palomita" viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M4 12.5l5 5L20 6.5"/>
-      </svg>
-      Pago confirmado
-    </p>
-    <h1 class="remate__titulo">Listo, aquí está tu material</h1>
-    <p class="remate__bajada">
-      Compraste <strong>{nombre}</strong>. También te lo mandamos por correo.
-    </p>
-  </div>
-</section>
-
-<div class="entrega">
-  <div class="tarjeta animar" data-animar="subir">
-    <h2 class="tarjeta__titulo">Tus archivos</h2>
-    <ul class="archivos">{filas}</ul>
-    {acceso}
-
-    <p class="aviso-vigencia">
-      Estos enlaces funcionan durante {horas} horas. Si se vencen, vuelve a abrir esta
-      página desde tu correo y se generan de nuevo. Cualquier problema:
-      <a href="mailto:{contacto}">{contacto}</a>.
-    </p>
-  </div>
-
-  <p class="siguiente">
-    <a href="{sitio}#precios" class="enlace-suave">Ver el resto del material de CONSERI</a>
-  </p>
-</div>
-""".format(
-            nombre=producto["nombre"],
-            filas="".join(filas),
-            acceso=acceso,
-            horas=HORAS_DE_VIGENCIA,
-            contacto=CORREO_CONTACTO,
-            sitio=SITIO_URL,
+        return responder_html(
+            self, 200, pagina_de_entrega(producto, "".join(filas), acceso)
         )
-
-        return responder_html(self, 200, envoltura("Tu material", contenido))
 
     def log_message(self, formato, *args):
         return
