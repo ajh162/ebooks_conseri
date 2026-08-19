@@ -24,6 +24,7 @@
   const progreso = document.getElementById('progreso');
   const relleno = document.getElementById('indice-relleno');
   const indice = document.getElementById('indice');
+  const flota = quietud ? null : document.querySelector('.libro__flota');
 
   let pendiente = false;
 
@@ -44,6 +45,12 @@
       const visto = window.innerHeight * 0.6 - caja.top;
       const proporcion = Math.max(0, Math.min(1, visto / caja.height));
       relleno.style.height = (proporcion * 100) + '%';
+    }
+
+    /* El libro de la portada se desplaza un poco mas lento que la pagina.
+       Da sensacion de profundidad sin marear. */
+    if (flota && y < window.innerHeight) {
+      flota.style.setProperty('--desplace', (y * 0.12) + 'px');
     }
 
     pendiente = false;
@@ -86,44 +93,33 @@
   /* =========================================================================
      3. LIBRO EN 3D
      -------------------------------------------------------------------------
-     El cursor mueve dos variables CSS y el CSS hace el resto. Solo en equipos
-     con ratón: en celular el libro se queda con su inclinación de reposo.
+     El libro queda fijo en su inclinacion de reposo: flota y se desplaza con
+     el scroll, pero ya NO sigue al cursor. Se quito a proposito porque el
+     movimiento constante distraia de leer la portada.
+
+     Si algun dia se quiere de vuelta, basta con escribir sobre las variables
+     --giro-x y --giro-y del elemento #libro; el CSS hace el resto.
      ========================================================================= */
-
-  const escena = document.getElementById('escena');
-  const libro = document.getElementById('libro');
-
-  if (escena && libro && finoParaTocar && !quietud) {
-    escena.addEventListener('mousemove', (evento) => {
-      const caja = escena.getBoundingClientRect();
-      const x = (evento.clientX - caja.left) / caja.width - 0.5;
-      const y = (evento.clientY - caja.top) / caja.height - 0.5;
-
-      libro.style.setProperty('--giro-y', (-26 + x * 46) + 'deg');
-      libro.style.setProperty('--giro-x', (-8 - y * 22) + 'deg');
-    });
-
-    escena.addEventListener('mouseleave', () => {
-      libro.style.setProperty('--giro-y', '-26deg');
-      libro.style.setProperty('--giro-x', '-8deg');
-    });
-  }
 
   /* =========================================================================
      4. TARJETAS CON INCLINACIÓN
      ========================================================================= */
 
+  /* Solo se aplica a tarjetas sin botones dentro: en las de precio el giro
+     movia el objetivo justo cuando la persona iba a dar clic. */
   if (finoParaTocar && !quietud) {
     document.querySelectorAll('[data-inclina]').forEach((tarjeta) => {
+      if (tarjeta.querySelector('button, a')) return;
+
       tarjeta.addEventListener('mousemove', (evento) => {
         const caja = tarjeta.getBoundingClientRect();
         const x = (evento.clientX - caja.left) / caja.width - 0.5;
         const y = (evento.clientY - caja.top) / caja.height - 0.5;
 
         tarjeta.style.transform =
-          'perspective(900px) rotateY(' + (x * 9) + 'deg) rotateX(' +
-          (-y * 9) + 'deg) translateY(-6px)';
-      });
+          'perspective(900px) rotateY(' + (x * 6) + 'deg) rotateX(' +
+          (-y * 6) + 'deg) translateY(-6px)';
+      }, { passive: true });
 
       tarjeta.addEventListener('mouseleave', () => {
         tarjeta.style.transform = '';
@@ -196,6 +192,72 @@
 
       vigiaDesglose.observe(desglose);
     }
+  }
+
+  /* =========================================================================
+     6. TARJETAS DE PRECIO
+     -------------------------------------------------------------------------
+     Nada aqui mueve la tarjeta de lugar: solo cambian luces y opacidades, para
+     que el boton de compra siempre este donde la persona lo vio.
+     ========================================================================= */
+
+  const tarjetasPrecio = document.querySelectorAll('.producto');
+
+  tarjetasPrecio.forEach((tarjeta) => {
+    /* Los renglones de la lista se numeran para que entren escalonados */
+    tarjeta.querySelectorAll('.producto__lista li').forEach((renglon, i) => {
+      renglon.style.setProperty('--paso', i);
+    });
+
+    /* Luz suave que sigue al cursor (es solo un degradado, no mueve nada) */
+    if (finoParaTocar && !quietud) {
+      tarjeta.addEventListener('mousemove', (evento) => {
+        const caja = tarjeta.getBoundingClientRect();
+        tarjeta.style.setProperty('--px', (evento.clientX - caja.left) + 'px');
+        tarjeta.style.setProperty('--py', (evento.clientY - caja.top) + 'px');
+      }, { passive: true });
+    }
+  });
+
+  /* El precio cuenta desde cero la primera vez que la tarjeta entra en
+     pantalla. Las tarjetas sin cifra (la asesoria dice "Precio a consultar")
+     se saltan solas porque no encuentran un numero que animar. */
+  function animarPrecio(tarjeta) {
+    const precio = tarjeta.querySelector('.producto__precio');
+    if (!precio) return;
+
+    const nodo = Array.prototype.find.call(
+      precio.childNodes,
+      (n) => n.nodeType === 3 && /\d/.test(n.textContent)
+    );
+    if (!nodo) return;
+
+    const destino = Number(nodo.textContent.replace(/[^\d]/g, ''));
+    if (!destino) return;
+
+    const arranque = performance.now();
+    const duracion = 900;
+
+    function paso(ahora) {
+      const avance = Math.min(1, (ahora - arranque) / duracion);
+      const suave = 1 - Math.pow(1 - avance, 3);
+      nodo.textContent = Math.round(destino * suave).toLocaleString('es-MX');
+      if (avance < 1) requestAnimationFrame(paso);
+    }
+
+    requestAnimationFrame(paso);
+  }
+
+  if (tarjetasPrecio.length && !quietud && 'IntersectionObserver' in window) {
+    const vigiaPrecios = new IntersectionObserver((entradas) => {
+      entradas.forEach((entrada) => {
+        if (!entrada.isIntersecting) return;
+        setTimeout(() => animarPrecio(entrada.target), 350);
+        vigiaPrecios.unobserve(entrada.target);
+      });
+    }, { threshold: 0.4 });
+
+    tarjetasPrecio.forEach((t) => vigiaPrecios.observe(t));
   }
 
   /* Año del pie, siempre al día */

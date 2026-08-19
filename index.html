@@ -119,22 +119,29 @@
          No hay imagen de portada; la portada se dibuja con HTML, así que
          cambiar el título del ebook es cambiar texto. -->
     <div class="escena" id="escena">
-      <div class="libro" id="libro">
-        <div class="libro__cara libro__cara--frente">
-          <div class="cubierta">
-            <img src="assets/monograma-blanco.png" alt="" class="cubierta__marca">
-            <p class="cubierta__sello">CONSERI</p>
-            <h2 class="cubierta__titulo">Antes de<br>Emprender</h2>
-            <div class="cubierta__linea"></div>
-            <p class="cubierta__bajada">Finanzas e impuestos<br>que nadie te explica</p>
-            <p class="cubierta__autor">Mtro. Luis Enrique Jacobo Luna</p>
+      <div class="libro__flota">
+        <div class="libro" id="libro">
+          <div class="libro__cara libro__cara--frente">
+            <div class="cubierta">
+              <img src="assets/monograma-blanco.png" alt="" class="cubierta__marca">
+              <p class="cubierta__sello">CONSERI</p>
+              <h2 class="cubierta__titulo">Antes de<br>Emprender</h2>
+              <div class="cubierta__linea"></div>
+              <p class="cubierta__bajada">Finanzas e impuestos<br>que nadie te explica</p>
+              <p class="cubierta__autor">Mtro. Luis Enrique Jacobo Luna</p>
+              <!-- El destello que recorre la portada. Va en su propio elemento
+                   para poder animar opacidad y posición por separado. -->
+              <span class="cubierta__brillo" aria-hidden="true"></span>
+            </div>
           </div>
+          <div class="libro__cara libro__cara--lomo">
+            <span class="lomo__texto">Antes de Emprender · CONSERI</span>
+          </div>
+          <div class="libro__cara libro__cara--atras"></div>
+          <div class="libro__cara libro__cara--canto"></div>
+          <div class="libro__cara libro__cara--arriba"></div>
+          <div class="libro__cara libro__cara--abajo"></div>
         </div>
-        <div class="libro__cara libro__cara--lomo"></div>
-        <div class="libro__cara libro__cara--atras"></div>
-        <div class="libro__cara libro__cara--canto"></div>
-        <div class="libro__cara libro__cara--arriba"></div>
-        <div class="libro__cara libro__cara--abajo"></div>
       </div>
       <div class="escena__sombra" aria-hidden="true"></div>
     </div>
@@ -448,7 +455,7 @@
 
   <div class="catalogo">
 
-    <article class="producto animar" data-animar="subir" data-inclina>
+    <article class="producto animar" data-animar="subir">
       <p class="producto__tipo">Ebook · PDF</p>
       <h3 class="producto__nombre">Antes de Emprender</h3>
       <p class="producto__descripcion">
@@ -463,7 +470,7 @@
       <button class="boton boton--bloque" data-producto="ebook_antes_de_emprender">Comprar el ebook</button>
     </article>
 
-    <article class="producto producto--destacado animar" data-animar="subir" data-retraso="80" data-inclina>
+    <article class="producto producto--destacado animar" data-animar="subir" data-retraso="80">
       <p class="producto__insignia">Más completo</p>
       <p class="producto__tipo">Ebook + plantillas + minicurso</p>
       <h3 class="producto__nombre">Kit Antes de Emprender</h3>
@@ -479,7 +486,7 @@
       <button class="boton boton--bloque" data-producto="kit_completo">Comprar el kit</button>
     </article>
 
-    <article class="producto animar" data-animar="subir" data-retraso="160" data-inclina>
+    <article class="producto animar" data-animar="subir" data-retraso="160">
       <p class="producto__tipo">Sesión en línea</p>
       <h3 class="producto__nombre">Asesoría personalizada</h3>
       <p class="producto__descripcion">

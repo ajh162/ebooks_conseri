@@ -376,31 +376,42 @@ img{ max-width: 100%; height: auto; }
 
 /* ============================ LIBRO EN 3D ============================
    Seis caras armadas con transform-style: preserve-3d. Las variables
-   --giro-x y --giro-y las mueve js/script.js según el cursor.
+   --giro-x y --giro-y las mueve js/script.js segun el cursor.
+
+   La flotacion va en un contenedor aparte (.libro__flota) para que no pelee
+   con el giro: asi el libro puede rotar y subir al mismo tiempo sin que una
+   animacion pise a la otra.
 ============================================================================ */
 .escena{
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  perspective: 1600px;
-  min-height: 480px;
+  perspective: 1700px;
+  perspective-origin: 50% 45%;
+  min-height: 520px;
+}
+
+.libro__flota{
+  /* --desplace lo mueve js/script.js con el scroll (efecto de profundidad) */
+  --desplace: 0px;
+  transform-style: preserve-3d;
+  animation: levitar 7s ease-in-out infinite;
+}
+@keyframes levitar{
+  0%, 100%{ transform: translateY(var(--desplace)); }
+  50%     { transform: translateY(calc(var(--desplace) - 16px)); }
 }
 
 .libro{
-  --giro-x: -8deg;
-  --giro-y: -26deg;
+  --giro-x: -7deg;
+  --giro-y: -28deg;
   position: relative;
-  width: 300px;
-  height: 420px;
+  width: 310px;
+  height: 440px;
   transform-style: preserve-3d;
   transform: rotateX(var(--giro-x)) rotateY(var(--giro-y));
-  transition: transform .5s var(--curva);
-  animation: levitar 6s ease-in-out infinite;
-}
-@keyframes levitar{
-  0%, 100%{ margin-top: 0; }
-  50%     { margin-top: -18px; }
+  transition: transform .6s var(--curva);
 }
 
 .libro__cara{
@@ -408,83 +419,136 @@ img{ max-width: 100%; height: auto; }
   backface-visibility: hidden;
 }
 
-/* Portada */
+/* ---- Portada ----
+   Tres capas: el degradado base, una luz especular fija que viene de arriba a
+   la izquierda, y una sombra en el canto de union con el lomo. */
 .libro__cara--frente{
-  width: 300px; height: 420px;
-  transform: translateZ(19px);
-  background: linear-gradient(150deg, #16304A 0%, var(--navy) 55%, #0C1A28 100%);
-  border-radius: 3px 8px 8px 3px;
-  box-shadow: inset 3px 0 0 rgba(255,255,255,.08), 0 0 40px -10px rgba(0,0,0,.6);
+  width: 310px; height: 440px;
+  transform: translateZ(21px);
+  background:
+    linear-gradient(105deg, rgba(255,255,255,.10) 0%, transparent 34%),
+    linear-gradient(90deg, rgba(0,0,0,.34) 0 10px, transparent 26px),
+    linear-gradient(155deg, #1B3A58 0%, var(--navy) 52%, #0A1622 100%);
+  border-radius: 2px 10px 10px 2px;
+  box-shadow:
+    inset -1px 0 0 rgba(255,255,255,.06),
+    0 0 50px -12px rgba(0,0,0,.65);
   overflow: hidden;
 }
-/* Contraportada */
+
+/* ---- Contraportada ---- */
 .libro__cara--atras{
-  width: 300px; height: 420px;
-  transform: translateZ(-19px) rotateY(180deg);
-  background: linear-gradient(150deg, var(--navy), #0A1622);
-  border-radius: 3px 8px 8px 3px;
+  width: 310px; height: 440px;
+  transform: translateZ(-21px) rotateY(180deg);
+  background:
+    linear-gradient(90deg, rgba(0,0,0,.3) 0 10px, transparent 26px),
+    linear-gradient(155deg, #16304A, #0A1622);
+  border-radius: 2px 10px 10px 2px;
 }
-/* Lomo */
+
+/* ---- Lomo, con el titulo en vertical ---- */
 .libro__cara--lomo{
-  width: 38px; height: 420px;
-  left: -19px;
+  width: 42px; height: 440px;
+  left: -21px;
   transform: rotateY(-90deg);
-  background: linear-gradient(180deg, var(--azul) 0%, var(--navy) 60%);
+  background:
+    linear-gradient(90deg, rgba(0,0,0,.35), transparent 30%, rgba(0,0,0,.3)),
+    linear-gradient(180deg, var(--azul) 0%, var(--navy) 65%);
   border-radius: 3px 0 0 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-/* Canto: las hojas */
+.lomo__texto{
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: var(--display);
+  font-size: .62rem;
+  font-weight: 600;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, .78);
+  white-space: nowrap;
+}
+
+/* ---- Canto: el bloque de hojas ----
+   Las lineas finas simulan las paginas; el degradado encima les da volumen
+   para que no se vean como un codigo de barras plano. */
 .libro__cara--canto{
-  width: 38px; height: 420px;
-  right: -19px;
+  width: 42px; height: 440px;
+  right: -21px;
   transform: rotateY(90deg);
   background:
-    repeating-linear-gradient(90deg, #FFFFFF 0 2px, #DCE4EC 2px 4px);
+    linear-gradient(90deg, rgba(0,0,0,.28), transparent 22%, transparent 78%, rgba(0,0,0,.16)),
+    repeating-linear-gradient(90deg, #FFFFFF 0 1.5px, #D3DDE6 1.5px 3px);
   border-radius: 0 3px 3px 0;
 }
 .libro__cara--arriba{
-  width: 300px; height: 38px;
-  top: -19px;
-  transform: rotateX(90deg) translateZ(19px);
-  background: repeating-linear-gradient(90deg, #F7F9FB 0 2px, #D9E2EA 2px 4px);
+  width: 310px; height: 42px;
+  top: -21px;
+  transform: rotateX(90deg) translateZ(21px);
+  background:
+    linear-gradient(90deg, rgba(0,0,0,.42) 0 12px, transparent 30px),
+    repeating-linear-gradient(90deg, #FBFCFD 0 1.5px, #DDE5EC 1.5px 3px);
 }
 .libro__cara--abajo{
-  width: 300px; height: 38px;
-  bottom: -19px;
-  transform: rotateX(-90deg) translateZ(19px);
-  background: repeating-linear-gradient(90deg, #EEF3F7 0 2px, #CFDAE4 2px 4px);
+  width: 310px; height: 42px;
+  bottom: -21px;
+  transform: rotateX(-90deg) translateZ(21px);
+  background:
+    linear-gradient(90deg, rgba(0,0,0,.42) 0 12px, transparent 30px),
+    repeating-linear-gradient(90deg, #EEF3F7 0 1.5px, #C9D5DF 1.5px 3px);
 }
 
 /* ---- Contenido de la cubierta ---- */
 .cubierta{
   height: 100%;
-  padding: 2rem 1.6rem;
+  padding: 2.2rem 1.7rem 2rem 2.1rem;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   position: relative;
+  overflow: hidden;
 }
 .cubierta::before{
   content: "";
   position: absolute;
-  inset: 14px;
-  border: 1px solid rgba(255, 255, 255, .14);
-  border-radius: 4px;
+  inset: 16px 14px 16px 22px;
+  border: 1px solid rgba(255, 255, 255, .13);
+  border-radius: 3px;
   pointer-events: none;
 }
-/* Reflejo diagonal que recorre la portada */
-.cubierta::after{
-  content: "";
+
+/* ---- Reflejo que recorre la portada ----
+   Antes se quedaba visible en la esquina cuando terminaba el recorrido. Ahora
+   la opacidad arranca y termina en cero, asi que fuera del barrido el destello
+   sencillamente no existe. */
+.cubierta__brillo{
   position: absolute;
-  top: -60%; left: -40%;
-  width: 60%; height: 220%;
-  background: linear-gradient(100deg, transparent, rgba(255,255,255,.14), transparent);
-  transform: rotate(12deg);
-  animation: reflejo 7s ease-in-out infinite;
+  top: -40%;
+  left: 0;
+  width: 58%;
+  height: 180%;
+  pointer-events: none;
+  background: linear-gradient(
+    100deg,
+    transparent 0%,
+    rgba(255, 255, 255, .05) 35%,
+    rgba(255, 255, 255, .20) 50%,
+    rgba(255, 255, 255, .05) 65%,
+    transparent 100%
+  );
+  transform: translateX(-200%) rotate(16deg);
+  opacity: 0;
+  animation: reflejo 9s ease-in-out infinite;
 }
 @keyframes reflejo{
-  0%, 65% { left: -60%; }
-  100%    { left: 130%; }
+  0%, 68% { transform: translateX(-200%) rotate(16deg); opacity: 0; }
+  72%     { opacity: 1; }
+  94%     { opacity: 1; }
+  100%    { transform: translateX(320%) rotate(16deg); opacity: 0; }
 }
+
 .cubierta__marca{ width: 46px; opacity: .95; margin-bottom: .9rem; }
 .cubierta__sello{
   font-family: var(--display);
@@ -550,6 +614,7 @@ img{ max-width: 100%; height: auto; }
   animation: correr 34s linear infinite;
 }
 .cinta__punto{ font-size: .6rem; opacity: .55; }
+.cinta:hover .cinta__pista{ animation-play-state: paused; }
 @keyframes correr{
   from{ transform: translateX(0); }
   to  { transform: translateX(-50%); }
@@ -660,7 +725,8 @@ img{ max-width: 100%; height: auto; }
   border-radius: var(--radio);
   padding: 1.8rem 1.6rem;
   transform-style: preserve-3d;
-  transition: background .3s ease, border-color .3s ease, transform .18s ease-out;
+  will-change: transform;
+  transition: background .3s ease, border-color .3s ease, transform .25s var(--curva);
 }
 .pieza:hover{
   background: rgba(255, 255, 255, .08);
@@ -813,7 +879,8 @@ img{ max-width: 100%; height: auto; }
   grid-template-columns: repeat(auto-fit, minmax(285px, 1fr));
   gap: 1.6rem;
   align-items: stretch;
-  perspective: 1200px;
+  /* Espacio arriba para que la insignia que sobresale no quede cortada */
+  padding-top: 14px;
 }
 .producto{
   display: flex;
@@ -823,17 +890,85 @@ img{ max-width: 100%; height: auto; }
   border-radius: var(--radio);
   padding: 2rem 1.8rem;
   position: relative;
-  transform-style: preserve-3d;
-  transition: box-shadow .3s ease, border-color .3s ease, transform .18s ease-out;
+  /* Sin overflow:hidden: cortaba la insignia que sobresale por arriba. */
+  /* Sin inclinacion 3D a proposito: estas tarjetas llevan boton de pago y el
+     giro movia el objetivo justo cuando la persona iba a dar clic. */
+  --px: 50%;
+  --py: 0%;
+  transition: box-shadow .35s var(--curva), border-color .35s ease,
+              transform .35s var(--curva);
 }
-.producto:hover{ box-shadow: var(--sombra); border-color: var(--azul-claro); }
+
+/* Luz suave que sigue al cursor dentro de la tarjeta. Es solo un degradado:
+   la tarjeta no se mueve, asi que el boton nunca se escapa del clic. */
+.producto::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radio);
+  background: radial-gradient(
+    420px circle at var(--px) var(--py),
+    rgba(49, 115, 167, .09),
+    transparent 62%
+  );
+  opacity: 0;
+  transition: opacity .4s ease;
+  pointer-events: none;
+}
+.producto:hover::after{ opacity: 1; }
+
+/* La franja de color al pasar el cursor se dibuja con una sombra interior,
+   no con una barra encima. Una barra recta se asomaba por las esquinas
+   redondeadas; la sombra interior sigue la curva exacta de la tarjeta. */
+.producto:hover{
+  transform: translateY(-8px);
+  box-shadow: var(--sombra), inset 0 4px 0 0 var(--naranja);
+  border-color: var(--azul-claro);
+}
+
 .producto--destacado{
   border: 2px solid var(--azul);
   box-shadow: var(--sombra);
 }
+.producto--destacado:hover{
+  box-shadow: var(--sombra), inset 0 4px 0 0 var(--naranja);
+}
+
+@keyframes insignia{
+  0%, 100%{ box-shadow: 0 0 0 0 rgba(49, 115, 167, .45); }
+  55%     { box-shadow: 0 0 0 10px rgba(49, 115, 167, 0); }
+}
+
+/* Los renglones de la lista entran escalonados cuando la tarjeta aparece.
+   El retraso lo pone js/script.js con --paso. */
+.producto__lista li{
+  opacity: 0;
+  transform: translateX(-8px);
+  transition: opacity .5s var(--curva), transform .5s var(--curva);
+  transition-delay: calc(var(--paso, 0) * 70ms);
+}
+.producto.visible .producto__lista li{ opacity: 1; transform: none; }
+
+/* El precio y el boton cierran la secuencia */
+.producto__precio{
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity .6s var(--curva) .35s, transform .6s var(--curva) .35s;
+}
+.producto.visible .producto__precio{ opacity: 1; transform: none; }
+
+.producto .boton--bloque{
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity .6s var(--curva) .5s, transform .6s var(--curva) .5s,
+              box-shadow .25s var(--curva), background .25s ease;
+}
+.producto.visible .boton--bloque{ opacity: 1; transform: none; }
+.producto:hover .boton--bloque{ transform: translateY(-2px); }
 .producto__insignia{
   position: absolute;
   top: -14px; left: 1.8rem;
+  z-index: 2;
   background: var(--azul);
   color: var(--blanco);
   font-family: var(--display);
@@ -844,6 +979,8 @@ img{ max-width: 100%; height: auto; }
   padding: .35rem .9rem;
   border-radius: 999px;
   margin: 0;
+  /* Respira despacio para llamar la atencion sin gritar */
+  animation: insignia 4s ease-in-out infinite;
 }
 .producto__tipo{
   font-family: var(--display);
@@ -853,8 +990,31 @@ img{ max-width: 100%; height: auto; }
   text-transform: uppercase;
   color: var(--azul);
   margin: 0 0 .6rem;
+  transition: letter-spacing .4s var(--curva), color .3s ease;
 }
-.producto__nombre{ font-size: 1.42rem; color: var(--navy); margin-bottom: .6rem; }
+.producto__nombre{
+  position: relative;
+  display: inline-block;
+  font-size: 1.42rem;
+  color: var(--navy);
+  margin-bottom: .6rem;
+}
+.producto__nombre::after{
+  content: "";
+  position: absolute;
+  left: 0; bottom: -4px;
+  width: 100%;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--naranja);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .45s var(--curva);
+}
+.producto:hover .producto__nombre::after{ transform: scaleX(1); }
+
+/* La etiqueta de arriba se abre un poco al pasar el cursor */
+.producto:hover .producto__tipo{ letter-spacing: .2em; color: var(--naranja); }
 .producto__descripcion{ color: var(--gris); font-size: .95rem; }
 .producto__lista{ list-style: none; margin: 0 0 1.6rem; padding: 0; font-size: .93rem; }
 .producto__lista li{
@@ -1068,7 +1228,91 @@ img{ max-width: 100%; height: auto; }
 }
 .animar[data-animar="subir"]{ transform: translateY(28px); }
 .animar[data-animar="lado"]{ transform: translateX(-26px); }
+.animar[data-animar="escala"]{ transform: scale(.9); }
 .animar.visible{ opacity: 1; transform: none; }
+
+/* ============================ DETALLES CON VIDA ============================
+   Movimiento discreto: nada que distraiga de leer, pero lo suficiente para
+   que la pagina no se sienta un documento quieto.
+============================================================================ */
+
+/* El degradado del titular se desplaza muy despacio */
+.titular__acento{
+  background-size: 220% 100%;
+  animation: recorrer 14s ease-in-out infinite alternate;
+}
+@keyframes recorrer{
+  from{ background-position: 0% 50%; }
+  to  { background-position: 100% 50%; }
+}
+
+/* Los puntos de las listas de producto laten al pasar el cursor */
+.producto:hover .producto__lista li::before{
+  animation: latido-punto .6s var(--curva);
+}
+@keyframes latido-punto{
+  50%{ transform: scale(1.9); }
+}
+
+/* La linea naranja de los conceptos crece al entrar en pantalla */
+.concepto{
+  position: relative;
+  border-top: 0;
+  padding-top: 1.3rem;
+}
+.concepto::before{
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  height: 3px;
+  width: 100%;
+  background: var(--naranja);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .8s var(--curva) .2s;
+}
+.concepto.visible::before{ transform: scaleX(1); }
+
+/* Las fichas de la ruta de 7 dias se levantan y encienden su borde */
+.dia{ position: relative; overflow: hidden; }
+.dia::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 0%, rgba(244,136,42,.18), transparent 65%);
+  opacity: 0;
+  transition: opacity .35s ease;
+  pointer-events: none;
+}
+.dia:hover::after{ opacity: 1; }
+
+/* Las filas del indice encienden su numero y su punto */
+.indice__num{ transition: color .3s ease, transform .3s var(--curva); }
+.indice__fila:hover .indice__num{ transform: scale(1.12); }
+
+/* Los items del checklist se palomean al pasar el cursor */
+.checklist__lista li{ transition: color .25s ease; }
+.checklist__lista li:hover{ color: var(--blanco); }
+.checklist__lista li::before{ transition: background .25s ease, transform .25s var(--curva); }
+.checklist__lista li:hover::before{ background: var(--naranja); transform: rotate(-8deg); }
+
+/* El monograma del cierre respira */
+.cierre__marca{ animation: respirar 5s ease-in-out infinite; }
+@keyframes respirar{
+  0%, 100%{ transform: translateY(0) scale(1); }
+  50%     { transform: translateY(-8px) scale(1.03); }
+}
+
+/* Las dudas abren con un desliz en vez de aparecer de golpe */
+.duda[open] p{ animation: desplegar .4s var(--curva); }
+@keyframes desplegar{
+  from{ opacity: 0; transform: translateY(-6px); }
+  to  { opacity: 1; transform: none; }
+}
+
+/* El logo del encabezado reacciona al cursor */
+.barra__marca{ transition: transform .3s var(--curva); }
+.barra__marca:hover{ transform: translateY(-2px); }
 
 /* ============================ MÓVIL ============================ */
 @media (max-width: 980px){
