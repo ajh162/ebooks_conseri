@@ -62,6 +62,13 @@ class handler(BaseHTTPRequestHandler):
         if not id_pago:
             return responder_json(self, 200, {"ok": True, "nota": "aviso sin id"})
 
+        # Mercado Pago avisa el mismo pago dos veces: con el formato nuevo
+        # (?data.id=...&type=payment) y con el viejo de IPN (?id=...&topic=payment).
+        # El viejo no trae la firma que sabemos validar, asi que lo ignoramos:
+        # el nuevo ya trae la misma informacion, firmada.
+        if self._de_la_url("topic") and not self._de_la_url("data.id"):
+            return responder_json(self, 200, {"ok": True, "nota": "aviso IPN ignorado"})
+
         # Solo nos interesan los avisos de pago
         if tipo and "payment" not in str(tipo):
             return responder_json(self, 200, {"ok": True, "nota": "aviso ignorado"})
