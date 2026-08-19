@@ -26,6 +26,8 @@ import json
 import os
 import sys
 from http.server import BaseHTTPRequestHandler
+from urllib.parse import parse_qs, urlparse
+
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -63,10 +65,11 @@ class handler(BaseHTTPRequestHandler):
             return responder_json(self, 200, {"ok": True, "nota": "aviso sin id"})
 
         # Mercado Pago avisa el mismo pago dos veces: con el formato nuevo
-        # (?data.id=...&type=payment) y con el viejo de IPN (?id=...&topic=payment).
-        # El viejo no trae la firma que sabemos validar, asi que lo ignoramos:
-        # el nuevo ya trae la misma informacion, firmada.
-        if self._de_la_url("topic") and not self._de_la_url("data.id"):
+        # (?data.id=...&type=payment) y con el viejo de IPN (?id=...&topic=...).
+        # El viejo llega sin la firma que sabemos validar, asi que lo ignoramos:
+        # el nuevo trae la misma informacion, firmada.
+        parametros = parse_qs(urlparse(self.path).query)
+        if "topic" in parametros and "data.id" not in parametros:
             return responder_json(self, 200, {"ok": True, "nota": "aviso IPN ignorado"})
 
         # Solo nos interesan los avisos de pago
