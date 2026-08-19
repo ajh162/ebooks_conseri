@@ -43,6 +43,7 @@ SUPABASE_BUCKET       = os.environ.get("SUPABASE_BUCKET", "productos")
 RESEND_API_KEY    = os.environ.get("RESEND_API_KEY", "")
 CORREO_REMITENTE  = os.environ.get("CORREO_REMITENTE", "hola@conseri.mx")
 CORREO_CONTACTO   = os.environ.get("CORREO_CONTACTO", "contacto@conseri.mx")
+CORREO_PRUEBA     = os.environ.get("CORREO_PRUEBA", "")
 
 SITIO_URL = os.environ.get("SITIO_URL", "https://www.conseri.mx").rstrip("/")
 
@@ -343,18 +344,25 @@ def enviar_correo(destino, producto, url_gracias, enlaces):
         contacto=CORREO_CONTACTO,
     )
 
-    codigo, _ = pedir(
+    # Mientras no haya dominio verificado, Resend solo entrega al correo de la
+    # cuenta. Con CORREO_PRUEBA definido, todo se redirige ahi para poder probar.
+    destinatario = CORREO_PRUEBA or destino
+
+    codigo, respuesta = pedir(
         "https://api.resend.com/emails",
         metodo="POST",
         cabeceras={"Authorization": "Bearer " + RESEND_API_KEY},
         cuerpo={
             "from": "CONSERI <{}>".format(CORREO_REMITENTE),
-            "to": [destino],
+            "to": [destinatario],
             "reply_to": CORREO_CONTACTO,
             "subject": "Tu acceso a " + producto["nombre"],
             "html": html,
         },
     )
+
+    if codigo not in (200, 201):
+        print("Resend rechazo el correo:", codigo, respuesta)
 
     return codigo in (200, 201)
 
