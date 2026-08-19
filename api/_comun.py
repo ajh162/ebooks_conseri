@@ -43,6 +43,10 @@ SUPABASE_BUCKET       = os.environ.get("SUPABASE_BUCKET", "productos")
 RESEND_API_KEY    = os.environ.get("RESEND_API_KEY", "")
 CORREO_REMITENTE  = os.environ.get("CORREO_REMITENTE", "hola@conseri.mx")
 CORREO_CONTACTO   = os.environ.get("CORREO_CONTACTO", "contacto@conseri.mx")
+
+# Solo para pruebas sin dominio verificado: si trae valor, TODOS los correos de
+# entrega se mandan a esta direccion en vez de a la del comprador.
+# Vaciala en cuanto el dominio este verificado en Resend.
 CORREO_PRUEBA     = os.environ.get("CORREO_PRUEBA", "")
 
 SITIO_URL = os.environ.get("SITIO_URL", "https://www.conseri.mx").rstrip("/")
@@ -82,6 +86,13 @@ def pedir(url, metodo="GET", cabeceras=None, cuerpo=None, tiempo=20):
     if cuerpo is not None:
         datos = json.dumps(cuerpo).encode("utf-8")
         cabeceras.setdefault("Content-Type", "application/json")
+
+    # urllib se identifica por defecto como "Python-urllib/3.x". Cloudflare, que
+    # protege a Resend, lo toma por bot y corta la peticion con el error 1010
+    # antes de que llegue a Resend (por eso no aparecia ni en su panel).
+    # Con un nombre propio la peticion pasa normal.
+    cabeceras.setdefault("User-Agent", "CONSERI-Sitio/1.0 (+https://www.conseri.mx)")
+    cabeceras.setdefault("Accept", "application/json")
 
     peticion = urllib.request.Request(url, data=datos, headers=cabeceras, method=metodo)
 
@@ -283,15 +294,15 @@ def despertar_base():
 def enviar_correo(destino, producto, url_gracias, enlaces):
     """Manda el correo con el acceso al material.
 
-    Ojo: el remitente TIENE que ser un correo de un dominio verificado en
-    Resend (SPF/DKIM). Un Gmail como remitente no pasa los filtros y los
-    correos con enlaces de descarga terminan en spam.
+    Ojo: para producción el remitente TIENE que ser un correo de un dominio
+    verificado en Resend (SPF/DKIM). Con onboarding@resend.dev solo se entrega
+    al correo de la propia cuenta de Resend, que sirve para probar.
     """
     if not RESEND_API_KEY:
         return False
 
     filas = "".join(
-        '<li style="margin:6px 0"><a href="{}" style="color:#0E4C86">{}</a></li>'.format(
+        '<li style="margin:6px 0"><a href="{}" style="color:#3173A7">{}</a></li>'.format(
             enlace["url"], enlace["nombre"]
         )
         for enlace in enlaces
@@ -301,14 +312,14 @@ def enviar_correo(destino, producto, url_gracias, enlaces):
     if producto.get("enlace"):
         extra = (
             '<p style="margin:18px 0 0">Tu acceso en línea: '
-            '<a href="{}" style="color:#0E4C86">{}</a></p>'
+            '<a href="{}" style="color:#3173A7">{}</a></p>'
         ).format(producto["enlace"], producto["enlace"])
 
     html = """
     <div style="font-family:Arial,Helvetica,sans-serif;max-width:560px;margin:0 auto;
-                color:#10202F;line-height:1.6">
-      <p style="font-size:13px;letter-spacing:2px;color:#F07C1F;margin:0 0 6px">CONSERI</p>
-      <h1 style="font-size:22px;margin:0 0 16px;color:#08243D">Ya tienes tu material</h1>
+                color:#112234;line-height:1.6">
+      <p style="font-size:13px;letter-spacing:2px;color:#F4882A;margin:0 0 6px">CONSERI</p>
+      <h1 style="font-size:22px;margin:0 0 16px;color:#112234">Ya tienes tu material</h1>
 
       <p>Gracias por tu compra de <strong>{nombre}</strong>.</p>
 
@@ -318,19 +329,19 @@ def enviar_correo(destino, producto, url_gracias, enlaces):
 
       <p style="margin:24px 0">
         <a href="{gracias}"
-           style="background:#F07C1F;color:#241000;text-decoration:none;
+           style="background:#F4882A;color:#2A1200;text-decoration:none;
                   padding:13px 26px;border-radius:999px;font-weight:bold;
                   display:inline-block">Abrir mi página de descarga</a>
       </p>
 
-      <p style="font-size:13px;color:#5B6B7B">
+      <p style="font-size:13px;color:#5E7080">
         Los enlaces de descarga vencen en {horas} horas. Si se te vencen, abre de nuevo
         tu página de descarga o escríbenos a {contacto} y te los reponemos.
       </p>
 
-      <hr style="border:none;border-top:1px solid #DCE7F2;margin:28px 0">
+      <hr style="border:none;border-top:1px solid #D6E4F0;margin:28px 0">
 
-      <p style="font-size:12px;color:#5B6B7B">
+      <p style="font-size:12px;color:#5E7080">
         Material educativo e informativo. No constituye asesoría fiscal, contable,
         financiera ni legal, ni sustituye el análisis personalizado de un especialista.
       </p>
