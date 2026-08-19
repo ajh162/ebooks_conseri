@@ -180,6 +180,27 @@ def envoltura(titulo, contenido, tono="exito"):
     text-transform: uppercase; color: var(--naranja);
   }}
 
+  /* ---- Reproductor de video ---- */
+  .reproductor{{ margin: 0 0 1.6rem; }}
+  .reproductor video{{
+    width: 100%;
+    display: block;
+    border-radius: 12px;
+    background: var(--navy);
+    box-shadow: 0 18px 40px -26px rgba(17,34,52,.6);
+  }}
+  .reproductor__pie{{
+    display: flex; flex-wrap: wrap; align-items: center;
+    justify-content: space-between; gap: .6rem;
+    margin: .7rem 0 0;
+    font-size: .85rem; color: var(--gris);
+  }}
+  .reproductor__pie a{{
+    font-family: var(--display); font-weight: 600;
+    color: var(--naranja); text-decoration: none;
+  }}
+  .reproductor__pie a:hover{{ text-decoration: underline; }}
+
   .aviso-vigencia{{
     font-size: .9rem;
     color: var(--gris);
@@ -280,7 +301,27 @@ def fila_archivo(nombre, url):
     ).format(url, nombre)
 
 
-def pagina_de_entrega(producto, filas, acceso=""):
+def bloque_video(nombre, url):
+    """Reproductor para los archivos marcados como video en catalogo.json.
+
+    Se reproduce dentro de la pagina en vez de obligar a bajar 90 MB antes de
+    poder ver nada. preload="metadata" hace que solo se cargue la duracion al
+    abrir; el resto se descarga conforme se ve.
+    """
+    return """
+    <div class="reproductor">
+      <video controls preload="metadata" playsinline>
+        <source src="{url}" type="video/mp4">
+        Tu navegador no puede reproducir el video. Usa el enlace de descarga.
+      </video>
+      <p class="reproductor__pie">
+        <span>{nombre}</span>
+        <a href="{url}" download>Descargar el video</a>
+      </p>
+    </div>""".format(url=url, nombre=nombre)
+
+
+def pagina_de_entrega(producto, filas, acceso="", videos=""):
     """Pantalla de 'aqui esta tu material'.
 
     Vive aqui, en una sola funcion, para que la herramienta de
@@ -297,6 +338,14 @@ def pagina_de_entrega(producto, filas, acceso=""):
         )
     else:
         bloque_archivos = '<h2 class="tarjeta__titulo">Tu acceso</h2>'
+
+    # El minicurso va arriba: es la pieza que la persona quiere ver primero.
+    if videos:
+        bloque_archivos = (
+            '<h2 class="tarjeta__titulo">Tu minicurso</h2>'
+            + videos
+            + bloque_archivos
+        )
 
     contenido = """
 <section class="remate">
@@ -360,10 +409,93 @@ def bloque_de_acceso(producto):
             'rel="noopener">{}</a></p>').format(producto["enlace"], etiqueta)
 
 
+# ---------------------------------------------------------------------------
+# MODO DEMOSTRACION
+# ---------------------------------------------------------------------------
+# Permite abrir cualquiera de las pantallas en el sitio real, sin pagar y sin
+# tocar el catalogo. Se protege con la misma clave del cron (CRON_SECRET):
+#
+#     /api/gracias?demo=entrega-kit&clave=TU_CRON_SECRET
+#
+# Sin la clave correcta no pasa nada: se sigue de largo al flujo normal, asi
+# que un visitante que adivine el parametro solo vera la pantalla de siempre.
+# Si CRON_SECRET esta vacia, el modo demostracion queda apagado por completo.
+# ---------------------------------------------------------------------------
+
+CLAVE_DEMO = os.environ.get("CRON_SECRET", "")
+
+_DEMO_KIT = {"nombre": "Kit Antes de Emprender", "tipo": "kit", "enlace": None}
+_DEMO_EBOOK = {
+    "nombre": "Antes de Emprender: Finanzas e Impuestos que Nadie te Explica",
+    "tipo": "ebook", "enlace": None,
+}
+_DEMO_CURSO = {
+    "nombre": "Kit Antes de Emprender", "tipo": "kit",
+    "enlace": "https://www.conseri.mx/minicurso",
+}
+_DEMO_ASESORIA = {
+    "nombre": "Asesoría personalizada de diagnóstico", "tipo": "asesoria",
+    "enlace": "https://bookings.cloud.microsoft/book/DiagnsticoConseri@conseri.mx/",
+}
+
+
+def _filas_demo(*nombres):
+    return "".join(fila_archivo(n, "#") for n in nombres)
+
+
+def pantalla_demo(nombre):
+    """Devuelve el HTML de una pantalla de ejemplo, o None si el nombre no existe."""
+    pantallas = {
+        "entrega-kit": lambda: pagina_de_entrega(
+            _DEMO_KIT,
+            _filas_demo("Antes de Emprender (PDF)", "Plantillas del Kit (Excel)"),
+        ),
+        "entrega-ebook": lambda: pagina_de_entrega(
+            _DEMO_EBOOK, _filas_demo("Antes de Emprender (PDF)")
+        ),
+        "entrega-curso": lambda: pagina_de_entrega(
+            _DEMO_CURSO,
+            _filas_demo("Antes de Emprender (PDF)", "Plantillas del Kit (Excel)"),
+            bloque_de_acceso(_DEMO_CURSO),
+        ),
+        "entrega-asesoria": lambda: pagina_de_entrega(
+            _DEMO_ASESORIA, "", bloque_de_acceso(_DEMO_ASESORIA)
+        ),
+        "espera-pendiente": lambda: pagina_de_espera(
+            "Tu pago aparece como <strong>pending_waiting_payment</strong>. Algunos "
+            "medios de pago (como el efectivo o la transferencia) tardan unas horas."
+        ),
+        "espera-sin-id": lambda: pagina_de_espera(
+            "No encontramos el número de pago en el enlace."
+        ),
+        "espera-sin-consulta": lambda: pagina_de_espera(
+            "No pudimos consultar tu pago en este momento."
+        ),
+        "espera-sin-producto": lambda: pagina_de_espera(
+            "Tu pago está aprobado, pero no logramos identificar el producto."
+        ),
+        "espera-sin-archivos": lambda: pagina_de_espera(
+            "Tu pago está aprobado, pero los archivos no están disponibles ahora mismo."
+        ),
+    }
+
+    constructor = pantallas.get(nombre)
+    return constructor() if constructor else None
+
+
 class handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         consulta = parse_qs(urlparse(self.path).query)
+
+        # ---- Modo demostracion (solo con la clave correcta) ----
+        pedida = (consulta.get("demo") or [""])[0]
+        clave = (consulta.get("clave") or [""])[0]
+        if pedida and CLAVE_DEMO and clave == CLAVE_DEMO:
+            html = pantalla_demo(pedida)
+            if html:
+                return responder_html(self, 200, html)
+
         id_pago = (
             (consulta.get("payment_id") or consulta.get("collection_id") or [None])[0]
         )
@@ -399,22 +531,30 @@ class handler(BaseHTTPRequestHandler):
             ))
 
         # ---- Generar enlaces frescos ----
+        # Los archivos marcados con "formato": "video" en catalogo.json se
+        # muestran en un reproductor; el resto, como lista de descargas.
         filas = []
+        videos = []
         for archivo in producto.get("archivos", []):
             url = enlace_temporal(archivo["ruta"])
-            if url:
+            if not url:
+                continue
+            if archivo.get("formato") == "video":
+                videos.append(bloque_video(archivo["nombre"], url))
+            else:
                 filas.append(fila_archivo(archivo["nombre"], url))
 
         acceso = bloque_de_acceso(producto)
 
-        if not filas and not acceso:
+        if not filas and not videos and not acceso:
             return responder_html(self, 200, pagina_de_espera(
                 "Tu pago está aprobado, pero los archivos no están disponibles "
                 "ahora mismo."
             ))
 
         return responder_html(
-            self, 200, pagina_de_entrega(producto, "".join(filas), acceso)
+            self, 200,
+            pagina_de_entrega(producto, "".join(filas), acceso, "".join(videos))
         )
 
     def log_message(self, formato, *args):

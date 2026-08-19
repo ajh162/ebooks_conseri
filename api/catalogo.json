@@ -12,12 +12,11 @@
     ],
     "enlace": null
   },
-
   "kit_completo": {
     "nombre": "Kit Antes de Emprender",
     "tipo": "kit",
     "precio": 899,
-    "descripcion": "Ebook completo y las 5 plantillas de calculo en Excel.",
+    "descripcion": "Ebook completo, las 5 plantillas de calculo en Excel y el minicurso grabado.",
     "archivos": [
       {
         "nombre": "Antes de Emprender (PDF)",
@@ -26,6 +25,11 @@
       {
         "nombre": "Plantillas del Kit (Excel)",
         "ruta": "plantillas/kit-antes-de-emprender-plantillas.xlsx"
+      },
+      {
+        "nombre": "Minicurso grabado · 22 minutos",
+        "ruta": "cursos/minicurso-antes-de-emprender.mp4",
+        "formato": "video"
       }
     ],
     "enlace": null

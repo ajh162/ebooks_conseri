@@ -302,8 +302,13 @@ def enviar_correo(destino, producto, url_gracias, enlaces):
         return False
 
     filas = "".join(
-        '<li style="margin:6px 0"><a href="{}" style="color:#3173A7">{}</a></li>'.format(
-            enlace["url"], enlace["nombre"]
+        '<li style="margin:6px 0"><a href="{}" style="color:#3173A7">{}</a>{}</li>'.format(
+            enlace["url"],
+            enlace["nombre"],
+            # El video se ve mejor desde la página de descarga, que trae
+            # reproductor; el enlace directo baja el archivo completo.
+            ' <span style="color:#5E7080">(mejor desde tu página de descarga)</span>'
+            if enlace.get("formato") == "video" else "",
         )
         for enlace in enlaces
     )

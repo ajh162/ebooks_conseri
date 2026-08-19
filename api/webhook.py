@@ -116,7 +116,11 @@ class handler(BaseHTTPRequestHandler):
         for archivo in producto.get("archivos", []):
             url = enlace_temporal(archivo["ruta"])
             if url:
-                enlaces.append({"nombre": archivo["nombre"], "url": url})
+                enlaces.append({
+                    "nombre": archivo["nombre"],
+                    "url": url,
+                    "formato": archivo.get("formato", ""),
+                })
             else:
                 print("No se pudo firmar el archivo:", archivo["ruta"])
 
