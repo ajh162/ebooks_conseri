@@ -41,7 +41,7 @@ SUPABASE_SERVICE_KEY  = os.environ.get("SUPABASE_SERVICE_KEY", "")
 SUPABASE_BUCKET       = os.environ.get("SUPABASE_BUCKET", "productos")
 
 RESEND_API_KEY    = os.environ.get("RESEND_API_KEY", "")
-CORREO_REMITENTE  = os.environ.get("CORREO_REMITENTE", "hola@conseri.mx")
+CORREO_REMITENTE  = os.environ.get("CORREO_REMITENTE", "hola@digitalconseri.com")
 CORREO_CONTACTO   = os.environ.get("CORREO_CONTACTO", "contacto@conseri.mx")
 
 # Solo para pruebas sin dominio verificado: si trae valor, TODOS los correos de
@@ -49,7 +49,7 @@ CORREO_CONTACTO   = os.environ.get("CORREO_CONTACTO", "contacto@conseri.mx")
 # Vaciala en cuanto el dominio este verificado en Resend.
 CORREO_PRUEBA     = os.environ.get("CORREO_PRUEBA", "")
 
-SITIO_URL = os.environ.get("SITIO_URL", "https://www.conseri.mx").rstrip("/")
+SITIO_URL = os.environ.get("SITIO_URL", "https://www.digitalconseri.com").rstrip("/")
 
 # Cuántas horas dura el enlace de descarga antes de vencerse
 HORAS_DE_VIGENCIA = int(os.environ.get("HORAS_DE_VIGENCIA", "72"))
@@ -91,7 +91,7 @@ def pedir(url, metodo="GET", cabeceras=None, cuerpo=None, tiempo=20):
     # protege a Resend, lo toma por bot y corta la peticion con el error 1010
     # antes de que llegue a Resend (por eso no aparecia ni en su panel).
     # Con un nombre propio la peticion pasa normal.
-    cabeceras.setdefault("User-Agent", "CONSERI-Sitio/1.0 (+https://www.conseri.mx)")
+    cabeceras.setdefault("User-Agent", "CONSERI-Sitio/1.0 (+https://www.digitalconseri.com)")
     cabeceras.setdefault("Accept", "application/json")
 
     peticion = urllib.request.Request(url, data=datos, headers=cabeceras, method=metodo)
@@ -291,74 +291,204 @@ def despertar_base():
 # RESEND (correo de entrega)
 # ---------------------------------------------------------------------------
 
-def enviar_correo(destino, producto, url_gracias, enlaces):
-    """Manda el correo con el acceso al material.
+def _fila_correo(enlace):
+    """Un renglon de archivo dentro del correo.
 
-    Ojo: para producción el remitente TIENE que ser un correo de un dominio
-    verificado en Resend (SPF/DKIM). Con onboarding@resend.dev solo se entrega
-    al correo de la propia cuenta de Resend, que sirve para probar.
+    Todo va en tablas y con estilos en linea: es la unica forma de que se vea
+    igual en Gmail, Outlook y Apple Mail. Los clientes de correo ignoran las
+    hojas de estilo externas y varios ni siquiera soportan flexbox.
     """
-    if not RESEND_API_KEY:
-        return False
+    es_video = enlace.get("formato") == "video"
+    nota = ("Se ve mejor desde tu página de descarga"
+            if es_video else "Descargar")
 
-    filas = "".join(
-        '<li style="margin:6px 0"><a href="{}" style="color:#3173A7">{}</a>{}</li>'.format(
-            enlace["url"],
-            enlace["nombre"],
-            # El video se ve mejor desde la página de descarga, que trae
-            # reproductor; el enlace directo baja el archivo completo.
-            ' <span style="color:#5E7080">(mejor desde tu página de descarga)</span>'
-            if enlace.get("formato") == "video" else "",
-        )
-        for enlace in enlaces
-    )
+    return """
+          <tr>
+            <td style="padding:0 0 10px 0">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+                     style="background:#F4F7FA;border:1px solid #D6E4F0;border-radius:10px">
+                <tr>
+                  <td style="padding:14px 16px">
+                    <a href="{url}" style="color:#112234;text-decoration:none;
+                       font-family:Arial,Helvetica,sans-serif;font-weight:bold;
+                       font-size:15px">{nombre}</a>
+                    <div style="font-family:Arial,Helvetica,sans-serif;font-size:12px;
+                                color:#F4882A;letter-spacing:1px;text-transform:uppercase;
+                                padding-top:4px">{nota}</div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>""".format(url=enlace["url"], nombre=enlace["nombre"], nota=nota)
+
+
+def plantilla_correo(producto, url_gracias, enlaces):
+    """Arma el correo de entrega y devuelve (html, texto).
+
+    Esta separado del envio para que la herramienta de previsualizacion
+    (previsualizar.py) muestre exactamente el mismo correo que le llega al
+    comprador, sin tener que mandar nada.
+    """
+    filas = "".join(_fila_correo(enlace) for enlace in enlaces)
 
     extra = ""
     if producto.get("enlace"):
-        extra = (
-            '<p style="margin:18px 0 0">Tu acceso en línea: '
-            '<a href="{}" style="color:#3173A7">{}</a></p>'
-        ).format(producto["enlace"], producto["enlace"])
+        extra = """
+          <tr>
+            <td style="padding:6px 0 0 0;font-family:Arial,Helvetica,sans-serif;
+                       font-size:14px;color:#5E7080">
+              Tu acceso en línea:
+              <a href="{enlace}" style="color:#3173A7">{enlace}</a>
+            </td>
+          </tr>""".format(enlace=producto["enlace"])
 
-    html = """
-    <div style="font-family:Arial,Helvetica,sans-serif;max-width:560px;margin:0 auto;
-                color:#112234;line-height:1.6">
-      <p style="font-size:13px;letter-spacing:2px;color:#F4882A;margin:0 0 6px">CONSERI</p>
-      <h1 style="font-size:22px;margin:0 0 16px;color:#112234">Ya tienes tu material</h1>
+    html = """<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tu material de CONSERI</title>
+</head>
+<body style="margin:0;padding:0;background:#F4F7FA">
 
-      <p>Gracias por tu compra de <strong>{nombre}</strong>.</p>
+<!-- Linea de vista previa: es lo que se lee en la bandeja antes de abrir -->
+<div style="display:none;max-height:0;overflow:hidden;opacity:0">
+  Aquí están tus enlaces de descarga de {nombre}.
+</div>
 
-      <p style="margin-bottom:6px">Descarga tus archivos aquí:</p>
-      <ul style="padding-left:18px;margin:0">{filas}</ul>
-      {extra}
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+       style="background:#F4F7FA">
+  <tr>
+    <td align="center" style="padding:24px 12px">
 
-      <p style="margin:24px 0">
-        <a href="{gracias}"
-           style="background:#F4882A;color:#2A1200;text-decoration:none;
-                  padding:13px 26px;border-radius:999px;font-weight:bold;
-                  display:inline-block">Abrir mi página de descarga</a>
-      </p>
+      <table role="presentation" width="600" cellpadding="0" cellspacing="0"
+             style="width:100%;max-width:600px">
 
-      <p style="font-size:13px;color:#5E7080">
-        Los enlaces de descarga vencen en {horas} horas. Si se te vencen, abre de nuevo
-        tu página de descarga o escríbenos a {contacto} y te los reponemos.
-      </p>
+        <!-- ================= CABECERA ================= -->
+        <tr>
+          <td align="center" style="background:#112234;border-radius:14px 14px 0 0;
+                                    padding:34px 24px 30px">
+            <img src="{sitio}/assets/logo-horizontal-blanco.png"
+                 alt="CONSERI" width="190"
+                 style="display:block;width:190px;max-width:70%;height:auto;border:0">
+            <div style="font-family:Arial,Helvetica,sans-serif;font-size:11px;
+                        letter-spacing:3px;text-transform:uppercase;color:#F4882A;
+                        padding-top:20px">Pago confirmado</div>
+            <div style="font-family:Arial,Helvetica,sans-serif;font-size:26px;
+                        font-weight:bold;color:#ffffff;padding-top:8px;
+                        line-height:1.25">Ya tienes tu material</div>
+          </td>
+        </tr>
 
-      <hr style="border:none;border-top:1px solid #D6E4F0;margin:28px 0">
+        <!-- Filo naranja que separa cabecera y cuerpo -->
+        <tr><td style="background:#F4882A;height:4px;line-height:4px;font-size:0">&nbsp;</td></tr>
 
-      <p style="font-size:12px;color:#5E7080">
-        Material educativo e informativo. No constituye asesoría fiscal, contable,
-        financiera ni legal, ni sustituye el análisis personalizado de un especialista.
-      </p>
-    </div>
-    """.format(
+        <!-- ================= CUERPO ================= -->
+        <tr>
+          <td style="background:#ffffff;padding:32px 28px 28px">
+
+            <p style="margin:0 0 22px;font-family:Arial,Helvetica,sans-serif;
+                      font-size:16px;line-height:1.6;color:#112234">
+              Gracias por tu compra de <strong>{nombre}</strong>.
+              Aquí está todo lo que incluye:
+            </p>
+
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+              {filas}
+              {extra}
+            </table>
+
+            <!-- Boton principal, armado con tabla para que Outlook lo respete -->
+            <table role="presentation" cellpadding="0" cellspacing="0"
+                   style="margin:26px auto 6px">
+              <tr>
+                <td align="center" style="background:#F4882A;border-radius:999px">
+                  <a href="{gracias}"
+                     style="display:inline-block;padding:15px 34px;
+                            font-family:Arial,Helvetica,sans-serif;font-size:16px;
+                            font-weight:bold;color:#2A1200;text-decoration:none">
+                    Abrir mi página de descarga
+                  </a>
+                </td>
+              </tr>
+            </table>
+
+            <p style="margin:18px 0 0;font-family:Arial,Helvetica,sans-serif;
+                      font-size:13px;line-height:1.6;color:#5E7080;text-align:center">
+              Los enlaces vencen en {horas} horas. Si se te pasan, vuelve a abrir tu
+              página de descarga y se generan de nuevo.
+            </p>
+
+          </td>
+        </tr>
+
+        <!-- ================= PIE ================= -->
+        <tr>
+          <td style="background:#ffffff;border-top:1px solid #D6E4F0;
+                     border-radius:0 0 14px 14px;padding:22px 28px 26px">
+            <p style="margin:0 0 14px;font-family:Arial,Helvetica,sans-serif;
+                      font-size:13px;line-height:1.6;color:#5E7080">
+              ¿Algún problema con tu descarga? Responde este correo o escríbenos a
+              <a href="mailto:{contacto}" style="color:#3173A7">{contacto}</a>.
+            </p>
+            <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:11px;
+                      line-height:1.6;color:#8A9AA8">
+              Material educativo e informativo. No constituye asesoría fiscal, contable,
+              financiera ni legal, ni sustituye el análisis personalizado de un
+              especialista. Obra en trámite de registro de derechos de autor.
+            </p>
+          </td>
+        </tr>
+
+        <tr>
+          <td align="center" style="padding:18px 12px 0;
+                     font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#8A9AA8">
+            CONSERI · Consultoría Contable de Servicios Integrales
+          </td>
+        </tr>
+
+      </table>
+
+    </td>
+  </tr>
+</table>
+</body>
+</html>""".format(
         nombre=producto["nombre"],
         filas=filas,
         extra=extra,
         gracias=url_gracias,
         horas=HORAS_DE_VIGENCIA,
         contacto=CORREO_CONTACTO,
+        sitio=SITIO_URL,
     )
+
+    # Version en texto plano. Mejora la entregabilidad (los filtros desconfian
+    # de los correos que solo traen HTML) y sirve para quien lee sin formato.
+    texto = "CONSERI\n\nYa tienes tu material.\n\n"
+    texto += "Gracias por tu compra de {}.\n\n".format(producto["nombre"])
+    for enlace in enlaces:
+        texto += "- {}: {}\n".format(enlace["nombre"], enlace["url"])
+    if producto.get("enlace"):
+        texto += "- Acceso en linea: {}\n".format(producto["enlace"])
+    texto += "\nPagina de descarga: {}\n".format(url_gracias)
+    texto += "\nLos enlaces vencen en {} horas.\n".format(HORAS_DE_VIGENCIA)
+    texto += "Dudas: {}\n".format(CORREO_CONTACTO)
+
+    return html, texto
+
+
+def enviar_correo(destino, producto, url_gracias, enlaces):
+    """Manda por Resend el correo con el acceso al material.
+
+    Ojo: para produccion el remitente TIENE que ser un correo de un dominio
+    verificado en Resend (SPF/DKIM). Con onboarding@resend.dev solo se entrega
+    al correo de la propia cuenta de Resend, que sirve para probar.
+    """
+    if not RESEND_API_KEY:
+        return False
+
+    html, texto = plantilla_correo(producto, url_gracias, enlaces)
 
     # Mientras no haya dominio verificado, Resend solo entrega al correo de la
     # cuenta. Con CORREO_PRUEBA definido, todo se redirige ahi para poder probar.
@@ -374,6 +504,7 @@ def enviar_correo(destino, producto, url_gracias, enlaces):
             "reply_to": CORREO_CONTACTO,
             "subject": "Tu acceso a " + producto["nombre"],
             "html": html,
+            "text": texto,
         },
     )
 
