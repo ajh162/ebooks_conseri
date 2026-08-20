@@ -41,7 +41,7 @@ SUPABASE_SERVICE_KEY  = os.environ.get("SUPABASE_SERVICE_KEY", "")
 SUPABASE_BUCKET       = os.environ.get("SUPABASE_BUCKET", "productos")
 
 RESEND_API_KEY    = os.environ.get("RESEND_API_KEY", "")
-CORREO_REMITENTE  = os.environ.get("CORREO_REMITENTE", "hola@digitalconseri.com")
+CORREO_REMITENTE  = os.environ.get("CORREO_REMITENTE", "hola@conseridigital.com")
 CORREO_CONTACTO   = os.environ.get("CORREO_CONTACTO", "contacto@conseri.mx")
 
 # Solo para pruebas sin dominio verificado: si trae valor, TODOS los correos de
@@ -49,7 +49,7 @@ CORREO_CONTACTO   = os.environ.get("CORREO_CONTACTO", "contacto@conseri.mx")
 # Vaciala en cuanto el dominio este verificado en Resend.
 CORREO_PRUEBA     = os.environ.get("CORREO_PRUEBA", "")
 
-SITIO_URL = os.environ.get("SITIO_URL", "https://www.digitalconseri.com").rstrip("/")
+SITIO_URL = os.environ.get("SITIO_URL", "https://www.conseridigital.com").rstrip("/")
 
 # Cuántas horas dura el enlace de descarga antes de vencerse
 HORAS_DE_VIGENCIA = int(os.environ.get("HORAS_DE_VIGENCIA", "72"))
@@ -91,7 +91,7 @@ def pedir(url, metodo="GET", cabeceras=None, cuerpo=None, tiempo=20):
     # protege a Resend, lo toma por bot y corta la peticion con el error 1010
     # antes de que llegue a Resend (por eso no aparecia ni en su panel).
     # Con un nombre propio la peticion pasa normal.
-    cabeceras.setdefault("User-Agent", "CONSERI-Sitio/1.0 (+https://www.digitalconseri.com)")
+    cabeceras.setdefault("User-Agent", "CONSERI-Sitio/1.0 (+https://www.conseridigital.com)")
     cabeceras.setdefault("Accept", "application/json")
 
     peticion = urllib.request.Request(url, data=datos, headers=cabeceras, method=metodo)
