@@ -38,6 +38,7 @@ verdad, en vez de suponerlo.
 
 import os
 import sys
+import urllib.parse
 from datetime import datetime, timedelta, timezone
 from http.server import BaseHTTPRequestHandler
 
@@ -92,9 +93,14 @@ class handler(BaseHTTPRequestHandler):
 
         # ---- 2. Limpieza: borrar los latidos viejos ----
         # Es otra escritura y ademas evita que la tabla crezca sin control.
+        #
+        # La fecha va codificada a proposito: en formato ISO termina en
+        # "+00:00", y dentro de una direccion web el signo + significa espacio.
+        # Sin codificar, a Supabase le llega una fecha rota y responde 400.
         corte = (datetime.now(timezone.utc) - timedelta(days=DIAS_DE_HISTORIAL)).isoformat()
-        codigo_borrado, _ = pedir(
-            SUPABASE_URL + "/rest/v1/latidos?creado_en=lt." + corte,
+        codigo_borrado, respuesta_borrado = pedir(
+            SUPABASE_URL + "/rest/v1/latidos?creado_en=lt."
+            + urllib.parse.quote(corte, safe=""),
             metodo="DELETE",
             cabeceras=cabeceras,
         )
@@ -114,6 +120,9 @@ class handler(BaseHTTPRequestHandler):
             print("keepalive: OK | insercion", codigo_insercion,
                   "| borrado", codigo_borrado,
                   "| lectura", codigo_lectura)
+            if codigo_borrado not in (200, 204):
+                # No es grave (la tabla es diminuta), pero conviene saberlo
+                print("keepalive: la limpieza no borro nada ->", respuesta_borrado)
         else:
             print("keepalive: FALLO la escritura |", codigo_insercion,
                   "->", respuesta_insercion,
