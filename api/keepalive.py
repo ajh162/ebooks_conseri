@@ -2,28 +2,43 @@
 ============================================================================
 CONSERI · /api/keepalive
 ----------------------------------------------------------------------------
-Supabase pausa los proyectos del plan gratuito después de unos días sin
-actividad. Si eso pasa, las descargas dejan de funcionar.
+Supabase pausa los proyectos del plan gratuito cuando no reciben "suficiente
+actividad de base de datos" durante una semana. El umbral no lo publican, pero
+una sola consulta de lectura al dia resulto no alcanzar: de ahi el aviso de
+pausa que llego pese a que el cron corria bien todos los dias.
 
-vercel.json programa un cron que llama a esta ruta una vez al día y hace una
-consulta mínima a la base. Nada más.
+Por eso esta version hace tres cosas en vez de una, y sobre todo ESCRIBE:
 
-La ruta está protegida con CRON_SECRET para que nadie de fuera la esté
-llamando: Vercel manda el encabezado Authorization con ese secreto.
+  1. Inserta un renglon en la tabla "latidos"   <- escritura, no hay duda
+  2. Borra los latidos viejos                    <- otra escritura, y mantiene
+                                                    la tabla del tamano de un
+                                                    pañuelo
+  3. Lee la tabla de entregas                    <- la consulta de siempre
+
+ANTES DE DESPLEGAR hay que crear la tabla en Supabase (SQL Editor):
+
+    create table if not exists latidos (
+      id        bigserial primary key,
+      origen    text,
+      creado_en timestamptz default now()
+    );
+    alter table latidos enable row level security;
+
+La ruta esta protegida con CRON_SECRET para que nadie de fuera la llame:
+Vercel manda el encabezado Authorization con ese secreto.
 
 NOTA SOBRE LOS REGISTROS
 ----------------------------------------------------------------------------
-Vercel guarda la línea de acceso (el "200 OK") pero NO el cuerpo de la
-respuesta. Antes eso dejaba una duda importante: el cron podía verse en verde
-todos los días aunque la consulta a Supabase estuviera fallando en silencio.
-
-Por eso ahora la función escribe en los registros qué contestó Supabase. Así,
-en Vercel -> Logs, al expandir la ejecución se lee el resultado real.
+Vercel guarda la linea de acceso (el "200 OK") pero NO el cuerpo de la
+respuesta. Por eso la funcion escribe el resultado en los registros: asi, en
+Vercel -> Logs, al expandir la ejecucion se lee que contesto Supabase de
+verdad, en vez de suponerlo.
 ============================================================================
 """
 
 import os
 import sys
+from datetime import datetime, timedelta, timezone
 from http.server import BaseHTTPRequestHandler
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -38,6 +53,9 @@ from _comun import (          # noqa: E402
 
 CRON_SECRET = os.environ.get("CRON_SECRET", "")
 
+# Cuantos dias de latidos se conservan antes de borrarlos
+DIAS_DE_HISTORIAL = 7
+
 
 class handler(BaseHTTPRequestHandler):
 
@@ -48,7 +66,7 @@ class handler(BaseHTTPRequestHandler):
             print("keepalive: llamada sin autorizacion valida")
             return responder_json(self, 401, {"error": "no autorizado"})
 
-        # ---- ¿Están cargadas las credenciales de Supabase? ----
+        # ---- ¿Estan cargadas las credenciales de Supabase? ----
         if not SUPABASE_URL or not SUPABASE_SERVICE_KEY:
             print("keepalive: FALTAN las variables de Supabase en el servidor",
                   "| hay URL:", bool(SUPABASE_URL),
@@ -58,22 +76,51 @@ class handler(BaseHTTPRequestHandler):
                 "motivo": "faltan SUPABASE_URL o SUPABASE_SERVICE_KEY",
             })
 
-        # ---- La consulta que mantiene despierta a la base ----
-        codigo, respuesta = pedir(
+        cabeceras = _cabeceras_supabase()
+        cabeceras["Content-Type"] = "application/json"
+
+        resultado = {}
+
+        # ---- 1. Escritura: dejar constancia del latido ----
+        codigo_insercion, respuesta_insercion = pedir(
+            SUPABASE_URL + "/rest/v1/latidos",
+            metodo="POST",
+            cabeceras=cabeceras,
+            cuerpo=[{"origen": "vercel-cron"}],
+        )
+        resultado["insercion"] = codigo_insercion
+
+        # ---- 2. Limpieza: borrar los latidos viejos ----
+        # Es otra escritura y ademas evita que la tabla crezca sin control.
+        corte = (datetime.now(timezone.utc) - timedelta(days=DIAS_DE_HISTORIAL)).isoformat()
+        codigo_borrado, _ = pedir(
+            SUPABASE_URL + "/rest/v1/latidos?creado_en=lt." + corte,
+            metodo="DELETE",
+            cabeceras=cabeceras,
+        )
+        resultado["borrado"] = codigo_borrado
+
+        # ---- 3. Lectura: la consulta de siempre ----
+        codigo_lectura, _ = pedir(
             SUPABASE_URL + "/rest/v1/entregas?select=id&limit=1",
             cabeceras=_cabeceras_supabase(),
         )
+        resultado["lectura"] = codigo_lectura
 
-        activa = codigo == 200
+        # La escritura es la que cuenta como actividad de verdad
+        activa = codigo_insercion in (200, 201, 204)
 
-        # Esta línea es la que se lee en Vercel -> Logs al expandir la ejecución
-        print("keepalive: Supabase respondio", codigo, "->",
-              "OK" if activa else respuesta)
+        if activa:
+            print("keepalive: OK | insercion", codigo_insercion,
+                  "| borrado", codigo_borrado,
+                  "| lectura", codigo_lectura)
+        else:
+            print("keepalive: FALLO la escritura |", codigo_insercion,
+                  "->", respuesta_insercion,
+                  "| ¿existe la tabla 'latidos' en Supabase?")
 
-        return responder_json(self, 200, {
-            "base_activa": activa,
-            "codigo": codigo,
-        })
+        resultado["base_activa"] = activa
+        return responder_json(self, 200, resultado)
 
     def log_message(self, formato, *args):
         return
