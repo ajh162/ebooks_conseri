@@ -41,7 +41,7 @@ SUPABASE_SERVICE_KEY  = os.environ.get("SUPABASE_SERVICE_KEY", "")
 SUPABASE_BUCKET       = os.environ.get("SUPABASE_BUCKET", "productos")
 
 RESEND_API_KEY    = os.environ.get("RESEND_API_KEY", "")
-CORREO_REMITENTE  = os.environ.get("CORREO_REMITENTE", "hola@conseridigital.com")
+CORREO_REMITENTE  = os.environ.get("CORREO_REMITENTE", "hola@digitalconseri.com")
 CORREO_CONTACTO   = os.environ.get("CORREO_CONTACTO", "contacto@conseri.mx")
 
 # Solo para pruebas sin dominio verificado: si trae valor, TODOS los correos de
@@ -49,7 +49,7 @@ CORREO_CONTACTO   = os.environ.get("CORREO_CONTACTO", "contacto@conseri.mx")
 # Vaciala en cuanto el dominio este verificado en Resend.
 CORREO_PRUEBA     = os.environ.get("CORREO_PRUEBA", "")
 
-SITIO_URL = os.environ.get("SITIO_URL", "https://www.conseridigital.com").rstrip("/")
+SITIO_URL = os.environ.get("SITIO_URL", "https://www.digitalconseri.com").rstrip("/")
 
 # Cuántas horas dura el enlace de descarga antes de vencerse
 HORAS_DE_VIGENCIA = int(os.environ.get("HORAS_DE_VIGENCIA", "72"))
@@ -91,7 +91,7 @@ def pedir(url, metodo="GET", cabeceras=None, cuerpo=None, tiempo=20):
     # protege a Resend, lo toma por bot y corta la peticion con el error 1010
     # antes de que llegue a Resend (por eso no aparecia ni en su panel).
     # Con un nombre propio la peticion pasa normal.
-    cabeceras.setdefault("User-Agent", "CONSERI-Sitio/1.0 (+https://www.conseridigital.com)")
+    cabeceras.setdefault("User-Agent", "CONSERI-Sitio/1.0 (+https://www.digitalconseri.com)")
     cabeceras.setdefault("Accept", "application/json")
 
     peticion = urllib.request.Request(url, data=datos, headers=cabeceras, method=metodo)
@@ -348,6 +348,15 @@ def plantilla_correo(producto, url_gracias, enlaces):
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tu material de CONSERI</title>
+
+<!-- El correo esta disenado en claro. Apple Mail y Outlook respetan estas
+     dos lineas y dejan de invertir colores; Gmail las respeta a medias, por
+     eso ademas la cabecera es una imagen (ver abajo). -->
+<meta name="color-scheme" content="light">
+<meta name="supported-color-schemes" content="light">
+<style>
+  :root {{ color-scheme: light; supported-color-schemes: light; }}
+</style>
 </head>
 <body style="margin:0;padding:0;background:#F4F7FA">
 
@@ -364,16 +373,23 @@ def plantilla_correo(producto, url_gracias, enlaces):
       <table role="presentation" width="600" cellpadding="0" cellspacing="0"
              style="width:100%;max-width:600px">
 
-        <!-- ================= CABECERA ================= -->
+        <!-- ================= CABECERA =================
+             El logo va dentro de una imagen que YA trae el fondo navy. En
+             modo oscuro los clientes de correo invierten fondos y texto,
+             pero no tocan los pixeles de una imagen: asi el logo nunca
+             termina en blanco sobre fondo claro. -->
         <tr>
-          <td align="center" style="background:#112234;border-radius:14px 14px 0 0;
-                                    padding:34px 24px 30px">
-            <img src="{sitio}/assets/logo-horizontal-blanco.png"
-                 alt="CONSERI" width="190"
-                 style="display:block;width:190px;max-width:70%;height:auto;border:0">
+          <td align="center" bgcolor="#112234"
+              style="background:#112234;border-radius:14px 14px 0 0;
+                     padding:0 0 30px">
+            <img src="{sitio}/assets/correo-cabecera.png"
+                 alt="CONSERI · Consultoría Contable de Servicios Integrales"
+                 width="600"
+                 style="display:block;width:100%;max-width:600px;height:auto;
+                        border:0;border-radius:14px 14px 0 0">
             <div style="font-family:Arial,Helvetica,sans-serif;font-size:11px;
                         letter-spacing:3px;text-transform:uppercase;color:#F4882A;
-                        padding-top:20px">Pago confirmado</div>
+                        padding-top:26px">Pago confirmado</div>
             <div style="font-family:Arial,Helvetica,sans-serif;font-size:26px;
                         font-weight:bold;color:#ffffff;padding-top:8px;
                         line-height:1.25">Ya tienes tu material</div>
@@ -402,7 +418,8 @@ def plantilla_correo(producto, url_gracias, enlaces):
             <table role="presentation" cellpadding="0" cellspacing="0"
                    style="margin:26px auto 6px">
               <tr>
-                <td align="center" style="background:#F4882A;border-radius:999px">
+                <td align="center" bgcolor="#F4882A"
+                    style="background:#F4882A;border-radius:999px">
                   <a href="{gracias}"
                      style="display:inline-block;padding:15px 34px;
                             font-family:Arial,Helvetica,sans-serif;font-size:16px;
@@ -424,7 +441,7 @@ def plantilla_correo(producto, url_gracias, enlaces):
 
         <!-- ================= PIE ================= -->
         <tr>
-          <td style="background:#ffffff;border-top:1px solid #D6E4F0;
+          <td bgcolor="#ffffff" style="background:#ffffff;border-top:1px solid #D6E4F0;
                      border-radius:0 0 14px 14px;padding:22px 28px 26px">
             <p style="margin:0 0 14px;font-family:Arial,Helvetica,sans-serif;
                       font-size:13px;line-height:1.6;color:#5E7080">
