@@ -31,7 +31,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Antes de Emprender · Finanzas e impuestos que nadie te explica | CONSERI</title>
 
-<meta name="description" content="Kit práctico de CONSERI para emprender con números claros: ebook, plantillas, minicurso y asesoría personalizada. Calcula tu punto de equilibrio, tu precio mínimo y tus obligaciones fiscales antes de invertir.">
+<meta name="description" content="Kit de CONSERI para organizar tus números antes de emprender o empezar a facturar: ebook, plantillas de Excel y un video que te enseña a llenarlas. Calcula tu punto de equilibrio, tu precio y lo que debes separar para impuestos.">
 <meta name="author" content="CONSERI · Consultoría Contable de Servicios Integrales">
 <meta name="theme-color" content="#112234">
 
@@ -40,7 +40,7 @@
 <meta property="og:locale" content="es_MX">
 <meta property="og:site_name" content="CONSERI">
 <meta property="og:title" content="Antes de Emprender · Finanzas e impuestos que nadie te explica">
-<meta property="og:description" content="No emprendas a ciegas: calcula, ordena y decide. Ebook, plantillas, minicurso y asesoría de CONSERI.">
+<meta property="og:description" content="Organiza tus números antes de emprender o empezar a facturar. Ebook, plantillas de Excel y minicurso en video de CONSERI.">
 <meta property="og:url" content="https://www.conseri.mx/">
 <meta property="og:image" content="https://www.conseri.mx/assets/og-conseri.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -66,13 +66,14 @@
   </a>
 
   <nav class="barra__nav" aria-label="Secciones">
-    <a href="#kit">El kit</a>
+    <a href="#para-ti">Para quién</a>
+    <a href="#por-dentro">Por dentro</a>
     <a href="#contenido">Contenido</a>
-    <a href="#ruta">Ruta de 7 días</a>
     <a href="#precios">Precios</a>
   </nav>
 
-  <a href="#precios" class="boton boton--chico">Ver precios</a>
+  <!-- Compra directa: lleva al checkout de Mercado Pago sin pasar por precios -->
+  <button class="boton boton--chico" data-producto="kit_completo">Comprar el kit</button>
 </header>
 
 <main>
@@ -92,25 +93,41 @@
       </p>
 
       <h1 class="titular animar" data-animar="subir" data-retraso="80">
-        Una buena idea abre la puerta.
-        <span class="titular__acento">Los números dicen si puedes cruzarla.</span>
+        Organiza tus números
+        <span class="titular__acento">antes de emprender o empezar a facturar.</span>
       </h1>
 
       <p class="entrada animar" data-animar="subir" data-retraso="160">
-        Antes de invertir tu dinero, darte de alta en el SAT o ponerle precio a lo que
-        vendes, hay seis o siete cuentas que conviene tener resueltas. Este kit te las
-        deja claras en una semana, sin lenguaje de contador.
+        Un ebook, cinco plantillas de Excel que hacen las cuentas por ti y un video
+        que te enseña a llenarlas. Sin lenguaje de contador.
       </p>
 
-      <div class="portada__acciones animar" data-animar="subir" data-retraso="240">
-        <a href="#precios" class="boton boton--grande">Quiero el kit</a>
-        <a href="#contenido" class="enlace-suave">Ver qué incluye</a>
+      <ul class="portada__beneficios animar" data-animar="subir" data-retraso="220">
+        <li>Sabes cuánto necesitas vender para no perder</li>
+        <li>Pones un precio que sí te deja margen</li>
+        <li>Separas el dinero del negocio, el tuyo y el de impuestos</li>
+      </ul>
+
+      <!-- Los numeros con data-precio se copian solos del precio de la
+           tarjeta en la seccion de precios (js/script.js). Si cambias el precio
+           ahi, cambia aqui tambien. -->
+      <div class="portada__compra animar" data-animar="subir" data-retraso="280">
+        <p class="portada__precio">
+          <span class="portada__moneda">$</span><span data-precio="kit_completo">899</span>
+          <span class="portada__divisa">MXN · pago único</span>
+        </p>
+        <div class="portada__acciones">
+          <button class="boton boton--grande" data-producto="kit_completo">
+            Comprar el kit por $<span data-precio="kit_completo">899</span>
+          </button>
+          <a href="#por-dentro" class="enlace-suave">Ver cómo es por dentro</a>
+        </div>
       </div>
 
-      <ul class="portada__sellos animar" data-animar="subir" data-retraso="320">
-        <li>Descarga inmediata</li>
+      <ul class="portada__sellos animar" data-animar="subir" data-retraso="340">
         <li>Pago seguro con Mercado Pago</li>
-        <li>Contenido de contadores en activo</li>
+        <li>Acceso inmediato por correo</li>
+        <li>Hecho por contadores de CONSERI</li>
       </ul>
     </div>
 
@@ -128,7 +145,7 @@
               <h2 class="cubierta__titulo">Antes de<br>Emprender</h2>
               <div class="cubierta__linea"></div>
               <p class="cubierta__bajada">Finanzas e impuestos<br>que nadie te explica</p>
-              <p class="cubierta__autor">Mtro. Luis Enrique Jacobo</p>
+              <p class="cubierta__autor">Mtro. Luis Enrique Jacobo Luna</p>
               <!-- El destello que recorre la portada. Va en su propio elemento
                    para poder animar opacidad y posición por separado. -->
               <span class="cubierta__brillo" aria-hidden="true"></span>
@@ -148,7 +165,7 @@
 
   </div>
 
-  <a class="portada__bajar" href="#cifras" aria-label="Bajar a la siguiente sección">
+  <a class="portada__bajar" href="#para-ti" aria-label="Bajar a la siguiente sección">
     <span></span>
   </a>
 </section>
@@ -173,6 +190,34 @@
     <span>Planes personales de retiro</span><span class="cinta__punto">◆</span>
   </div>
 </div>
+
+<!-- ============================ PARA QUIÉN ES ============================
+     Que el visitante se reconozca antes de entrar en detalles. La ultima linea
+     manda a la asesoria a quien no es publico del kit, en vez de venderle algo
+     que no le sirve.
+================================================================================ -->
+<section class="seccion seccion--blanca" id="para-ti">
+  <div class="seccion__cabecera">
+    <p class="etiqueta animar" data-animar="subir">Para quién es</p>
+    <h2 class="seccion__titulo animar" data-animar="subir" data-retraso="60">
+      Este kit es para ti si...
+    </h2>
+  </div>
+
+  <ul class="perfiles">
+    <li class="perfil animar" data-animar="subir">Eres freelancer o profesionista independiente y quieres cobrar con orden.</li>
+    <li class="perfil animar" data-animar="subir" data-retraso="60">Vas a empezar a facturar y todavía no sabes qué te conviene.</li>
+    <li class="perfil animar" data-animar="subir" data-retraso="120">Estás en RESICO, o lo estás considerando, y quieres entender tus números.</li>
+    <li class="perfil animar" data-animar="subir" data-retraso="180">Prestas servicios y no sabes si tu precio cubre tu tiempo y tus impuestos.</li>
+    <li class="perfil animar" data-animar="subir" data-retraso="240">Tienes un negocio pequeño y el dinero personal y el del negocio viven en la misma cuenta.</li>
+    <li class="perfil animar" data-animar="subir" data-retraso="300">Quieres invertir en una idea y antes saber cuánto necesitas vender.</li>
+  </ul>
+
+  <p class="perfiles__nota animar" data-animar="subir">
+    ¿Ya tienes el negocio andando y quieres que alguien revise tu caso en particular?
+    Te sirve más la <a href="#precios">asesoría personalizada</a>.
+  </p>
+</section>
 
 <!-- ============================ 3. VENDER NO ES GANAR ============================
      Sustituye a la calculadora. En vez de pedirle datos al visitante, le
@@ -246,18 +291,46 @@
   </div>
 </section>
 
-<!-- ============================ 4. EL KIT ============================ -->
+<!-- ============================ 4. EL KIT ============================
+     Primero los resultados, despues las herramientas. La asesoria ya no
+     aparece como pieza del kit porque no viene incluida: se agenda aparte.
+================================================================================ -->
 <section class="seccion seccion--navy" id="kit">
   <div class="seccion__cabecera">
-    <p class="etiqueta etiqueta--clara animar" data-animar="subir">Qué recibes</p>
+    <p class="etiqueta etiqueta--clara animar" data-animar="subir">Qué vas a lograr</p>
     <h2 class="seccion__titulo animar" data-animar="subir" data-retraso="60">
-      Cuatro piezas que trabajan juntas
+      Al terminar la semana vas a tener claro
     </h2>
-    <p class="seccion__intro animar" data-animar="subir" data-retraso="120">
-      El ebook explica, las plantillas calculan, el minicurso te lleva de la mano y la
-      asesoría resuelve tu caso. No es material para leer y guardar: es material para llenar.
-    </p>
   </div>
+
+  <ul class="logros">
+    <li class="logro animar" data-animar="subir">
+      <h3 class="logro__titulo">Cuánto necesitas para arrancar</h3>
+      <p>Tu inversión inicial, separando lo indispensable de lo que puede esperar.</p>
+    </li>
+    <li class="logro animar" data-animar="subir" data-retraso="60">
+      <h3 class="logro__titulo">Cuánto te cuesta cada mes</h3>
+      <p>Gastos fijos, costos variables y cuántos meses puedes resistir.</p>
+    </li>
+    <li class="logro animar" data-animar="subir" data-retraso="120">
+      <h3 class="logro__titulo">Cuánto tienes que vender</h3>
+      <p>Tu punto de equilibrio: las ventas mínimas para no perder dinero.</p>
+    </li>
+    <li class="logro animar" data-animar="subir" data-retraso="180">
+      <h3 class="logro__titulo">Cuánto cobrar</h3>
+      <p>Precio mínimo, recomendado y premium, con la reserva de impuestos incluida.</p>
+    </li>
+    <li class="logro animar" data-animar="subir" data-retraso="240">
+      <h3 class="logro__titulo">Qué dinero es de quién</h3>
+      <p>El del negocio, el tuyo y el de impuestos, cada uno en su lugar.</p>
+    </li>
+    <li class="logro animar" data-animar="subir" data-retraso="300">
+      <h3 class="logro__titulo">Cómo va tu negocio mes a mes</h3>
+      <p>Un tablero de control para no enterarte hasta la declaración anual.</p>
+    </li>
+  </ul>
+
+  <h3 class="subtitulo-seccion animar" data-animar="subir">Con qué lo haces</h3>
 
   <!-- data-inclina activa el efecto 3D al pasar el cursor (js/script.js) -->
   <div class="piezas">
@@ -282,10 +355,10 @@
           <path d="M3 9h18M9 9v12M3 15h18"/>
         </svg>
       </span>
-      <h3 class="pieza__titulo">Plantillas</h3>
+      <h3 class="pieza__titulo">Plantillas de Excel</h3>
       <p class="pieza__texto">
         Cinco hojas de cálculo listas: diagnóstico, inversión inicial, punto de
-        equilibrio, precio mínimo y control mensual. Solo escribes tus números.
+        equilibrio, precio y control mensual. Solo escribes tus números.
       </p>
     </article>
 
@@ -297,27 +370,97 @@
           <path d="M8 21h8"/>
         </svg>
       </span>
-      <h3 class="pieza__titulo">Minicurso grabado</h3>
+      <h3 class="pieza__titulo">Minicurso en video</h3>
       <p class="pieza__texto">
-        Seis lecciones cortas que muestran cómo llenar cada plantilla, paso a paso,
-        con un caso real de un negocio de servicios.
-      </p>
-    </article>
-
-    <article class="pieza animar" data-animar="subir" data-retraso="240" data-inclina>
-      <span class="pieza__icono" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-          <path d="M20 15a2 2 0 0 1-2 2H8l-4 3V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"/>
-          <path d="M9 10h7M9 13h4"/>
-        </svg>
-      </span>
-      <h3 class="pieza__titulo">Asesoría personalizada</h3>
-      <p class="pieza__texto">
-        Sesión de 45 a 60 minutos con el Mtro. Luis Enrique Jacobo para revisar tu idea, tus
-        números, tu régimen probable y tus riesgos.
+        Un video de 22 minutos donde se llenan las plantillas paso a paso, con el
+        ejemplo de un despacho de servicios.
       </p>
     </article>
   </div>
+
+  <p class="kit__nota animar" data-animar="subir">
+    ¿Tu caso necesita una revisión personal? La asesoría con un contador de CONSERI
+    se agenda aparte, desde la <a href="#precios">sección de precios</a>.
+  </p>
+</section>
+
+<!-- ============================ ASÍ SE VE POR DENTRO ============================
+     Capturas reales de las plantillas, sacadas del video del minicurso. Las
+     imagenes viven en assets/kit/. En celular cada captura se puede recorrer de
+     lado para que el texto no quede diminuto.
+================================================================================ -->
+<section class="seccion seccion--blanca" id="por-dentro">
+  <div class="seccion__cabecera">
+    <p class="etiqueta animar" data-animar="subir">Así se ve por dentro</p>
+    <h2 class="seccion__titulo animar" data-animar="subir" data-retraso="60">
+      No es un PDF para leer y guardar
+    </h2>
+    <p class="seccion__intro animar" data-animar="subir" data-retraso="120">
+      Son hojas de Excel que ya hacen las cuentas. Escribes tus datos en las celdas
+      azules y el resultado sale solo. Funcionan también en Google Sheets.
+    </p>
+  </div>
+
+  <p class="muestras__pista" aria-hidden="true">Desliza cada captura para verla completa</p>
+
+  <div class="muestras">
+    <figure class="muestra animar" data-animar="subir">
+      <figcaption class="muestra__texto">
+        <h3 class="muestra__titulo">Diagnóstico</h3>
+        <p>Ocho preguntas que te dicen qué tienes listo y qué conviene resolver antes de lanzar.</p>
+      </figcaption>
+      <div class="muestra__marco">
+        <img src="assets/kit/excel-diagnostico.webp" width="1200" height="275" loading="lazy"
+             alt="Hoja de diagnóstico del kit: preguntas por área con respuesta, puntaje y acción sugerida">
+      </div>
+    </figure>
+
+    <figure class="muestra animar" data-animar="subir">
+      <figcaption class="muestra__texto">
+        <h3 class="muestra__titulo">Punto de equilibrio</h3>
+        <p>Cuántos clientes o ventas necesitas para cubrir el negocio, y cuántos para vivir de él.</p>
+      </figcaption>
+      <div class="muestra__marco">
+        <img src="assets/kit/excel-punto-equilibrio.webp" width="1200" height="412" loading="lazy"
+             alt="Hoja de punto de equilibrio: servicios con precio, costo, margen y unidades necesarias">
+      </div>
+    </figure>
+
+    <figure class="muestra animar" data-animar="subir">
+      <figcaption class="muestra__texto">
+        <h3 class="muestra__titulo">Precio de tus servicios</h3>
+        <p>Precio mínimo, recomendado y premium para cada servicio, con la reserva fiscal ya calculada.</p>
+      </figcaption>
+      <div class="muestra__marco">
+        <img src="assets/kit/excel-precio.webp" width="1200" height="147" loading="lazy"
+             alt="Hoja de precios: horas, costo directo, reserva fiscal y tres niveles de precio por servicio">
+      </div>
+    </figure>
+
+    <figure class="muestra animar" data-animar="subir">
+      <figcaption class="muestra__texto">
+        <h3 class="muestra__titulo">Control mensual</h3>
+        <p>Ingresos, gastos, impuestos y utilidad de cada mes en un solo lugar.</p>
+      </figcaption>
+      <div class="muestra__marco">
+        <img src="assets/kit/excel-control-mensual.webp" width="1200" height="337" loading="lazy"
+             alt="Hoja de control mensual: ingresos, costos, reserva de impuestos y utilidad por mes">
+      </div>
+    </figure>
+
+    <figure class="muestra muestra--video animar" data-animar="subir">
+      <figcaption class="muestra__texto">
+        <h3 class="muestra__titulo">Minicurso en video</h3>
+        <p>22 minutos en los que se llenan todas las hojas, una por una, con un ejemplo real.</p>
+      </figcaption>
+      <div class="muestra__marco muestra__marco--video">
+        <img src="assets/kit/minicurso-portada.webp" width="1000" height="411" loading="lazy"
+             alt="Portada del archivo de plantillas, como aparece al inicio del minicurso">
+        <span class="muestra__sello">Video · 22 min</span>
+      </div>
+    </figure>
+  </div>
+
 </section>
 
 <!-- ============================ 5. CONTENIDO DEL EBOOK ============================
@@ -392,22 +535,9 @@
     </ol>
   </div>
 
-  <div class="checklist animar" data-animar="subir">
-    <h3 class="checklist__titulo">Y al cierre, la revisión que evita sustos</h3>
-    <p class="checklist__intro">Diez bloques de verificación antes de invertir dinero importante:</p>
-    <ul class="checklist__lista">
-      <li>Claridad del negocio</li>
-      <li>Inversión inicial</li>
-      <li>Gastos y costos</li>
-      <li>Punto de equilibrio</li>
-      <li>Precio</li>
-      <li>Finanzas personales y del negocio</li>
-      <li>Fiscal y cumplimiento</li>
-      <li>Control mensual</li>
-      <li>Documentos y soporte</li>
-      <li>Preparación para tu asesoría</li>
-    </ul>
-  </div>
+  <p class="indice__cierre animar" data-animar="subir">
+    Y al final, un checklist de diez puntos para revisar antes de invertir dinero importante.
+  </p>
 </section>
 
 <!-- ============================ 6. RUTA DE 7 DÍAS ============================
@@ -448,10 +578,35 @@
       Empieza por donde te haga sentido
     </h2>
     <p class="seccion__intro animar" data-animar="subir" data-retraso="120">
-      Pago seguro con Mercado Pago: tarjeta, transferencia, efectivo o saldo.
-      Recibes tu material por correo en cuanto se acredita el pago.
+      El kit es la forma más completa de empezar. Si solo quieres leer, está el
+      ebook; si tu caso necesita una revisión personal, la asesoría.
     </p>
   </div>
+
+  <!-- Como funciona la compra. Es una secuencia real, por eso va numerada. -->
+  <ol class="pasos animar" data-animar="subir">
+    <li class="paso">
+      <span class="paso__num">1</span>
+      <div>
+        <h3 class="paso__titulo">Pagas en Mercado Pago</h3>
+        <p>Con tarjeta, transferencia, efectivo o saldo.</p>
+      </div>
+    </li>
+    <li class="paso">
+      <span class="paso__num">2</span>
+      <div>
+        <h3 class="paso__titulo">Recibes el acceso por correo</h3>
+        <p>En cuanto se acredita el pago, más una página de descarga inmediata.</p>
+      </div>
+    </li>
+    <li class="paso">
+      <span class="paso__num">3</span>
+      <div>
+        <h3 class="paso__titulo">Lo aplicas en 7 días</h3>
+        <p>Una tarea por día, siguiendo la ruta del kit.</p>
+      </div>
+    </li>
+  </ol>
 
   <div class="catalogo">
 
@@ -466,13 +621,13 @@
         <li>Ejercicio al cierre de cada capítulo</li>
         <li>Descarga inmediata</li>
       </ul>
-      <p class="producto__precio"><span class="producto__moneda">$</span>279<span class="producto__divisa">MXN</span></p>
+      <p class="producto__precio"><span class="producto__moneda">$</span>249<span class="producto__divisa">MXN</span></p>
       <button class="boton boton--bloque" data-producto="ebook_antes_de_emprender">Comprar el ebook</button>
     </article>
 
     <article class="producto producto--destacado animar" data-animar="subir" data-retraso="80">
       <p class="producto__insignia">Más completo</p>
-      <p class="producto__tipo">Ebook + plantillas + minicurso</p>
+      <p class="producto__tipo">Ebook + plantillas + video</p>
       <h3 class="producto__nombre">Kit Antes de Emprender</h3>
       <p class="producto__descripcion">
         Todo el material para pasar de la idea a números reales en una semana.
@@ -480,9 +635,9 @@
       <ul class="producto__lista">
         <li>Ebook completo en PDF</li>
         <li>5 plantillas de cálculo en Excel</li>
-        <li>Minicurso grabado de 6 lecciones</li>
+        <li>Minicurso en video de 22 minutos</li>
       </ul>
-      <p class="producto__precio"><span class="producto__moneda">$</span>999<span class="producto__divisa">MXN</span></p>
+      <p class="producto__precio"><span class="producto__moneda">$</span>899<span class="producto__divisa">MXN</span></p>
       <button class="boton boton--bloque" data-producto="kit_completo">Comprar el kit</button>
     </article>
 
@@ -490,7 +645,7 @@
       <p class="producto__tipo">Sesión en línea</p>
       <h3 class="producto__nombre">Asesoría personalizada</h3>
       <p class="producto__descripcion">
-        Una sesión directa con el Mtro. Luis Enrique Jacobo, con tus números ya en la mano.
+        Una sesión directa con Luis Enrique Jacobo, con tus números ya en la mano.
       </p>
       <ul class="producto__lista">
         <li>45 a 60 minutos por videollamada</li>
@@ -502,7 +657,7 @@
            data-producto. Si algún día se cobra en línea, se agrega la entrada al
            catálogo y este enlace se cambia por un botón de compra, como los de
            arriba. -->
-      <a class="boton boton--bloque"
+      <a class="boton boton--bloque boton--secundario"
          href="https://bookings.cloud.microsoft/book/DiagnsticoConseri@conseri.mx/?ismsaljsauthenabled"
          target="_blank" rel="noopener">Agendar mi diagnóstico</a>
     </article>
@@ -512,9 +667,19 @@
   <!-- Mensaje de error de compra. js/script.js lo muestra si algo falla. -->
   <p class="aviso-compra" id="aviso-compra" role="status" hidden></p>
 
+  <!-- Confianza junto a los botones de compra -->
+  <ul class="confianza">
+    <li>Pago procesado por Mercado Pago</li>
+    <li>Acceso digital inmediato</li>
+    <li>Soporte: <a href="mailto:contacto@conseri.mx">contacto@conseri.mx</a></li>
+    <li><a href="legal.html#terminos">Términos de compra</a></li>
+    <li><a href="legal.html">Aviso de privacidad</a></li>
+  </ul>
+
   <p class="nota-pago">
     ¿Necesitas factura o prefieres pagar por transferencia?
     <a href="mailto:contacto@conseri.mx">Escríbenos</a> y lo resolvemos.
+    Material educativo: no sustituye una asesoría fiscal personalizada.
   </p>
 </section>
 
@@ -538,7 +703,7 @@
         supiera antes de sentarse con nosotros por primera vez.
       </p>
       <p class="firma__autor animar" data-animar="subir" data-retraso="200">
-        Contenido a cargo del <strong>Mtro. Luis Enrique Jacobo</strong>,
+        Contenido a cargo del <strong>Mtro. Luis Enrique Jacobo Luna</strong>,
         Director de Finanzas de CONSERI.
       </p>
 
@@ -602,12 +767,26 @@
       ordenar un negocio que ya está caminando.</p>
     </details>
 
+    <details class="duda animar" data-animar="subir" data-retraso="200">
+      <summary>¿El kit incluye la asesoría?</summary>
+      <p>No. El kit trae el ebook, las plantillas y el minicurso en video. La asesoría
+      con un contador de CONSERI se agenda aparte, y llegar con las plantillas ya
+      llenas hace que esa sesión rinda mucho más.</p>
+    </details>
+
     <details class="duda animar" data-animar="subir" data-retraso="240">
+      <summary>¿Cómo es el minicurso?</summary>
+      <p>Es un video de 22 minutos. Se abre el archivo de plantillas y se llenan todas
+      las hojas, una por una, con el ejemplo de un despacho de servicios. Lo ves desde
+      tu página de descarga o lo descargas.</p>
+    </details>
+
+    <details class="duda animar" data-animar="subir" data-retraso="280">
       <summary>¿Necesito Excel?</summary>
       <p>Las plantillas funcionan en Excel y también en Google Sheets, sin costo.</p>
     </details>
 
-    <details class="duda animar" data-animar="subir" data-retraso="300">
+    <details class="duda animar" data-animar="subir" data-retraso="320">
       <summary>¿Puedo pedir factura?</summary>
       <p>Sí. Escríbenos a contacto@conseri.mx con tus datos fiscales y el número de pago
       que aparece en tu comprobante.</p>
@@ -624,9 +803,10 @@
   <p class="cierre__texto animar" data-animar="subir" data-retraso="120">
     No emprendas a ciegas: calcula, ordena y decide.
   </p>
-  <a href="#precios" class="boton boton--grande animar" data-animar="subir" data-retraso="180">
-    Empezar con el kit
-  </a>
+  <button class="boton boton--grande animar" data-animar="subir" data-retraso="180"
+          data-producto="kit_completo">
+    Comprar el kit por $<span data-precio="kit_completo">899</span>
+  </button>
 </section>
 
 </main>
@@ -652,6 +832,19 @@
 
   <p class="pie__creditos">© <span id="anio">2026</span> CONSERI. Todos los derechos reservados.</p>
 </footer>
+
+<!-- ============================ BARRA DE COMPRA (CELULAR) ============================
+     Solo aparece en pantallas chicas. js/script.js la esconde mientras se ve
+     la portada, la seccion de precios, el cierre o el pie, para no duplicar
+     botones ni tapar contenido.
+================================================================================ -->
+<div class="barra-compra" id="barra-compra">
+  <p class="barra-compra__texto">
+    <strong>Kit Antes de Emprender</strong>
+    <span>$<span data-precio="kit_completo">899</span> MXN</span>
+  </p>
+  <button class="boton boton--chico" data-producto="kit_completo">Comprar el kit</button>
+</div>
 
 <script src="js/fondo.js" defer></script>
 <script src="js/script.js" defer></script>

@@ -1314,10 +1314,256 @@ img{ max-width: 100%; height: auto; }
 .barra__marca{ transition: transform .3s var(--curva); }
 .barra__marca:hover{ transform: translateY(-2px); }
 
+/* ============================================================================
+   AJUSTES DE CONVERSIÓN · septiembre 2026
+   ----------------------------------------------------------------------------
+   Estilos de lo que se agregó a partir del documento de optimización: precio
+   y beneficios en la portada, "para ti si...", resultados del kit, capturas
+   de las plantillas, los tres pasos de compra, confianza junto a los botones
+   y la barra fija de compra en celular.
+   ============================================================================ */
+
+.seccion--blanca{ background: var(--blanco); }
+
+/* El titular nuevo es más largo que el anterior: un poco más chico y más
+   ancho, para que precio y botón queden a la vista sin bajar en una laptop. */
+.portada .titular{ font-size: clamp(2rem, 3.9vw, 3.15rem); margin-bottom: 1.2rem; }
+.portada .entrada{ margin-bottom: 1.6rem; }
+.portada{ padding-top: 6.2rem; padding-bottom: 4rem; }
+
+/* ---- Portada: beneficios y precio ---- */
+.portada__beneficios{
+  list-style: none;
+  margin: 0 0 2rem;
+  padding: 0;
+  display: grid;
+  gap: .7rem;
+}
+.portada__beneficios li{
+  display: flex;
+  align-items: flex-start;
+  gap: .75rem;
+  color: rgba(255, 255, 255, .9);
+  font-size: 1.02rem;
+  line-height: 1.5;
+}
+.portada__beneficios li::before{
+  content: "";
+  flex: none;
+  width: 22px; height: 22px;
+  margin-top: .1rem;
+  border-radius: 50%;
+  background: rgba(244, 136, 42, .18) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F4882A' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7'/%3E%3C/svg%3E") center / 13px no-repeat;
+}
+
+.portada__compra{ margin-bottom: 2rem; }
+.portada__compra .portada__acciones{ margin-bottom: 0; }
+.portada__precio{
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: .25rem;
+  margin: 0 0 1.1rem;
+  font-family: var(--display);
+  font-size: 2.7rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--blanco);
+}
+.portada__moneda{
+  align-self: flex-start;
+  margin-top: .25rem;
+  font-size: 1.3rem;
+  color: rgba(255, 255, 255, .7);
+}
+.portada__divisa{
+  margin-left: .5rem;
+  font-size: .76rem;
+  font-weight: 500;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, .6);
+}
+
+/* ---- Para quién es ---- */
+.perfiles{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+}
+.perfil{
+  position: relative;
+  padding: 1.2rem 1.3rem 1.2rem 3.3rem;
+  background: var(--hueso);
+  border: 1px solid var(--azul-humo);
+  border-radius: 12px;
+  color: var(--navy);
+  font-size: .98rem;
+  line-height: 1.5;
+  transition: border-color .3s ease, transform .3s var(--curva), box-shadow .3s ease;
+}
+.perfil::before{
+  content: "";
+  position: absolute;
+  left: 1.1rem; top: 1.25rem;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--naranja) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FFFFFF' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7'/%3E%3C/svg%3E") center / 13px no-repeat;
+}
+.perfil:hover{
+  border-color: var(--azul-claro);
+  transform: translateY(-3px);
+  box-shadow: 0 18px 36px -28px rgba(17, 34, 52, .5);
+}
+.perfiles__nota{ margin-top: 2rem; color: var(--gris); font-size: .95rem; }
+
+/* ---- Lo que vas a lograr ---- */
+.logros{
+  list-style: none;
+  margin: 0 0 4rem;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem 2.4rem;
+}
+.logro{
+  border-left: 2px solid var(--naranja);
+  padding-left: 1.2rem;
+}
+.logro__titulo{ font-size: 1.12rem; color: var(--blanco); margin-bottom: .4rem; }
+.logro p{ margin: 0; color: rgba(255, 255, 255, .66); font-size: .95rem; }
+
+.subtitulo-seccion{ font-size: 1.25rem; color: var(--navy); margin-bottom: 1.6rem; }
+.seccion--navy .subtitulo-seccion{ color: var(--blanco); }
+
+.kit__nota{ margin-top: 2rem; color: rgba(255, 255, 255, .66); font-size: .95rem; }
+.kit__nota a{ color: var(--naranja-claro); }
+
+/* ---- Así se ve por dentro ---- */
+.muestras{ display: grid; gap: 2.6rem; }
+.muestra{
+  margin: 0;
+  display: grid;
+  grid-template-columns: minmax(200px, .85fr) 2.4fr;
+  gap: 2rem;
+  align-items: center;
+}
+.muestra__titulo{ font-size: 1.15rem; color: var(--navy); margin-bottom: .4rem; }
+.muestra__texto p{ margin: 0; color: var(--gris); font-size: .95rem; }
+.muestra__marco{
+  position: relative;
+  background: var(--blanco);
+  border: 1px solid var(--azul-humo);
+  border-radius: 12px;
+  overflow: auto;
+  box-shadow: var(--sombra);
+  -webkit-overflow-scrolling: touch;
+}
+.muestra__marco img{ display: block; width: 100%; height: auto; }
+.muestra__marco--video{ overflow: hidden; }
+.muestra__sello{
+  position: absolute;
+  right: 1rem; bottom: 1rem;
+  padding: .45rem .9rem;
+  border-radius: 999px;
+  background: var(--navy);
+  color: var(--blanco);
+  font-family: var(--display);
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.muestras__pista{ display: none; }
+
+/* ---- Cierre del índice (sustituye al bloque del checklist) ---- */
+.indice__cierre{ margin-top: 2rem; color: var(--gris); font-size: .95rem; }
+
+/* ---- Cómo funciona la compra ---- */
+.pasos{
+  list-style: none;
+  margin: 0 0 3rem;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.2rem;
+}
+.paso{
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.2rem 1.3rem;
+  background: var(--blanco);
+  border: 1px solid var(--azul-humo);
+  border-radius: 12px;
+}
+.paso__num{
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: var(--navy);
+  color: var(--blanco);
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: .95rem;
+}
+.paso__titulo{ font-size: 1rem; color: var(--navy); margin: .2rem 0 .25rem; }
+.paso p{ margin: 0; color: var(--gris); font-size: .9rem; }
+
+/* ---- El kit como opción principal ---- */
+@media (min-width: 981px){
+  /* La tarjeta del kit es más ancha y más alta; las otras dos quedan centradas
+     a su lado, así se lee como la opción recomendada sin decirlo a gritos. */
+  .catalogo{ grid-template-columns: 1fr 1.12fr 1fr; align-items: center; }
+  .producto--destacado{ padding-top: 3.2rem; padding-bottom: 3.2rem; }
+}
+
+/* Botón de la asesoría: alternativa, no acción principal */
+.boton--secundario{
+  background: transparent;
+  color: var(--navy);
+  box-shadow: inset 0 0 0 2px var(--navy);
+}
+.boton--secundario:hover{
+  background: var(--navy);
+  color: var(--blanco);
+  box-shadow: inset 0 0 0 2px var(--navy);
+}
+
+/* ---- Confianza junto a los botones ---- */
+.confianza{
+  list-style: none;
+  margin: 2.2rem auto 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: .6rem 1.6rem;
+  font-size: .86rem;
+  color: var(--gris);
+}
+.confianza li{ display: flex; align-items: center; gap: .5rem; }
+.confianza li::before{
+  content: "";
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--azul);
+}
+.confianza a{ color: var(--azul); }
+.confianza + .nota-pago{ margin-top: 1.2rem; }
+
+/* ---- Barra fija de compra (solo celular) ---- */
+.barra-compra{ display: none; }
+
 /* ============================ MÓVIL ============================ */
 @media (max-width: 980px){
   .portada__contenido{ grid-template-columns: 1fr; }
-  .escena{ min-height: 400px; order: -1; }
+  .escena{ min-height: 380px; }
   .libro{ width: 230px; height: 322px; }
   .libro__cara--frente, .libro__cara--atras{ width: 230px; height: 322px; }
   .libro__cara--lomo, .libro__cara--canto{ height: 322px; }
@@ -1326,6 +1572,66 @@ img{ max-width: 100%; height: auto; }
   .cubierta__titulo{ font-size: 1.5rem; }
   .firma{ grid-template-columns: 1fr; }
   .barra__nav{ display: none; }
+
+  /* El kit aparece primero en celular y tableta */
+  .producto--destacado{ order: -1; }
+  .pasos{ grid-template-columns: 1fr; }
+}
+
+@media (max-width: 780px){
+  /* Barra fija de compra. js/script.js le pone .barra-compra--visible solo
+     cuando no se ven la portada, los precios, el cierre ni el pie. */
+  .barra-compra{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    z-index: 80;
+    padding: .7rem 1rem calc(.7rem + env(safe-area-inset-bottom));
+    background: rgba(17, 34, 52, .96);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 -12px 30px -18px rgba(0, 0, 0, .8);
+    transform: translateY(110%);
+    visibility: hidden;
+    transition: transform .35s var(--curva), visibility 0s linear .35s;
+  }
+  .barra-compra--visible{
+    transform: none;
+    visibility: visible;
+    transition: transform .35s var(--curva);
+  }
+  .barra-compra__texto{
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.25;
+    color: var(--blanco);
+  }
+  .barra-compra__texto strong{ font-family: var(--display); font-size: .84rem; }
+  .barra-compra__texto > span{
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--naranja-claro);
+  }
+
+  /* En celular la barra de abajo ya lleva el boton de compra: el del
+     encabezado sobraria. */
+  .barra > .boton{ display: none; }
+
+  /* Capturas: legibles en celular deslizando de lado */
+  .muestra{ grid-template-columns: 1fr; gap: 1rem; }
+  .muestra__marco img{ min-width: 640px; }
+  .muestra__marco--video img{ min-width: 0; }
+  .muestras__pista{
+    display: block;
+    margin-top: -1.6rem;
+    margin-bottom: 1.6rem;
+    font-size: .82rem;
+    color: var(--gris);
+  }
 }
 
 @media (max-width: 620px){

@@ -8,6 +8,8 @@
    5. Desglose de Carlos: barras y cifras que se animan solas
    6. Línea del índice que se llena con el scroll
    7. Botones de compra: hablan con /api/checkout
+   8. Precios repetidos: se copian de la tarjeta de precios
+   9. Barra fija de compra en celular
    ============================================================================ */
 
 (function () {
@@ -15,6 +17,31 @@
 
   const quietud = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const finoParaTocar = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  /* =========================================================================
+     8. PRECIOS REPETIDOS
+     -------------------------------------------------------------------------
+     El precio del kit aparece en la portada, en el cierre y en la barra de
+     celular. Para no tener que cambiarlo en cinco lugares, todos los
+     <span data-precio="clave"> copian la cifra de la tarjeta de precios de
+     ese producto. Cambias el precio en la tarjeta y cambia en todos lados.
+
+     Ojo: esto solo es lo que se MUESTRA. Lo que se cobra lo decide siempre
+     api/catalogo.json en el servidor.
+     ========================================================================= */
+
+  document.querySelectorAll('[data-precio]').forEach((destino) => {
+    const clave = destino.dataset.precio;
+    const boton = document.querySelector('.producto [data-producto="' + clave + '"]');
+    const precio = boton && boton.closest('.producto').querySelector('.producto__precio');
+    if (!precio) return;
+
+    const cifra = Array.prototype.find.call(
+      precio.childNodes,
+      (nodo) => nodo.nodeType === 3 && /\d/.test(nodo.textContent)
+    );
+    if (cifra) destino.textContent = cifra.textContent.trim();
+  });
 
   /* =========================================================================
      1. BARRA SUPERIOR Y PROGRESO
@@ -260,6 +287,33 @@
     tarjetasPrecio.forEach((t) => vigiaPrecios.observe(t));
   }
 
+  /* =========================================================================
+     9. BARRA FIJA DE COMPRA (CELULAR)
+     -------------------------------------------------------------------------
+     El CSS solo la muestra en pantallas chicas. Aqui se decide cuando sale:
+     nunca mientras se ve la portada (ya tiene su boton), la seccion de
+     precios (ya estan las tarjetas), el cierre o el pie (tapaba los enlaces).
+     ========================================================================= */
+
+  const barraCompra = document.getElementById('barra-compra');
+  const estorbos = ['#inicio', '#precios', '.cierre', '.pie']
+    .map((selector) => document.querySelector(selector))
+    .filter(Boolean);
+
+  if (barraCompra && estorbos.length && 'IntersectionObserver' in window) {
+    const enPantalla = new Set();
+
+    const vigiaBarra = new IntersectionObserver((entradas) => {
+      entradas.forEach((entrada) => {
+        if (entrada.isIntersecting) enPantalla.add(entrada.target);
+        else enPantalla.delete(entrada.target);
+      });
+      barraCompra.classList.toggle('barra-compra--visible', enPantalla.size === 0);
+    }, { threshold: 0 });
+
+    estorbos.forEach((el) => vigiaBarra.observe(el));
+  }
+
   /* Año del pie, siempre al día */
   const anio = document.getElementById('anio');
   if (anio) anio.textContent = new Date().getFullYear();
@@ -278,6 +332,9 @@
     if (!aviso) return;
     aviso.textContent = texto;
     aviso.hidden = false;
+    /* La compra puede empezar desde la portada, el cierre o la barra de
+       celular, lejos de este mensaje: se lleva a la persona hasta el. */
+    aviso.scrollIntoView({ behavior: quietud ? 'auto' : 'smooth', block: 'center' });
   }
 
   document.querySelectorAll('[data-producto]').forEach((boton) => {
