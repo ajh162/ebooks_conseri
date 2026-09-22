@@ -52,6 +52,7 @@
   const relleno = document.getElementById('indice-relleno');
   const indice = document.getElementById('indice');
   const flota = quietud ? null : document.querySelector('.libro__flota');
+  const filasIndice = document.querySelectorAll('.indice__fila');
 
   let pendiente = false;
 
@@ -72,6 +73,12 @@
       const visto = window.innerHeight * 0.6 - caja.top;
       const proporcion = Math.max(0, Math.min(1, visto / caja.height));
       relleno.style.height = (proporcion * 100) + '%';
+
+      /* Cada capitulo se enciende cuando la linea lo alcanza */
+      const corte = window.innerHeight * 0.6;
+      filasIndice.forEach((fila) => {
+        fila.classList.toggle('pasado', fila.getBoundingClientRect().top < corte);
+      });
     }
 
     /* El libro de la portada se desplaza un poco mas lento que la pagina.
@@ -192,11 +199,18 @@
       }, i * 160);
     });
 
-    desglose.querySelectorAll('.desglose__monto').forEach((monto, i) => {
+    const montos = desglose.querySelectorAll('.desglose__monto');
+    montos.forEach((monto, i) => {
       setTimeout(() => {
         contar(monto, Number(monto.dataset.hasta), 1100);
       }, i * 160);
     });
+
+    /* Cuando termina la ultima cifra, se ilumina lo que le quedo a Carlos */
+    const queda = desglose.querySelector('.desglose__fila--queda');
+    if (queda) {
+      setTimeout(() => queda.classList.add('resaltado'), (montos.length - 1) * 160 + 1150);
+    }
   }
 
   if (desglose) {
@@ -245,6 +259,17 @@
       }, { passive: true });
     }
   });
+
+  /* La misma luz que sigue al cursor, en las tarjetas del kit */
+  if (finoParaTocar && !quietud) {
+    document.querySelectorAll('.pieza').forEach((pieza) => {
+      pieza.addEventListener('mousemove', (evento) => {
+        const caja = pieza.getBoundingClientRect();
+        pieza.style.setProperty('--px', (evento.clientX - caja.left) + 'px');
+        pieza.style.setProperty('--py', (evento.clientY - caja.top) + 'px');
+      }, { passive: true });
+    });
+  }
 
   /* El precio cuenta desde cero la primera vez que la tarjeta entra en
      pantalla. Las tarjetas sin cifra (la asesoria dice "Precio a consultar")
