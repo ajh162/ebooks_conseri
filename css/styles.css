@@ -500,7 +500,9 @@ img{ max-width: 100%; height: auto; }
     repeating-linear-gradient(90deg, #EEF3F7 0 1.5px, #C9D5DF 1.5px 3px);
 }
 
-/* ---- Contenido de la cubierta ---- */
+/* ---- Contenido de la cubierta ----
+   Ahora es la imagen de la portada real; el marco interior se apaga. */
+.cubierta::before{ display: none; }
 .cubierta{
   height: 100%;
   padding: 2.2rem 1.7rem 2rem 2.1rem;
@@ -1325,6 +1327,49 @@ img{ max-width: 100%; height: auto; }
 
 .seccion--blanca{ background: var(--blanco); }
 
+/* ---- Alineación ----
+   Encabezados de sección centrados, igual que las notas que cierran cada
+   bloque. Las tarjetas y listas siguen alineadas a la izquierda por dentro
+   (se leen mejor), pero todo el bloque queda centrado en la pantalla. */
+.seccion__cabecera{ text-align: center; margin-left: auto; margin-right: auto; }
+.seccion__cabecera .etiqueta{ justify-content: center; }
+.subtitulo-seccion,
+.perfiles__nota,
+.kit__nota,
+.indice__cierre,
+.muestras__pista{ text-align: center; }
+.subtitulo-seccion{ margin-left: auto; margin-right: auto; }
+
+/* Listas de lectura en una columna centrada, más cómoda que a todo lo ancho */
+.indice, .dudas{ max-width: 900px; }
+
+/* Pie: el texto legal y los créditos centrados bajo la línea divisoria.
+   El texto legal conserva su ancho corto para que no quede en renglones
+   larguísimos en pantallas anchas. */
+.pie__legal, .pie__creditos{ text-align: center; }
+
+/* ---- Portada real del ebook en el libro 3D ---- */
+/* Sombra del lomo y luz de arriba, encima de la imagen: es lo que hace que
+   se vea como un libro y no como una foto pegada. */
+.libro__cara--frente::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(0,0,0,.34) 0 7px, rgba(255,255,255,.10) 8px, transparent 24px),
+    linear-gradient(105deg, rgba(255,255,255,.10) 0%, transparent 34%);
+}
+.cubierta__imagen{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 /* El titular nuevo es más largo que el anterior: un poco más chico y más
    ancho, para que precio y botón queden a la vista sin bajar en una laptop. */
 .portada .titular{ font-size: clamp(2rem, 3.9vw, 3.15rem); margin-bottom: 1.2rem; }
@@ -1388,7 +1433,7 @@ img{ max-width: 100%; height: auto; }
 /* ---- Para quién es ---- */
 .perfiles{
   list-style: none;
-  margin: 0;
+  margin: 0 auto;
   padding: 0;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -1423,7 +1468,7 @@ img{ max-width: 100%; height: auto; }
 /* ---- Lo que vas a lograr ---- */
 .logros{
   list-style: none;
-  margin: 0 0 4rem;
+  margin: 0 auto 4rem;
   padding: 0;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -1485,7 +1530,7 @@ img{ max-width: 100%; height: auto; }
 /* ---- Cómo funciona la compra ---- */
 .pasos{
   list-style: none;
-  margin: 0 0 3rem;
+  margin: 0 auto 3rem;
   padding: 0;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -1568,10 +1613,19 @@ img{ max-width: 100%; height: auto; }
   .libro__cara--frente, .libro__cara--atras{ width: 230px; height: 322px; }
   .libro__cara--lomo, .libro__cara--canto{ height: 322px; }
   .libro__cara--arriba, .libro__cara--abajo{ width: 230px; }
-  .cubierta{ padding: 1.5rem 1.2rem; }
-  .cubierta__titulo{ font-size: 1.5rem; }
   .firma{ grid-template-columns: 1fr; }
   .barra__nav{ display: none; }
+
+  /* En una sola columna todo va centrado, igual que el resto de secciones */
+  .portada__texto{ text-align: center; }
+  .portada .entrada{ margin-left: auto; margin-right: auto; }
+  .portada__beneficios{ display: inline-grid; text-align: left; }
+  .portada__precio,
+  .portada__acciones,
+  .portada__sellos{ justify-content: center; }
+
+  .firma__texto{ text-align: center; }
+  .firma__servicios{ text-align: center; }
 
   /* El kit aparece primero en celular y tableta */
   .producto--destacado{ order: -1; }
@@ -1616,6 +1670,9 @@ img{ max-width: 100%; height: auto; }
     font-size: 1.05rem;
     color: var(--naranja-claro);
   }
+
+  .pie__arriba{ flex-direction: column; text-align: center; }
+  .pie__nav{ justify-content: center; }
 
   /* En celular la barra de abajo ya lleva el boton de compra: el del
      encabezado sobraria. */
