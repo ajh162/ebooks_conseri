@@ -52,6 +52,15 @@ def envoltura(titulo, contenido, tono="exito"):
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>{titulo} · CONSERI</title>
 <meta name="robots" content="noindex">
+
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){{w[l]=w[l]||[];w[l].push({{'gtm.start':
+new Date().getTime(),event:'gtm.js'}});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+}})(window,document,'script','dataLayer','GTM-MN6X9CH6');</script>
+<!-- End Google Tag Manager -->
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -214,6 +223,12 @@ def envoltura(titulo, contenido, tono="exito"):
 </head>
 <body>
 
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MN6X9CH6"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+
 <header class="barra barra--fija">
   <a class="barra__marca" href="{sitio}" aria-label="CONSERI, ir al inicio">
     <img src="{sitio}/assets/logo-horizontal-blanco.png" alt="CONSERI" class="barra__logo">
@@ -321,12 +336,15 @@ def bloque_video(nombre, url):
     </div>""".format(url=url, nombre=nombre)
 
 
-def pagina_de_entrega(producto, filas, acceso="", videos=""):
+def pagina_de_entrega(producto, filas, acceso="", videos="", venta=None):
     """Pantalla de 'aqui esta tu material'.
 
     Vive aqui, en una sola funcion, para que la herramienta de
-    previsualizacion (previsualizar-gracias.py) muestre EXACTAMENTE lo mismo
-    que ve el comprador. Si estuviera duplicada, tarde o temprano una copia se
+    previsualizacion (previsualizar.py) muestre EXACTAMENTE lo mismo que ve el
+    comprador.
+
+    "venta" es opcional: cuando viene, la pagina le avisa a Google Tag Manager
+    que hubo una compra (ver el bloque de abajo). Si estuviera duplicada, tarde o temprano una copia se
     quedaria vieja y estariamos revisando un diseno que ya no existe.
     """
     # Hay productos sin archivos (una asesoria, por ejemplo): en esos casos no
@@ -347,7 +365,36 @@ def pagina_de_entrega(producto, filas, acceso="", videos=""):
             + bloque_archivos
         )
 
-    contenido = """
+    # ---- Aviso de venta para Google Tag Manager ---------------------------
+    # Esta pagina solo se muestra cuando Mercado Pago confirma que el pago esta
+    # aprobado, asi que el evento representa una VENTA real y no un clic en el
+    # boton de comprar.
+    #
+    # En GTM se usa con un activador de tipo "Evento personalizado" con el
+    # nombre  compra_completada.  transaction_id evita contar dos veces a quien
+    # vuelva a abrir su pagina de descarga.
+    aviso_venta = ""
+    if venta:
+        aviso_venta = """
+<script>
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({{
+    event: 'compra_completada',
+    transaction_id: '{id_pago}',
+    value: {monto},
+    currency: 'MXN',
+    item_id: '{clave}',
+    item_name: '{nombre_producto}'
+  }});
+</script>
+""".format(
+            id_pago=venta.get("id_pago", ""),
+            monto=venta.get("monto") or 0,
+            clave=venta.get("clave", ""),
+            nombre_producto=str(producto["nombre"]).replace("'", ""),
+        )
+
+    contenido = aviso_venta + """
 <section class="remate">
   <canvas class="remate__lienzo" id="fondo" aria-hidden="true"></canvas>
   <div class="remate__dentro">
@@ -554,7 +601,14 @@ class handler(BaseHTTPRequestHandler):
 
         return responder_html(
             self, 200,
-            pagina_de_entrega(producto, "".join(filas), acceso, "".join(videos))
+            pagina_de_entrega(
+                producto, "".join(filas), acceso, "".join(videos),
+                venta={
+                    "id_pago": id_pago,
+                    "monto": pago.get("transaction_amount"),
+                    "clave": clave,
+                },
+            )
         )
 
     def log_message(self, formato, *args):
