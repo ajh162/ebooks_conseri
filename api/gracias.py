@@ -195,8 +195,12 @@ def texto_de_vigencia(vence):
     """
     if not vence:
         return ""
-    return ('<p class="aviso-vigencia">Esta liga es personal y vence el '
-            '{} de {}.</p>').format(vence.day, _MESES[vence.month - 1])
+    # No decir solo la fecha: suena a "tienes hasta el 26", y no es cierto. Si
+    # se acaban las sesiones antes, la liga muere antes. Se nombran las dos
+    # cosas para no prometer de mas.
+    return ('<p class="aviso-vigencia">Esta liga es personal. Deja de funcionar '
+            'el {} de {} o cuando se acaben tus sesiones, lo que pase '
+            'primero.</p>').format(vence.day, _MESES[vence.month - 1])
 
 
 def envoltura(titulo, contenido, tono="exito"):
@@ -671,8 +675,12 @@ def pagina_de_entrega(producto, filas, acceso="", videos="", venta=None,
         bloque_archivos=bloque_archivos,
         banda=banda,
         vigencia=(
-            "Estos enlaces funcionan durante {} horas. Si se vencen, vuelve a abrir "
-            "esta página desde tu correo y se generan de nuevo.".format(HORAS_DE_VIGENCIA)
+            # OJO: no prometer que volver a abrir es gratis. Con las sesiones
+            # limitadas, recargar esta pagina despues de que venza la sesion
+            # descuenta una. Decirlo aqui evita la aclaracion de despues.
+            "Guarda los archivos en tu equipo: estos enlaces dejan de funcionar "
+            "en {} horas, y volver a abrir esta página consume una de tus "
+            "sesiones.".format(HORAS_DE_VIGENCIA)
             if filas else ""
         ),
         acceso=acceso,
