@@ -52,7 +52,7 @@ CORREO_PRUEBA     = os.environ.get("CORREO_PRUEBA", "")
 SITIO_URL = os.environ.get("SITIO_URL", "https://www.digitalconseri.com").rstrip("/")
 
 # Cuántas horas dura el enlace de descarga antes de vencerse
-HORAS_DE_VIGENCIA = int(os.environ.get("HORAS_DE_VIGENCIA", "24"))
+HORAS_DE_VIGENCIA = int(os.environ.get("HORAS_DE_VIGENCIA", "1"))
 
 # Límites de la PÁGINA de entrega (/api/gracias), que es distinta del enlace de
 # descarga de arriba. El único candado de esa página es el número de pago que
@@ -71,9 +71,28 @@ HORAS_DE_VIGENCIA = int(os.environ.get("HORAS_DE_VIGENCIA", "24"))
 #
 # Nada de esto impide que alguien reparta el archivo que ya descargó: lo que
 # hacen es que la LIGA deje de servirle a un tercero.
-DIAS_DE_ACCESO = int(os.environ.get("DIAS_DE_ACCESO", "3"))
+DIAS_DE_ACCESO = int(os.environ.get("DIAS_DE_ACCESO", "1"))
 LIMITE_DE_APERTURAS = int(os.environ.get("LIMITE_DE_APERTURAS", "2"))
 MINUTOS_DE_SESION = int(os.environ.get("MINUTOS_DE_SESION", "5"))
+
+
+def plazo_de_la_liga():
+    """Como se dice la vigencia de la liga: "24 horas" o "N días".
+
+    Un solo día se lee mejor en horas. Vive aquí, en una sola función, para que
+    la página, el correo y los avisos digan siempre lo mismo sin tener que
+    acordarse de cambiar tres textos.
+    """
+    if DIAS_DE_ACCESO == 1:
+        return "24 horas"
+    return "{} días".format(DIAS_DE_ACCESO)
+
+
+def plazo_de_los_enlaces():
+    """Como se dice cuánto vive la firma de cada archivo."""
+    if HORAS_DE_VIGENCIA == 1:
+        return "1 hora"
+    return "{} horas".format(HORAS_DE_VIGENCIA)
 
 _contexto_ssl = ssl.create_default_context()
 
@@ -313,15 +332,19 @@ def despertar_base():
 # ---------------------------------------------------------------------------
 
 def _fila_correo(enlace):
-    """Un renglon de archivo dentro del correo.
+    """Un renglon de la lista de lo que incluye la compra.
+
+    OJO: aqui NO va enlace al archivo, a proposito. El correo es una LLAVE a la
+    pagina de descarga, no una segunda copia de la mercancia. Si llevara enlaces
+    directos, reenviar el correo entregaria los archivos sin pasar por la pagina
+    y sin gastar ninguna sesion, y todo el conteo de sesiones no serviria de
+    nada.
 
     Todo va en tablas y con estilos en linea: es la unica forma de que se vea
-    igual en Gmail, Outlook y Apple Mail. Los clientes de correo ignoran las
-    hojas de estilo externas y varios ni siquiera soportan flexbox.
+    igual en Gmail, Outlook y Apple Mail.
     """
-    es_video = enlace.get("formato") == "video"
-    nota = ("Se ve mejor desde tu página de descarga"
-            if es_video else "Descargar")
+    nota = ("Se ve en tu página de descarga"
+            if enlace.get("formato") == "video" else "Incluido")
 
     return """
           <tr>
@@ -330,9 +353,8 @@ def _fila_correo(enlace):
                      style="background:#F4F7FA;border:1px solid #D6E4F0;border-radius:10px">
                 <tr>
                   <td style="padding:14px 16px">
-                    <a href="{url}" style="color:#112234;text-decoration:none;
-                       font-family:Arial,Helvetica,sans-serif;font-weight:bold;
-                       font-size:15px">{nombre}</a>
+                    <div style="color:#112234;font-family:Arial,Helvetica,sans-serif;
+                                font-weight:bold;font-size:15px">{nombre}</div>
                     <div style="font-family:Arial,Helvetica,sans-serif;font-size:12px;
                                 color:#F4882A;letter-spacing:1px;text-transform:uppercase;
                                 padding-top:4px">{nota}</div>
@@ -340,7 +362,7 @@ def _fila_correo(enlace):
                 </tr>
               </table>
             </td>
-          </tr>""".format(url=enlace["url"], nombre=enlace["nombre"], nota=nota)
+          </tr>""".format(nombre=enlace["nombre"], nota=nota)
 
 
 def plantilla_correo(producto, url_gracias, enlaces):
@@ -383,7 +405,7 @@ def plantilla_correo(producto, url_gracias, enlaces):
 
 <!-- Linea de vista previa: es lo que se lee en la bandeja antes de abrir -->
 <div style="display:none;max-height:0;overflow:hidden;opacity:0">
-  Aquí están tus enlaces de descarga de {nombre}.
+  Ya tienes tu material de {nombre}. Ábrelo desde tu página de descarga.
 </div>
 
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
@@ -427,7 +449,7 @@ def plantilla_correo(producto, url_gracias, enlaces):
             <p style="margin:0 0 22px;font-family:Arial,Helvetica,sans-serif;
                       font-size:16px;line-height:1.6;color:#112234">
               Gracias por tu compra de <strong>{nombre}</strong>.
-              Aquí está todo lo que incluye:
+              Esto es lo que incluye:
             </p>
 
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
@@ -453,11 +475,10 @@ def plantilla_correo(producto, url_gracias, enlaces):
 
             <p style="margin:18px 0 0;font-family:Arial,Helvetica,sans-serif;
                       font-size:13px;line-height:1.6;color:#5E7080;text-align:center">
-              <strong>Descarga todo en cuanto abras.</strong> Tu página de descarga
-              es personal: trae {aperturas} sesiones de {minutos} minutos y vence a los
-              {dias} días. Dentro de una sesión puedes recargar y bajar los archivos
-              uno por uno sin gastar la otra. Los enlaces sueltos vencen en
-              {horas} horas.
+              <strong>Descarga todo en cuanto abras.</strong> Este botón es tu única
+              llave y es personal: sirve {dias} desde tu compra y admite
+              {aperturas} sesiones de {minutos} minutos. Dentro de una sesión puedes
+              recargar y bajar los archivos uno por uno sin gastar la otra.
             </p>
 
           </td>
@@ -499,8 +520,7 @@ def plantilla_correo(producto, url_gracias, enlaces):
         filas=filas,
         extra=extra,
         gracias=url_gracias,
-        horas=HORAS_DE_VIGENCIA,
-        dias=DIAS_DE_ACCESO,
+        dias=plazo_de_la_liga(),
         aperturas=LIMITE_DE_APERTURAS,
         minutos=MINUTOS_DE_SESION,
         contacto=CORREO_CONTACTO,
@@ -512,17 +532,16 @@ def plantilla_correo(producto, url_gracias, enlaces):
     texto = "CONSERI\n\nYa tienes tu material.\n\n"
     texto += "Gracias por tu compra de {}.\n\n".format(producto["nombre"])
     for enlace in enlaces:
-        texto += "- {}: {}\n".format(enlace["nombre"], enlace["url"])
+        texto += "- {}\n".format(enlace["nombre"])
     if producto.get("enlace"):
         texto += "- Acceso en linea: {}\n".format(producto["enlace"])
     texto += "\nPagina de descarga: {}\n".format(url_gracias)
     texto += (
-        "\nDESCARGA TODO EN CUANTO ABRAS. Tu pagina de descarga es personal: "
-        "trae {} sesiones de {} minutos y vence a los {} dias. Dentro de una "
-        "sesion puedes recargar y bajar los archivos uno por uno sin gastar la "
-        "otra. Los enlaces sueltos vencen en {} horas.\n"
-    ).format(LIMITE_DE_APERTURAS, MINUTOS_DE_SESION, DIAS_DE_ACCESO,
-             HORAS_DE_VIGENCIA)
+        "\nDESCARGA TODO EN CUANTO ABRAS. Esa pagina es tu unica llave y es "
+        "personal: sirve {} desde tu compra y admite {} sesiones de {} minutos. "
+        "Dentro de una sesion puedes recargar y bajar los archivos uno por uno "
+        "sin gastar la otra.\n"
+    ).format(plazo_de_la_liga(), LIMITE_DE_APERTURAS, MINUTOS_DE_SESION)
     texto += "Dudas: {}\n".format(CORREO_CONTACTO)
 
     return html, texto
