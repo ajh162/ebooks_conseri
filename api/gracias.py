@@ -33,10 +33,11 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from _comun import (          # noqa: E402
     CORREO_CONTACTO,
     DIAS_DE_ACCESO,
-    HORAS_DE_VIGENCIA,
     LIMITE_DE_APERTURAS,
     MINUTOS_DE_SESION,
     SITIO_URL,
+    plazo_de_la_liga,
+    plazo_de_los_enlaces,
     SUPABASE_SERVICE_KEY,
     SUPABASE_URL,
     _cabeceras_supabase,
@@ -53,10 +54,6 @@ from _comun import (          # noqa: E402
 # ---------------------------------------------------------------------------
 # DIAS_DE_ACCESO, LIMITE_DE_APERTURAS y MINUTOS_DE_SESION viven en _comun.py,
 # junto a las demas variables de entorno, porque el correo tambien los menciona.
-
-_MESES = ("enero", "febrero", "marzo", "abril", "mayo", "junio", "julio",
-          "agosto", "septiembre", "octubre", "noviembre", "diciembre")
-
 
 def fecha_de_vencimiento(fecha_de_pago):
     """Convierte la fecha de aprobacion de Mercado Pago (date_approved) en la
@@ -195,12 +192,15 @@ def texto_de_vigencia(vence):
     """
     if not vence:
         return ""
-    # No decir solo la fecha: suena a "tienes hasta el 26", y no es cierto. Si
-    # se acaban las sesiones antes, la liga muere antes. Se nombran las dos
-    # cosas para no prometer de mas.
+    # Dos cuidados aqui:
+    #  - No decir solo la fecha: suena a "tienes hasta el 27", y no es cierto,
+    #    porque si se acaban las sesiones antes, la liga muere antes.
+    #  - Decirlo como plazo y no como dia del calendario: con 24 horas, "el 27
+    #    de septiembre" se lee como "todo el 27", cuando en realidad vence a la
+    #    hora exacta en que se compro.
     return ('<p class="aviso-vigencia">Esta liga es personal. Deja de funcionar '
-            'el {} de {} o cuando se acaben tus sesiones, lo que pase '
-            'primero.</p>').format(vence.day, _MESES[vence.month - 1])
+            '{} después de tu compra, o cuando se acaben tus sesiones, lo que '
+            'pase primero.</p>').format(plazo_de_la_liga())
 
 
 def envoltura(titulo, contenido, tono="exito"):
@@ -679,8 +679,8 @@ def pagina_de_entrega(producto, filas, acceso="", videos="", venta=None,
             # limitadas, recargar esta pagina despues de que venza la sesion
             # descuenta una. Decirlo aqui evita la aclaracion de despues.
             "Guarda los archivos en tu equipo: estos enlaces dejan de funcionar "
-            "en {} horas, y volver a abrir esta página consume una de tus "
-            "sesiones.".format(HORAS_DE_VIGENCIA)
+            "en {}, y volver a abrir esta página consume una de tus "
+            "sesiones.".format(plazo_de_los_enlaces())
             if filas else ""
         ),
         acceso=acceso,
@@ -763,8 +763,8 @@ def pantalla_demo(nombre):
         ),
         "cerrada-vencida": lambda: pagina_de_acceso_cerrado(
             "Esta liga ya venció",
-            "Los enlaces de esta compra estuvieron disponibles {} días después "
-            "del pago.".format(DIAS_DE_ACCESO),
+            "Esta compra estuvo disponible {} después del pago.".format(
+                plazo_de_la_liga()),
         ),
         "cerrada-limite": lambda: pagina_de_acceso_cerrado(
             "Esta liga alcanzó su límite",
@@ -844,8 +844,8 @@ class handler(BaseHTTPRequestHandler):
         if vence and datetime.now(timezone.utc) > vence:
             return responder_html(self, 200, pagina_de_acceso_cerrado(
                 "Esta liga ya venció",
-                "Los enlaces de esta compra estuvieron disponibles {} días "
-                "después del pago.".format(DIAS_DE_ACCESO)
+                "Esta compra estuvo disponible {} después del pago."
+                .format(plazo_de_la_liga())
             ))
 
         clave = (
