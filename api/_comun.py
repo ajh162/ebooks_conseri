@@ -52,7 +52,7 @@ CORREO_PRUEBA     = os.environ.get("CORREO_PRUEBA", "")
 SITIO_URL = os.environ.get("SITIO_URL", "https://www.digitalconseri.com").rstrip("/")
 
 # Cuántas horas dura el enlace de descarga antes de vencerse
-HORAS_DE_VIGENCIA = int(os.environ.get("HORAS_DE_VIGENCIA", "72"))
+HORAS_DE_VIGENCIA = int(os.environ.get("HORAS_DE_VIGENCIA", "24"))
 
 # Límites de la PÁGINA de entrega (/api/gracias), que es distinta del enlace de
 # descarga de arriba. El único candado de esa página es el número de pago que
@@ -71,7 +71,7 @@ HORAS_DE_VIGENCIA = int(os.environ.get("HORAS_DE_VIGENCIA", "72"))
 #
 # Nada de esto impide que alguien reparta el archivo que ya descargó: lo que
 # hacen es que la LIGA deje de servirle a un tercero.
-DIAS_DE_ACCESO = int(os.environ.get("DIAS_DE_ACCESO", "7"))
+DIAS_DE_ACCESO = int(os.environ.get("DIAS_DE_ACCESO", "3"))
 LIMITE_DE_APERTURAS = int(os.environ.get("LIMITE_DE_APERTURAS", "2"))
 MINUTOS_DE_SESION = int(os.environ.get("MINUTOS_DE_SESION", "5"))
 
