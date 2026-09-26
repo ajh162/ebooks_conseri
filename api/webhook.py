@@ -35,7 +35,6 @@ from _comun import (          # noqa: E402
     SITIO_URL,
     buscar_producto,
     consultar_pago,
-    enlace_temporal,
     enviar_correo,
     firma_valida,
     registrar_venta,
@@ -111,18 +110,19 @@ class handler(BaseHTTPRequestHandler):
             # volvemos a mandar el correo.
             return responder_json(self, 200, {"ok": True, "nota": "venta ya registrada"})
 
-        # ---- 4. Generar los enlaces de descarga ----
-        enlaces = []
-        for archivo in producto.get("archivos", []):
-            url = enlace_temporal(archivo["ruta"])
-            if url:
-                enlaces.append({
-                    "nombre": archivo["nombre"],
-                    "url": url,
-                    "formato": archivo.get("formato", ""),
-                })
-            else:
-                print("No se pudo firmar el archivo:", archivo["ruta"])
+        # ---- 4. Armar la lista de lo que incluye la compra ----
+        # Antes aqui se firmaban los archivos para meter enlaces directos en el
+        # correo. Ya no: el correo solo lleva la llave a la pagina de descarga.
+        # Un enlace directo en el correo se puede reenviar y entrega el archivo
+        # sin pasar por la pagina, o sea sin gastar sesion, y eso dejaba sin
+        # efecto todo el conteo. Las firmas se generan al abrir la pagina.
+        enlaces = [
+            {
+                "nombre": archivo["nombre"],
+                "formato": archivo.get("formato", ""),
+            }
+            for archivo in producto.get("archivos", [])
+        ]
 
         # ---- 5. Enviar el correo ----
         url_gracias = "{}/api/gracias?payment_id={}".format(SITIO_URL, id_pago)
