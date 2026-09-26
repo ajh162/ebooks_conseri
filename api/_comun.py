@@ -54,6 +54,27 @@ SITIO_URL = os.environ.get("SITIO_URL", "https://www.digitalconseri.com").rstrip
 # Cuántas horas dura el enlace de descarga antes de vencerse
 HORAS_DE_VIGENCIA = int(os.environ.get("HORAS_DE_VIGENCIA", "72"))
 
+# Límites de la PÁGINA de entrega (/api/gracias), que es distinta del enlace de
+# descarga de arriba. El único candado de esa página es el número de pago que
+# va en la dirección, y Mercado Pago lo seguiría dando por aprobado dentro de un
+# año: sin estos dos límites, la liga sirve para siempre y para cualquiera que
+# la reciba.
+#
+#   DIAS_DE_ACCESO        días que sirve la liga, contados desde el pago
+#   LIMITE_DE_APERTURAS   cuántas SESIONES de descarga trae la compra
+#   MINUTOS_DE_SESION     cuánto dura cada sesión
+#
+# Una apertura NO es un clic: es una sesión con duración. Mientras la sesión
+# sigue abierta, el comprador puede recargar, entrar y salir del video y bajar
+# los archivos uno por uno sin gastar nada más. Cuando se vence, la siguiente
+# visita abre una sesión nueva y esa sí descuenta.
+#
+# Nada de esto impide que alguien reparta el archivo que ya descargó: lo que
+# hacen es que la LIGA deje de servirle a un tercero.
+DIAS_DE_ACCESO = int(os.environ.get("DIAS_DE_ACCESO", "7"))
+LIMITE_DE_APERTURAS = int(os.environ.get("LIMITE_DE_APERTURAS", "2"))
+MINUTOS_DE_SESION = int(os.environ.get("MINUTOS_DE_SESION", "5"))
+
 _contexto_ssl = ssl.create_default_context()
 
 
@@ -432,8 +453,11 @@ def plantilla_correo(producto, url_gracias, enlaces):
 
             <p style="margin:18px 0 0;font-family:Arial,Helvetica,sans-serif;
                       font-size:13px;line-height:1.6;color:#5E7080;text-align:center">
-              Los enlaces vencen en {horas} horas. Si se te pasan, vuelve a abrir tu
-              página de descarga y se generan de nuevo.
+              <strong>Descarga todo en cuanto abras.</strong> Tu página de descarga
+              es personal: trae {aperturas} sesiones de {minutos} minutos y vence a los
+              {dias} días. Dentro de una sesión puedes recargar y bajar los archivos
+              uno por uno sin gastar la otra. Los enlaces sueltos vencen en
+              {horas} horas.
             </p>
 
           </td>
@@ -476,6 +500,9 @@ def plantilla_correo(producto, url_gracias, enlaces):
         extra=extra,
         gracias=url_gracias,
         horas=HORAS_DE_VIGENCIA,
+        dias=DIAS_DE_ACCESO,
+        aperturas=LIMITE_DE_APERTURAS,
+        minutos=MINUTOS_DE_SESION,
         contacto=CORREO_CONTACTO,
         sitio=SITIO_URL,
     )
@@ -489,7 +516,13 @@ def plantilla_correo(producto, url_gracias, enlaces):
     if producto.get("enlace"):
         texto += "- Acceso en linea: {}\n".format(producto["enlace"])
     texto += "\nPagina de descarga: {}\n".format(url_gracias)
-    texto += "\nLos enlaces vencen en {} horas.\n".format(HORAS_DE_VIGENCIA)
+    texto += (
+        "\nDESCARGA TODO EN CUANTO ABRAS. Tu pagina de descarga es personal: "
+        "trae {} sesiones de {} minutos y vence a los {} dias. Dentro de una "
+        "sesion puedes recargar y bajar los archivos uno por uno sin gastar la "
+        "otra. Los enlaces sueltos vencen en {} horas.\n"
+    ).format(LIMITE_DE_APERTURAS, MINUTOS_DE_SESION, DIAS_DE_ACCESO,
+             HORAS_DE_VIGENCIA)
     texto += "Dudas: {}\n".format(CORREO_CONTACTO)
 
     return html, texto
