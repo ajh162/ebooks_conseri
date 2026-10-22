@@ -1,30 +1,4 @@
 <!DOCTYPE html>
-<!--
-  ============================================================================
-  CONSERI · Kit Antes de Emprender
-  Landing de una sola pagina para vender productos digitales.
-
-  IDENTIDAD APLICADA
-  ---------------------------------------------------------------------------
-  Colores tomados de la lamina de marca:
-     navy    #112234
-     azul    #3173A7
-     naranja #F4882A
-  Tipografias: Poppins (titulos y subtitulos) + Public Sans (parrafos).
-  La marca pide TT Fors para encabezados; no es una fuente libre, asi que el
-  CSS ya trae el @font-face listo para cuando CONSERI entregue el archivo.
-
-  ESTRUCTURA DEL SITIO
-  ---------------------------------------------------------------------------
-  index.html        -> esta pagina
-  legal.html        -> aviso de privacidad y terminos
-  css/styles.css    -> colores de marca (variables al inicio) y todo el estilo
-  js/fondo.js       -> canvas animado de la portada
-  js/script.js      -> movimiento, efectos 3D y botones de compra
-  api/*.py          -> back-end en Vercel
-  api/catalogo.json -> catalogo de productos (aqui se agregan los nuevos)
-  ============================================================================
--->
 <html lang="es-MX">
 <head>
 <meta charset="UTF-8">
@@ -119,13 +93,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </p>
 
       <h1 class="titular animar" data-animar="subir" data-retraso="80">
-        Organiza tus números
-        <span class="titular__acento">antes de emprender o empezar a facturar.</span>
+        Deja de adivinar
+        <span class="titular__acento">cuánto cobrar y cuánto necesitas vender.</span>
       </h1>
 
       <p class="entrada animar" data-animar="subir" data-retraso="160">
-        Un ebook, cinco plantillas de Excel que hacen las cuentas por ti y un video
-        que te enseña a llenarlas. Sin lenguaje de contador.
+        Aprende a calcular tus costos, definir precios y organizar el dinero de tu
+        negocio con herramientas prácticas, sin ser experto en finanzas.
       </p>
 
       <ul class="portada__beneficios animar" data-animar="subir" data-retraso="220">
@@ -245,76 +219,240 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </p>
 </section>
 
-<!-- ============================ 3. VENDER NO ES GANAR ============================
-     Sustituye a la calculadora. En vez de pedirle datos al visitante, le
-     mostramos el caso de Carlos: la venta de $50,000 se desarma sola cuando la
-     sección entra en pantalla. Barras y cifras las anima js/script.js.
+<!-- ============================ 3. QUÉ CONSEGUIRÁS ============================
+     Tres beneficios, cada uno con la plantilla que lo respalda, y al final el
+     caso de Carlos reducido a lo esencial: antes veia solo las ventas, despues
+     vio su utilidad real.
+
+     Las mini tablas son HTML de verdad, no capturas: asi se leen bien en
+     celular y se pueden corregir las cifras sin volver a exportar una imagen.
+     El numero de renglon de la izquierda lo pone el CSS con un contador, para
+     que se sientan hojas de calculo sin ensuciar el marcado.
 ================================================================================ -->
 <section class="seccion seccion--clara" id="cifras">
   <div class="seccion__cabecera">
-    <p class="etiqueta animar" data-animar="subir">Lo que casi nadie te dice</p>
+    <p class="etiqueta animar" data-animar="subir">Resultados reales</p>
     <h2 class="seccion__titulo animar" data-animar="subir" data-retraso="60">
-      Vender no es lo mismo que ganar
+      Que tus números dejen de ser una duda
     </h2>
     <p class="seccion__intro animar" data-animar="subir" data-retraso="120">
-      Carlos abre su despacho y factura cincuenta mil pesos en su primer mes.
-      Suena a mes excelente. Míralo otra vez cuando se le restan las cosas que no
-      había contado.
+      Tres cosas que aprenderás a calcular y organizar para tomar mejores
+      decisiones en tu negocio.
     </p>
   </div>
 
-  <div class="desglose animar" data-animar="subir" id="desglose">
-    <div class="desglose__fila desglose__fila--total">
-      <p class="desglose__nombre">Facturó en el mes</p>
-      <div class="desglose__barra"><span data-ancho="100"></span></div>
-      <p class="desglose__monto" data-hasta="50000">$0</p>
-    </div>
+  <div class="beneficios">
 
-    <div class="desglose__fila">
-      <p class="desglose__nombre">Software, internet y herramientas</p>
-      <div class="desglose__barra desglose__barra--resta"><span data-ancho="8"></span></div>
-      <p class="desglose__monto desglose__monto--resta" data-hasta="4000" data-signo="−">$0</p>
-    </div>
+    <article class="beneficio animar" data-animar="subir">
+      <div class="beneficio__alto">
+        <span class="beneficio__icono" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round">
+            <path d="M5 20V12M12 20V5M19 20v-5"/>
+          </svg>
+        </span>
+        <div>
+          <p class="beneficio__num">01</p>
+          <h3 class="beneficio__titulo">
+            Conoce cuánto necesitas vender para no perder dinero.
+          </h3>
+        </div>
+      </div>
 
-    <div class="desglose__fila">
-      <p class="desglose__nombre">Publicidad, capacitación y apoyo externo</p>
-      <div class="desglose__barra desglose__barra--resta"><span data-ancho="18"></span></div>
-      <p class="desglose__monto desglose__monto--resta" data-hasta="9000" data-signo="−">$0</p>
-    </div>
+      <p class="beneficio__texto">
+        Identifica tus gastos y calcula tu punto de equilibrio para saber cuánto
+        necesitas ingresar antes de generar utilidad.
+      </p>
 
-    <div class="desglose__fila">
-      <p class="desglose__nombre">Costo de atender a cada cliente</p>
-      <div class="desglose__barra desglose__barra--resta"><span data-ancho="30"></span></div>
-      <p class="desglose__monto desglose__monto--resta" data-hasta="15000" data-signo="−">$0</p>
-    </div>
+      <table class="hojita">
+        <caption class="hojita__titulo">Punto de equilibrio</caption>
+        <tbody>
+          <tr><th scope="row">Costos fijos mensuales</th><td>$25,000</td></tr>
+          <tr><th scope="row">Precio de venta por servicio</th><td>$5,000</td></tr>
+          <tr><th scope="row">Costo variable por servicio</th><td>$2,000</td></tr>
+          <tr class="hojita__total">
+            <th scope="row">Punto de equilibrio</th><td>9 servicios</td>
+          </tr>
+        </tbody>
+      </table>
 
-    <div class="desglose__fila">
-      <p class="desglose__nombre">Impuestos que debió separar</p>
-      <div class="desglose__barra desglose__barra--resta"><span data-ancho="28"></span></div>
-      <p class="desglose__monto desglose__monto--resta" data-hasta="14000" data-signo="−">$0</p>
-    </div>
+      <p class="beneficio__pie">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+             aria-hidden="true">
+          <path d="M14 3H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7z"/>
+          <path d="M14 3v4h4"/>
+        </svg>
+        Plantilla de punto de equilibrio
+      </p>
+    </article>
 
-    <div class="desglose__fila desglose__fila--queda">
-      <p class="desglose__nombre">Le quedó</p>
-      <div class="desglose__barra desglose__barra--queda"><span data-ancho="16"></span></div>
-      <p class="desglose__monto desglose__monto--queda" data-hasta="8000">$0</p>
-    </div>
+    <article class="beneficio animar" data-animar="subir" data-retraso="80">
+      <div class="beneficio__alto">
+        <span class="beneficio__icono" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <rect x="4" y="2.5" width="16" height="19" rx="2"/>
+            <path d="M8 6.5h8M8 11h2M11.5 11h1M15 11h1M8 14.5h2M11.5 14.5h1M15 14.5h1M8 18h2M11.5 18h4.5"
+                  stroke-linecap="round"/>
+          </svg>
+        </span>
+        <div>
+          <p class="beneficio__num">02</p>
+          <h3 class="beneficio__titulo">
+            Aprende a definir tus precios que realmente dejen ganancia.
+          </h3>
+        </div>
+      </div>
+
+      <p class="beneficio__texto">
+        Calcula cuánto cobrar considerando tu tiempo, costos, gastos y una reserva
+        estimada para impuestos.
+      </p>
+
+      <table class="hojita">
+        <caption class="hojita__titulo">Cálculo de precio de servicios</caption>
+        <tbody>
+          <tr><th scope="row">Costo por hora</th><td>$250</td></tr>
+          <tr><th scope="row">Gastos indirectos</th><td>$100</td></tr>
+          <tr><th scope="row">Margen de utilidad</th><td>30%</td></tr>
+          <tr><th scope="row">Impuestos (estimado)</th><td>16%</td></tr>
+          <tr class="hojita__total">
+            <th scope="row">Precio sugerido</th><td>$580</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p class="beneficio__pie">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+             aria-hidden="true">
+          <path d="M14 3H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7z"/>
+          <path d="M14 3v4h4"/>
+        </svg>
+        Plantilla de precios de servicios
+      </p>
+    </article>
+
+    <article class="beneficio animar" data-animar="subir" data-retraso="160">
+      <div class="beneficio__alto">
+        <span class="beneficio__icono" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <path d="M3 8.5A2.5 2.5 0 0 1 5.5 6H19a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5.5A2.5 2.5 0 0 1 3 16.5z"/>
+            <path d="M3 8.5V7a2 2 0 0 1 2-2h10"/>
+            <circle cx="16.5" cy="12.5" r="1.3" fill="currentColor" stroke="none"/>
+          </svg>
+        </span>
+        <div>
+          <p class="beneficio__num">03</p>
+          <h3 class="beneficio__titulo">
+            Organiza mejor el dinero de tu negocio.
+          </h3>
+        </div>
+      </div>
+
+      <p class="beneficio__texto">
+        Lleva un control mensual de tus ingresos, costos, gastos y utilidad
+        estimada, identificando el dinero que necesitas reservar.
+      </p>
+
+      <table class="hojita">
+        <caption class="hojita__titulo">Control mensual</caption>
+        <thead>
+          <tr><th scope="col">Concepto</th><th scope="col">Monto</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Ingresos</th><td>$125,000</td></tr>
+          <tr><th scope="row">Costos variables</th><td>$37,688</td></tr>
+          <tr><th scope="row">Gastos fijos</th><td>$15,000</td></tr>
+          <tr><th scope="row">Reserva de impuestos</th><td>$25,125</td></tr>
+          <tr class="hojita__total">
+            <th scope="row">Utilidad estimada</th><td>$29,313</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p class="beneficio__pie">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+             aria-hidden="true">
+          <path d="M14 3H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7z"/>
+          <path d="M14 3v4h4"/>
+        </svg>
+        Plantilla de control mensual
+      </p>
+    </article>
+
   </div>
 
-  <div class="conceptos">
-    <article class="concepto animar" data-animar="subir">
-      <h3 class="concepto__titulo">Ingreso</h3>
-      <p>Lo que cobras. Es la cifra que se presume y la que menos dice.</p>
-    </article>
-    <article class="concepto animar" data-animar="subir" data-retraso="80">
-      <h3 class="concepto__titulo">Utilidad</h3>
-      <p>Lo que queda después de costos, gastos y obligaciones. Aquí muchos descubren que trabajaron gratis.</p>
-    </article>
-    <article class="concepto animar" data-animar="subir" data-retraso="160">
-      <h3 class="concepto__titulo">Flujo de efectivo</h3>
-      <p>El dinero que de verdad entró y salió. Puede ser negativo aunque tengas clientes contentos.</p>
-    </article>
-  </div>
+  <!-- ===== El caso de Carlos, ya simplificado =====
+       Antes era un desglose animado de seis renglones. Ahora son dos columnas:
+       lo que veia y lo que vio despues de ordenar sus numeros. -->
+  <article class="carlos animar" data-animar="subir">
+    <div class="carlos__persona">
+      <img src="assets/kit/carlos.webp" width="760" height="751" loading="lazy"
+           alt="Carlos, el emprendedor del ejemplo"
+           class="carlos__foto">
+    </div>
+
+    <div class="carlos__texto">
+      <p class="etiqueta">Un ejemplo real</p>
+      <h3 class="carlos__titulo">Vender no es lo mismo que ganar.</h3>
+      <p class="carlos__relato">
+        Carlos pensaba que su negocio iba bien porque tenía muchas ventas, pero al
+        revisar sus números descubrió que sus gastos eran más altos de lo que
+        imaginaba.
+      </p>
+    </div>
+
+    <div class="carlos__comparacion">
+      <div class="caso caso--antes">
+        <p class="caso__cuando">Antes</p>
+        <p class="caso__nota">Solo veía las ventas.</p>
+        <div class="caso__unica">
+          <span class="caso__moneda" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+              <ellipse cx="12" cy="6.5" rx="7" ry="3"/>
+              <path d="M5 6.5v4c0 1.7 3.1 3 7 3s7-1.3 7-3v-4"/>
+              <path d="M5 13.5v4c0 1.7 3.1 3 7 3s7-1.3 7-3v-4"/>
+            </svg>
+          </span>
+          <div>
+            <p class="caso__concepto">Ingresos por ventas</p>
+            <p class="caso__cifra">$125,000</p>
+          </div>
+        </div>
+      </div>
+
+      <span class="carlos__flecha" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14M13 6l6 6-6 6"/>
+        </svg>
+      </span>
+
+      <div class="caso caso--despues">
+        <p class="caso__cuando">Después</p>
+        <p class="caso__nota">Organizó sus números.</p>
+        <dl class="caso__lista">
+          <div class="caso__renglon">
+            <dt>Ingresos por ventas</dt><dd>$125,000</dd>
+          </div>
+          <div class="caso__renglon">
+            <dt>Costos y gastos</dt><dd class="caso__resta">− $95,687</dd>
+          </div>
+          <div class="caso__renglon caso__renglon--total">
+            <dt>Utilidad real</dt><dd>$29,313</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+
+    <p class="carlos__moraleja">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+           aria-hidden="true">
+        <path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.5.4.8 1 .8 1.6h5.4c0-.6.3-1.2.8-1.6A6 6 0 0 0 12 3z"/>
+      </svg>
+      Con las plantillas del kit puedes identificar tus gastos, calcular tu punto
+      de equilibrio y conocer tu utilidad real, para tomar mejores decisiones.
+    </p>
+  </article>
 </section>
 
 <!-- ============================ 4. EL KIT ============================
@@ -323,40 +461,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 ================================================================================ -->
 <section class="seccion seccion--navy" id="kit">
   <div class="seccion__cabecera">
-    <p class="etiqueta etiqueta--clara animar" data-animar="subir">Qué vas a lograr</p>
+    <p class="etiqueta etiqueta--clara animar" data-animar="subir">Lo que incluye</p>
     <h2 class="seccion__titulo animar" data-animar="subir" data-retraso="60">
-      Al terminar la semana vas a tener claro
+      Con qué lo haces
     </h2>
   </div>
-
-  <ul class="logros">
-    <li class="logro animar" data-animar="subir">
-      <h3 class="logro__titulo">Cuánto necesitas para arrancar</h3>
-      <p>Tu inversión inicial, separando lo indispensable de lo que puede esperar.</p>
-    </li>
-    <li class="logro animar" data-animar="subir" data-retraso="60">
-      <h3 class="logro__titulo">Cuánto te cuesta cada mes</h3>
-      <p>Gastos fijos, costos variables y cuántos meses puedes resistir.</p>
-    </li>
-    <li class="logro animar" data-animar="subir" data-retraso="120">
-      <h3 class="logro__titulo">Cuánto tienes que vender</h3>
-      <p>Tu punto de equilibrio: las ventas mínimas para no perder dinero.</p>
-    </li>
-    <li class="logro animar" data-animar="subir" data-retraso="180">
-      <h3 class="logro__titulo">Cuánto cobrar</h3>
-      <p>Precio mínimo, recomendado y premium, con la reserva de impuestos incluida.</p>
-    </li>
-    <li class="logro animar" data-animar="subir" data-retraso="240">
-      <h3 class="logro__titulo">Qué dinero es de quién</h3>
-      <p>El del negocio, el tuyo y el de impuestos, cada uno en su lugar.</p>
-    </li>
-    <li class="logro animar" data-animar="subir" data-retraso="300">
-      <h3 class="logro__titulo">Cómo va tu negocio mes a mes</h3>
-      <p>Un tablero de control para no enterarte hasta la declaración anual.</p>
-    </li>
-  </ul>
-
-  <h3 class="subtitulo-seccion animar" data-animar="subir">Con qué lo haces</h3>
 
   <!-- data-inclina activa el efecto 3D al pasar el cursor (js/script.js) -->
   <div class="piezas">
@@ -410,160 +519,290 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </p>
 </section>
 
-<!-- ============================ ASÍ SE VE POR DENTRO ============================
-     Capturas reales de las plantillas, sacadas del video del minicurso. Las
-     imagenes viven en assets/kit/. En celular cada captura se puede recorrer de
-     lado para que el texto no quede diminuto.
+<!-- ============================ 4. ASÍ FUNCIONAN LAS HERRAMIENTAS ============
+     Las cinco plantillas, cada una con su captura y su explicacion. Las
+     imagenes de assets/kit/ ya vienen con el texto puesto desde diseño, asi que
+     aqui no se repite: el alt describe lo que muestran para quien no las ve.
+
+     La rejilla es de seis columnas: las tres primeras tarjetas ocupan dos
+     columnas cada una y las dos ultimas tres, que es como queda el bloque
+     equilibrado sin dejar un hueco al final.
 ================================================================================ -->
 <section class="seccion seccion--blanca" id="por-dentro">
   <div class="seccion__cabecera">
     <p class="etiqueta animar" data-animar="subir">Así se ve por dentro</p>
     <h2 class="seccion__titulo animar" data-animar="subir" data-retraso="60">
-      No es un PDF para leer y guardar
+      De la teoría a tus propios números
     </h2>
     <p class="seccion__intro animar" data-animar="subir" data-retraso="120">
-      Son hojas de Excel que ya hacen las cuentas. Escribes tus datos en las celdas
-      azules y el resultado sale solo. Funcionan también en Google Sheets.
+      Cinco plantillas de Excel diseñadas para ayudarte a calcular, organizar y
+      entender las finanzas de tu negocio.
     </p>
   </div>
 
-  <p class="muestras__pista" aria-hidden="true">Desliza cada captura para verla completa</p>
-
-  <div class="muestras">
-    <figure class="muestra animar" data-animar="subir">
-      <figcaption class="muestra__texto">
-        <h3 class="muestra__titulo">Diagnóstico</h3>
-        <p>Ocho preguntas que te dicen qué tienes listo y qué conviene resolver antes de lanzar.</p>
-      </figcaption>
-      <div class="muestra__marco">
-        <img src="assets/kit/excel-diagnostico.webp" width="1200" height="275" loading="lazy"
-             alt="Hoja de diagnóstico del kit: preguntas por área con respuesta, puntaje y acción sugerida">
-      </div>
+  <div class="plantillas">
+    <figure class="plantilla animar" data-animar="subir">
+      <img src="assets/kit/diagnostico-inicial.webp" width="900" height="829" loading="lazy"
+           alt="Plantilla de diagnóstico inicial: datos del proyecto y semáforo de preparación, para identificar qué necesitas definir antes de emprender">
     </figure>
 
-    <figure class="muestra animar" data-animar="subir">
-      <figcaption class="muestra__texto">
-        <h3 class="muestra__titulo">Punto de equilibrio</h3>
-        <p>Cuántos clientes o ventas necesitas para cubrir el negocio, y cuántos para vivir de él.</p>
-      </figcaption>
-      <div class="muestra__marco">
-        <img src="assets/kit/excel-punto-equilibrio.webp" width="1200" height="412" loading="lazy"
-             alt="Hoja de punto de equilibrio: servicios con precio, costo, margen y unidades necesarias">
-      </div>
+    <figure class="plantilla animar" data-animar="subir" data-retraso="60">
+      <img src="assets/kit/inversion-inicial.webp" width="900" height="829" loading="lazy"
+           alt="Plantilla de inversión inicial y colchón: conceptos, monto estimado y cuándo comprar, para calcular cuánto dinero necesitas para comenzar">
     </figure>
 
-    <figure class="muestra animar" data-animar="subir">
-      <figcaption class="muestra__texto">
-        <h3 class="muestra__titulo">Precio de tus servicios</h3>
-        <p>Precio mínimo, recomendado y premium para cada servicio, con la reserva fiscal ya calculada.</p>
-      </figcaption>
-      <div class="muestra__marco">
-        <img src="assets/kit/excel-precio.webp" width="1200" height="147" loading="lazy"
-             alt="Hoja de precios: horas, costo directo, reserva fiscal y tres niveles de precio por servicio">
-      </div>
+    <figure class="plantilla animar" data-animar="subir" data-retraso="120">
+      <img src="assets/kit/punto-equilibrio.webp" width="900" height="829" loading="lazy"
+           alt="Plantilla de punto de equilibrio: precio, costo variable y margen por servicio, con las unidades que necesitas vender para cubrir tus costos">
     </figure>
 
-    <figure class="muestra animar" data-animar="subir">
-      <figcaption class="muestra__texto">
-        <h3 class="muestra__titulo">Control mensual</h3>
-        <p>Ingresos, gastos, impuestos y utilidad de cada mes en un solo lugar.</p>
-      </figcaption>
-      <div class="muestra__marco">
-        <img src="assets/kit/excel-control-mensual.webp" width="1200" height="337" loading="lazy"
-             alt="Hoja de control mensual: ingresos, costos, reserva de impuestos y utilidad por mes">
-      </div>
+    <figure class="plantilla plantilla--ancha animar" data-animar="subir">
+      <img src="assets/kit/precios-servicios.webp" width="900" height="829" loading="lazy"
+           alt="Plantilla de precios de servicios: costo directo, gastos fijos y reserva fiscal, con precio mínimo, recomendado y premium">
     </figure>
 
-    <figure class="muestra muestra--video animar" data-animar="subir">
-      <figcaption class="muestra__texto">
-        <h3 class="muestra__titulo">Minicurso en video</h3>
-        <p>22 minutos en los que se llenan todas las hojas, una por una, con un ejemplo real.</p>
-      </figcaption>
-      <div class="muestra__marco muestra__marco--video">
-        <img src="assets/kit/minicurso-portada.webp" width="1000" height="411" loading="lazy"
-             alt="Portada del archivo de plantillas, como aparece al inicio del minicurso">
-        <span class="muestra__sello">Video · 22 min</span>
-      </div>
+    <figure class="plantilla plantilla--ancha animar" data-animar="subir" data-retraso="60">
+      <img src="assets/kit/control-mensual.webp" width="900" height="829" loading="lazy"
+           alt="Plantilla de control mensual: ingresos, costos y gastos mes a mes, con la utilidad estimada y una gráfica de ingresos contra utilidad">
     </figure>
   </div>
 
+  <!-- Los dos recursos que no son plantillas de calculo, sino apoyos. -->
+  <div class="extras animar" data-animar="subir">
+    <img src="assets/kit/recursos-extra.webp" width="1600" height="452" loading="lazy"
+         alt="Recursos extra incluidos: checklist fiscal antes de operar, con preguntas de actividad, régimen, IVA y CFDI para revisar puntos clave antes de avanzar">
+    <img src="assets/kit/asesoria-previa.webp" width="1600" height="452" loading="lazy"
+         alt="Resumen para asesoría personalizada: cliente ideal, tipo de asesoría, inversión inicial y colchón sugerido, para aterrizar tu idea con preguntas guía">
+  </div>
+</section>
+
+<!-- ============================ MINICURSO ============================
+     Antes vivia como una captura mas dentro de las plantillas. Ahora tiene
+     seccion propia, porque es una pieza distinta: no es una herramienta que
+     llenas, es alguien enseñandote a llenarlas.
+================================================================================ -->
+<section class="seccion seccion--clara" id="minicurso">
+  <div class="seccion__cabecera">
+    <p class="etiqueta animar" data-animar="subir">Minicurso en video</p>
+    <h2 class="seccion__titulo animar" data-animar="subir" data-retraso="60">
+      Aprende a utilizar las plantillas, paso a paso
+    </h2>
+    <p class="seccion__intro animar" data-animar="subir" data-retraso="120">
+      Un video práctico de 22 minutos donde se explica cómo llenar las herramientas
+      de Excel utilizando un ejemplo real de un negocio de servicios.
+    </p>
+  </div>
+
+  <div class="curso">
+    <div class="curso__pantalla animar" data-animar="subir">
+      <img src="assets/kit/laptop-minicurso.webp" width="1100" height="666" loading="lazy"
+           alt="El minicurso en una laptop: la portada «Cómo utilizar tus plantillas» junto a la hoja de punto de equilibrio en Excel">
+    </div>
+
+    <div class="curso__ficha animar" data-animar="subir" data-retraso="80">
+      <div class="curso__encabezado">
+        <span class="curso__icono" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <rect x="2.5" y="4.5" width="19" height="15" rx="3"/>
+            <path d="M10 9.5l5 2.5-5 2.5z" fill="currentColor" stroke="none"/>
+          </svg>
+        </span>
+        <div>
+          <h3 class="curso__titulo">Video de 22 minutos</h3>
+          <p class="curso__pie">Disponible al adquirir el kit.</p>
+        </div>
+      </div>
+
+      <p class="curso__texto">
+        Te guiará en el uso de las cinco plantillas con un ejemplo práctico, para
+        que puedas aplicarlas a tu propio negocio, aunque no tengas experiencia
+        previa en Excel.
+      </p>
+
+      <ul class="curso__lista">
+        <li>Explicaciones claras y en lenguaje sencillo.</li>
+        <li>Ejemplo real de un negocio de servicios.</li>
+        <li>Recorrido por cada plantilla.</li>
+        <li>Consejos prácticos para tomar mejores decisiones.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3 class="subtitulo-seccion animar" data-animar="subir">
+    Así es el recorrido del minicurso
+  </h3>
+
+  <ol class="recorrido">
+    <li class="tramo animar" data-animar="subir">
+      <div class="tramo__alto">
+        <span class="tramo__num">1</span>
+        <div>
+          <h4 class="tramo__titulo">Conoce las plantillas</h4>
+          <p class="tramo__texto">
+            Una visión general de cada herramienta y cuándo utilizarla.
+          </p>
+        </div>
+      </div>
+      <img src="assets/kit/paso1-plantillas.webp" width="900" height="383" loading="lazy"
+           alt="Las cinco plantillas del kit: diagnóstico inicial, inversión inicial, punto de equilibrio, precios de servicios y control mensual">
+    </li>
+
+    <li class="tramo animar" data-animar="subir" data-retraso="80">
+      <div class="tramo__alto">
+        <span class="tramo__num">2</span>
+        <div>
+          <h4 class="tramo__titulo">Sigue el ejemplo paso a paso</h4>
+          <p class="tramo__texto">
+            Llenado de datos, interpretación de resultados y aplicación a un caso real.
+          </p>
+        </div>
+      </div>
+      <img src="assets/kit/paso2-precios.webp" width="900" height="379" loading="lazy"
+           alt="La hoja de precios de servicios llenándose en Excel: costo por hora, gastos indirectos, margen e impuestos dan el precio sugerido por hora">
+    </li>
+
+    <li class="tramo animar" data-animar="subir" data-retraso="160">
+      <div class="tramo__alto">
+        <span class="tramo__num">3</span>
+        <div>
+          <h4 class="tramo__titulo">Aplica los resultados a tu negocio</h4>
+          <p class="tramo__texto">
+            Recomendaciones para adaptar las plantillas a tu propia situación.
+          </p>
+        </div>
+      </div>
+      <img src="assets/kit/paso3-accion.webp" width="900" height="384" loading="lazy"
+           alt="Del análisis a la acción: revisa tus resultados, identifica áreas de mejora y define tus próximos pasos">
+    </li>
+  </ol>
+
+  <p class="curso__moraleja animar" data-animar="subir">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+         aria-hidden="true">
+      <path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.5.4.8 1 .8 1.6h5.4c0-.6.3-1.2.8-1.6A6 6 0 0 0 12 3z"/>
+    </svg>
+    El minicurso complementa el ebook y te ayuda a obtener el máximo beneficio de
+    tus plantillas.
+  </p>
 </section>
 
 <!-- ============================ 5. CONTENIDO DEL EBOOK ============================
-     Índice con una línea vertical naranja que se va llenando conforme bajas.
-     El relleno lo controla js/script.js.
+     Antes era un indice con una linea naranja que se iba llenando al bajar.
+     Ahora es un acordeon: se ven los siete capitulos de un golpe y se abre el
+     que interese. El primero viene abierto para que se entienda que se puede.
+
+     Usa <details>, asi que funciona aunque el JavaScript no cargue.
 ================================================================================ -->
-<section class="seccion seccion--clara" id="contenido">
+<section class="seccion seccion--blanca" id="contenido">
   <div class="seccion__cabecera">
     <p class="etiqueta animar" data-animar="subir">Dentro del ebook</p>
     <h2 class="seccion__titulo animar" data-animar="subir" data-retraso="60">
-      Siete capítulos, en el orden real de las decisiones
+      7 capítulos para emprender con números claros
     </h2>
     <p class="seccion__intro animar" data-animar="subir" data-retraso="120">
-      Primero entiendes el riesgo, luego calculas, luego pones precio, luego te das de
-      alta y al final controlas. Cada capítulo cierra con un ejercicio.
+      De entender tus números a tomar decisiones. Cada capítulo incluye un
+      ejercicio práctico.
     </p>
   </div>
 
-  <div class="indice" id="indice">
-    <div class="indice__riel" aria-hidden="true"><span id="indice-relleno"></span></div>
+  <div class="libro-indice">
 
-    <ol class="indice__lista">
-      <li class="indice__fila animar" data-animar="lado">
-        <span class="indice__num">01</span>
-        <div class="indice__cuerpo">
-          <h3 class="indice__titulo">Emprender sin números es manejar con los ojos vendados</h3>
-          <p class="indice__texto">Ventas, utilidad y flujo. Los tres bolsillos del emprendedor: operación, impuestos y dueño.</p>
-        </div>
-      </li>
-      <li class="indice__fila animar" data-animar="lado">
-        <span class="indice__num">02</span>
-        <div class="indice__cuerpo">
-          <h3 class="indice__titulo">De la idea al cálculo</h3>
-          <p class="indice__texto">Inversión inicial, gastos fijos, costos variables y cuántos meses puedes resistir antes de depender del negocio.</p>
-        </div>
-      </li>
-      <li class="indice__fila animar" data-animar="lado">
-        <span class="indice__num">03</span>
-        <div class="indice__cuerpo">
-          <h3 class="indice__titulo">Cómo definir cuánto cobrar</h3>
-          <p class="indice__texto">Precio mínimo, recomendado y premium. Costo, tiempo, impuestos y valor, sin copiarle el precio a la competencia.</p>
-        </div>
-      </li>
-      <li class="indice__fila animar" data-animar="lado">
-        <span class="indice__num">04</span>
-        <div class="indice__cuerpo">
-          <h3 class="indice__titulo">Alta fiscal y régimen</h3>
-          <p class="indice__texto">Primero la actividad, después el régimen. Qué preparar antes de sentarte con un contador.</p>
-        </div>
-      </li>
-      <li class="indice__fila animar" data-animar="lado">
-        <span class="indice__num">05</span>
-        <div class="indice__cuerpo">
-          <h3 class="indice__titulo">Control mensual</h3>
-          <p class="indice__texto">Cinco indicadores y una rutina de 60 minutos al mes para no descubrir cómo te fue hasta la declaración anual.</p>
-        </div>
-      </li>
-      <li class="indice__fila animar" data-animar="lado">
-        <span class="indice__num">06</span>
-        <div class="indice__cuerpo">
-          <h3 class="indice__titulo">El kit de implementación</h3>
-          <p class="indice__texto">Cómo usar juntos el ebook, las plantillas, el minicurso y la asesoría sin abrumarte.</p>
-        </div>
-      </li>
-      <li class="indice__fila animar" data-animar="lado">
-        <span class="indice__num">07</span>
-        <div class="indice__cuerpo">
-          <h3 class="indice__titulo">Plan de acción de 7 días</h3>
-          <p class="indice__texto">Una tarea por día para llegar a tu asesoría con todo ordenado.</p>
-        </div>
-      </li>
-    </ol>
+    <div class="libro-indice__portada animar" data-animar="subir">
+      <img src="assets/kit/ebook-abierto.webp" width="900" height="618" loading="lazy"
+           alt="El ebook Antes de Emprender: finanzas e impuestos que nadie te explica">
+      <ul class="sellos-ebook">
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+            <path d="M3 5.5A1.5 1.5 0 0 1 4.5 4H11v16H4.5A1.5 1.5 0 0 1 3 18.5z"/>
+            <path d="M21 5.5A1.5 1.5 0 0 0 19.5 4H13v16h6.5a1.5 1.5 0 0 0 1.5-1.5z"/>
+          </svg>
+          7 capítulos
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+            <path d="M14 3H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7z"/>
+            <path d="M14 3v4h4M9 12h6M9 16h4"/>
+          </svg>
+          Ejercicios prácticos
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 3v12M7 11l5 5 5-5M4 20h16"/>
+          </svg>
+          PDF descargable
+        </li>
+      </ul>
+    </div>
+
+    <div class="capitulos">
+      <details class="capitulo animar" data-animar="subir" open>
+        <summary><span class="capitulo__num">01</span> Emprender sin números es manejar con los ojos vendados</summary>
+        <p>
+          Comprende la diferencia entre ventas, utilidad y flujo de efectivo. Conoce
+          los conceptos básicos que necesitas dominar para tomar decisiones
+          financieras con claridad desde el inicio.
+        </p>
+      </details>
+
+      <details class="capitulo animar" data-animar="subir" data-retraso="40">
+        <summary><span class="capitulo__num">02</span> De la idea al cálculo</summary>
+        <p>
+          Inversión inicial, gastos fijos, costos variables y cuántos meses puedes
+          resistir antes de depender del negocio.
+        </p>
+      </details>
+
+      <details class="capitulo animar" data-animar="subir" data-retraso="80">
+        <summary><span class="capitulo__num">03</span> Cómo definir cuánto cobrar</summary>
+        <p>
+          Precio mínimo, recomendado y premium. Costo, tiempo, impuestos y valor,
+          sin copiarle el precio a la competencia.
+        </p>
+      </details>
+
+      <details class="capitulo animar" data-animar="subir" data-retraso="120">
+        <summary><span class="capitulo__num">04</span> Alta fiscal y régimen</summary>
+        <p>
+          Primero la actividad, después el régimen. Qué preparar antes de sentarte
+          con un contador.
+        </p>
+      </details>
+
+      <details class="capitulo animar" data-animar="subir" data-retraso="160">
+        <summary><span class="capitulo__num">05</span> Control mensual</summary>
+        <p>
+          Cinco indicadores y una rutina de 60 minutos al mes para no descubrir
+          cómo te fue hasta la declaración anual.
+        </p>
+      </details>
+
+      <details class="capitulo animar" data-animar="subir" data-retraso="200">
+        <summary><span class="capitulo__num">06</span> El kit de implementación</summary>
+        <p>
+          Cómo usar juntos el ebook, las plantillas, el minicurso y la asesoría sin
+          abrumarte.
+        </p>
+      </details>
+
+      <details class="capitulo animar" data-animar="subir" data-retraso="240">
+        <summary><span class="capitulo__num">07</span> Plan de acción de 7 días</summary>
+        <p>
+          Una tarea por día para llegar a tu asesoría con todo ordenado.
+        </p>
+      </details>
+
+      <p class="capitulos__pie">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+             aria-hidden="true">
+          <path d="M14 3H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7z"/>
+          <path d="M14 3v4h4M9 12h6M9 16h4"/>
+        </svg>
+        Un ejercicio al final de cada capítulo para aplicar lo aprendido.
+      </p>
+    </div>
+
   </div>
-
-  <p class="indice__cierre animar" data-animar="subir">
-    Y al final, un checklist de diez puntos para revisar antes de invertir dinero importante.
-  </p>
 </section>
 
 <!-- ============================ 6. RUTA DE 7 DÍAS ============================
@@ -601,11 +840,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="seccion__cabecera">
     <p class="etiqueta animar" data-animar="subir">Precios</p>
     <h2 class="seccion__titulo animar" data-animar="subir" data-retraso="60">
-      Empieza por donde te haga sentido
+      Elige cómo quieres empezar a organizar tus números
     </h2>
     <p class="seccion__intro animar" data-animar="subir" data-retraso="120">
-      El kit es la forma más completa de empezar. Si solo quieres leer, está el
-      ebook; si tu caso necesita una revisión personal, la asesoría.
+      Puedes comenzar comprendiendo los conceptos o llevarlos a la práctica con
+      herramientas de cálculo.
     </p>
   </div>
 
@@ -634,58 +873,47 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </li>
   </ol>
 
-  <!-- Las descargas tienen ventana. Se dice ANTES de pagar, no en la pantalla
-       de entrega: quien lo sepa de antemano descarga todo de una vez y no
-       termina escribiendo a soporte. -->
+  <!-- Que quede claro antes de pagar: se descarga, es tuyo, y si algo falla
+       hay alguien del otro lado. El detalle de sesiones y vigencia vive en los
+       terminos y en la propia pagina de entrega. -->
   <aside class="nota-descarga animar" data-animar="subir">
-    <h3 class="nota-descarga__titulo">Antes de comprar: descarga todo de una vez</h3>
-    <p>
-      Tu página de descarga es personal y trae <strong>2 sesiones de 5 minutos</strong>.
-      Dentro de una sesión puedes recargar, ver el video y bajar los archivos uno
-      por uno sin gastar la otra. La liga deja de funcionar 24 horas después de tu compra.
-    </p>
+    <h3 class="nota-descarga__titulo">Tu contenido, listo para descargar</h3>
+    <p>Recibe tus materiales al confirmar el pago y guárdalos en tu dispositivo.</p>
     <p class="nota-descarga__pie">
-      Ten a la mano dónde guardarlos. Si se te acaban las sesiones, escríbenos y
-      te reponemos el acceso.
+      Si tienes problemas con el acceso, nuestro equipo puede ayudarte.
     </p>
   </aside>
 
   <div class="catalogo">
 
     <article class="producto animar" data-animar="subir">
-      <p class="producto__tipo">Ebook · PDF</p>
-      <h3 class="producto__nombre">Antes de Emprender</h3>
-      <p class="producto__descripcion">
-        El libro completo, para entender el panorama y hacer tus primeros cálculos.
-      </p>
-      <ul class="producto__lista">
-        <li>7 capítulos y checklist final</li>
-        <li>Ejercicio al cierre de cada capítulo</li>
-        <li>Descarga inmediata</li>
-      </ul>
+      <h3 class="producto__nombre">eBook individual</h3>
       <p class="producto__precio"><span class="producto__moneda">$</span>249<span class="producto__divisa">MXN</span></p>
-      <button class="boton boton--bloque" data-producto="ebook_antes_de_emprender">Comprar el ebook</button>
+      <p class="producto__descripcion">Aprende los fundamentos.</p>
+      <ul class="producto__lista">
+        <li>eBook completo</li>
+        <li>Ejercicios prácticos</li>
+      </ul>
+      <button class="boton boton--bloque" data-producto="ebook_antes_de_emprender">Comprar eBook</button>
     </article>
 
     <article class="producto producto--destacado animar" data-animar="subir" data-retraso="80">
-      <p class="producto__insignia">Más completo</p>
-      <p class="producto__tipo">Ebook + plantillas + video</p>
+      <p class="producto__insignia">Kit completo</p>
       <h3 class="producto__nombre">Kit Antes de Emprender</h3>
-      <p class="producto__descripcion">
-        Todo el material para pasar de la idea a números reales en una semana.
-      </p>
-      <ul class="producto__lista">
-        <li>Ebook completo en PDF</li>
-        <li>5 plantillas de cálculo en Excel</li>
-        <li>Minicurso en video de 22 minutos</li>
-      </ul>
       <p class="producto__precio"><span class="producto__moneda">$</span>899<span class="producto__divisa">MXN</span></p>
-      <button class="boton boton--bloque" data-producto="kit_completo">Comprar el kit</button>
+      <p class="producto__descripcion">Aprende y lleva tus números a la práctica.</p>
+      <ul class="producto__lista">
+        <li>eBook completo</li>
+        <li>5 plantillas de Excel</li>
+        <li>Minicurso de 22 min</li>
+      </ul>
+      <button class="boton boton--bloque" data-producto="kit_completo">Quiero el kit completo</button>
     </article>
 
     <article class="producto animar" data-animar="subir" data-retraso="160">
       <p class="producto__tipo">Sesión en línea</p>
       <h3 class="producto__nombre">Asesoría personalizada</h3>
+      <p class="producto__precio producto__precio--consultar">Precio a consultar</p>
       <p class="producto__descripcion">
         Una sesión directa con Luis Enrique Jacobo, con tus números ya en la mano.
       </p>
@@ -693,7 +921,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <li>45 a 60 minutos por videollamada</li>
         <li>Revisión de idea, números y régimen probable</li>
       </ul>
-      <p class="producto__precio producto__precio--consultar">Precio a consultar</p>
       <!-- Esta tarjeta NO pasa por Mercado Pago: manda directo al calendario de
            Microsoft Bookings de CONSERI. Por eso es un enlace y no un botón con
            data-producto. Si algún día se cobra en línea, se agrega la entrada al
